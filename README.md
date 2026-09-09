@@ -46,7 +46,7 @@ Goed om te weten:
   aan of uit, bijvoorbeeld op een laptop met aanraakscherm (daar staat het standaard uit) of op een
   tablet waar een echt toetsenbord aan hangt.
 
-## Aapje: letters
+## Letters
 
 - In het midden staat één letter. Het kind zoekt de letter op het toetsenbord en drukt erop.
 - Goed: er komt een banaan bij en het aapje doet een kunstje.
@@ -73,7 +73,7 @@ hoofdletters** oefenen. Er moet er wel altijd één aan blijven staan: klik je d
 gebeurt er niets. Staan er meer soorten aan, dan wisselen ze elkaar netjes af. Zet je de soort uit
 die op dat moment in beeld staat, dan komt er meteen een nieuwe letter.
 
-## Raketje: sommen
+## Sommen
 
 - De som staat groot in beeld; het kind typt het antwoord. De app controleert vanzelf na elk cijfer,
   er hoeft niet op Enter gedrukt te worden. Backspace wist het laatste cijfer.
