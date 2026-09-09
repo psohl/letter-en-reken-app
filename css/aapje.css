@@ -1,0 +1,108 @@
+/* aapje.css - taalspel (ontwikkelplan §5.1, §7.1) */
+
+.letterkaart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(40vh, 36vw, 560px);
+  height: min(40vh, 36vw, 560px);
+  min-width: 200px;
+  min-height: 200px;
+  border-radius: var(--radius);
+  background: #FFFDF7;
+  /* Zachte "schuurpapier"-korrel en een rand in klinker-/medeklinkerkleur */
+  background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+  box-shadow: var(--schaduw), inset 0 0 0 10px currentColor;
+  transition: box-shadow 0.2s ease;
+}
+.letterkaart.goed {
+  animation: goed-pop 0.5s ease both;
+  box-shadow: var(--schaduw), inset 0 0 0 10px var(--kleur-goed), 0 0 0 14px rgba(76, 175, 80, 0.25);
+}
+
+/* De letter vult ongeveer 40 % van de schermhoogte. Elke letterset heeft zijn
+   eigen maat: het schrijffont heeft hoge stokken en lussen, de blokletter vult
+   zijn regel veel voller, en hoofdletters zijn hoger dan kleine letters. */
+.letter-groot {
+  font-size: min(26vh, 23vw, 360px);
+  transform: translateY(-4%);
+}
+.letter-groot.schrijfletter.kast-hoofd { font-size: min(22vh, 19vw, 300px); transform: translateY(-2%); }
+.letter-groot.blokletter               { font-size: min(21vh, 18vw, 290px); transform: translateY(-2%); }
+.letter-groot.blokletter.kast-hoofd    { font-size: min(19vh, 16vw, 260px); transform: none; }
+
+/* ---- Aapje in de hoek: rust ---- */
+.figuur-aapje { transform-origin: 50% 100%; }
+.figuur-aapje .oog { animation: knipper 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.figuur-aapje .staart { animation: staart 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
+
+@keyframes staart {
+  0%, 100% { transform: rotate(0); }
+  50%      { transform: rotate(-12deg); }
+}
+
+/* ---- Beloningsanimaties (Animaties.speel('aapje')), alle 1,4 s ----
+   --dx/--dy = afstand van het aapje naar de letterkaart, gezet door animaties.js. */
+
+/* 1. Springt op en juicht; banaan vliegt naar de teller (vlieg-icoon in base.css) */
+.figuur-aapje.anim-spring { animation: aap-spring 1.4s cubic-bezier(0.3, 0.6, 0.4, 1) both; }
+@keyframes aap-spring {
+  0%   { transform: translateY(0) rotate(0); }
+  12%  { transform: translateY(6%) scaleY(0.9); }
+  40%  { transform: translateY(-75%) rotate(-12deg); }
+  60%  { transform: translateY(-75%) rotate(12deg); }
+  85%  { transform: translateY(0) scaleY(0.94); }
+  100% { transform: translateY(0); }
+}
+.figuur-aapje.anim-spring .arm-l { animation: arm-zwaai 0.35s ease-in-out 4 alternate; transform-box: fill-box; transform-origin: 100% 100%; }
+.figuur-aapje.anim-spring .arm-r { animation: arm-zwaai 0.35s ease-in-out 4 alternate-reverse; transform-box: fill-box; transform-origin: 0% 100%; }
+@keyframes arm-zwaai { from { transform: rotate(-15deg); } to { transform: rotate(15deg); } }
+
+/* 2. Slingert aan een liaan naar de kaart en terug */
+.figuur-aapje.anim-liaan { animation: aap-liaan 1.4s ease-in-out both; }
+@keyframes aap-liaan {
+  0%   { transform: translate(0, 0) rotate(0); }
+  50%  { transform: translate(var(--dx), -35%) rotate(-25deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+.effect.liaan {
+  width: 20px;
+  transform-origin: 50% 0;
+  animation: liaan-zwaai 1.4s ease-in-out both;
+}
+.effect.liaan svg { height: 100%; }
+@keyframes liaan-zwaai {
+  0%   { transform: rotate(-28deg); }
+  50%  { transform: rotate(28deg); }
+  100% { transform: rotate(-28deg); }
+}
+
+/* 3. Salto: draait om, landt op de letterkaart en springt terug */
+.figuur-aapje.anim-salto { animation: aap-salto 1.4s cubic-bezier(0.4, 0.1, 0.4, 1) both; }
+@keyframes aap-salto {
+  0%   { transform: translate(0, 0) rotate(0); }
+  45%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg); }
+  60%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg) scaleY(0.9); }
+  70%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg); }
+  100% { transform: translate(0, 0) rotate(-360deg); }
+}
+
+/* 4. Eet een banaan en klopt op zijn buik */
+.figuur-aapje.anim-eet { animation: aap-eet 1.4s ease-in-out both; }
+@keyframes aap-eet {
+  0%, 100% { transform: scale(1); }
+  20%      { transform: scale(1.04, 0.96); }
+  40%      { transform: scale(0.97, 1.04); }
+  60%      { transform: scale(1.06, 0.95); }
+  80%      { transform: scale(0.98, 1.03); }
+}
+.figuur-aapje.anim-eet .arm-l { animation: arm-klop 0.3s ease-in-out 4 alternate; transform-box: fill-box; transform-origin: 100% 100%; }
+@keyframes arm-klop { from { transform: rotate(0); } to { transform: rotate(35deg); } }
+.effect.hapje { animation: hapje 1.2s ease-in both; }
+@keyframes hapje {
+  0%   { transform: scale(1) rotate(-20deg); opacity: 1; }
+  30%  { transform: scale(0.8) rotate(-10deg); opacity: 1; }
+  60%  { transform: scale(0.45) rotate(0); opacity: 1; }
+  100% { transform: scale(0.1) rotate(10deg); opacity: 0; }
+}

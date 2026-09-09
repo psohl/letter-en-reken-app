@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Tests: letters.js, sommen.js, kralen.js, keyboardHint.js</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; max-width: 960px; }
+  .ok { color: #2e7d32; } .fout { color: #c62828; font-weight: bold; }
+  li { margin: 4px 0; } h2 { margin-top: 28px; }
+</style>
+</head>
+<body>
+<h1>Tests</h1>
+<p>Open dit bestand in de browser (dubbelklik). Alle regels moeten groen zijn.</p>
+<h2>letters.js</h2><ul id="uit-letters"></ul>
+<h2>sommen.js</h2><ul id="uit-sommen"></ul>
+<h2>kralen.js</h2><ul id="uit-kralen"></ul>
+<h2>animaties.js</h2><ul id="uit-animaties"></ul>
+<h2>keyboardHint.js (aanraakstand)</h2><ul id="uit-hint"></ul>
+<div id="hint-proef" style="position:absolute;left:-9999px;top:0" aria-hidden="true"></div>
+<p id="samenvatting"></p>
+
+<script src="../js/letters.js"></script>
+<script src="../js/sommen.js"></script>
+<script src="../js/kralen.js"></script>
+<script src="../js/icons.js"></script>
+<script src="../js/animaties.js"></script>
+<script src="../js/keyboardHint.js"></script>
+<script>
+(function () {
+  var goed = 0, fout = 0;
+  function maakTester(id) {
+    var uit = document.getElementById(id);
+    return function test(naam, conditie, detail) {
+      var li = document.createElement('li');
+      li.className = conditie ? 'ok' : 'fout';
+      li.textContent = (conditie ? 'OK   ' : 'FOUT ') + naam + (detail !== undefined && !conditie ? ' - ' + detail : '');
+      uit.appendChild(li);
+      if (conditie) goed++; else fout++;
+    };
+  }
+
+  // Deterministische pseudo-random (LCG) zodat tests herhaalbaar zijn.
+  function maakRandom(seed) {
+    var s = seed >>> 0;
+    return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  }
+
+  /* ================= letters.js ================= */
+  var test = maakTester('uit-letters');
+
+  test('26 letters', Letters.LETTERS.length === 26, Letters.LETTERS.length);
+  test('klinkers a e i o u', ['a', 'e', 'i', 'o', 'u'].every(Letters.isKlinker));
+  test('medeklinkers b, k, z, y zijn geen klinker', !['b', 'k', 'z', 'y'].some(Letters.isKlinker));
+  test('hoofdletter telt ook als klinker', Letters.isKlinker('A') && !Letters.isKlinker('B'));
+  test('kleurKlasse', Letters.kleurKlasse('a') === 'klinker' && Letters.kleurKlasse('b') === 'medeklinker');
+
+  var zak = Letters.nieuweLetterzak(maakRandom(42));
+  var eerste = [];
+  for (var i = 0; i < 26; i++) eerste.push(zak.volgende());
+  var uniek = {}; eerste.forEach(function (l) { uniek[l] = true; });
+  test('na 26 trekkingen is elke letter precies één keer voorgekomen',
+       Object.keys(uniek).length === 26 && eerste.slice().sort().join('') === Letters.LETTERS.join(''), eerste.join(''));
+  test('volgorde is geschud (niet alfabetisch)', eerste.join('') !== Letters.LETTERS.join(''));
+  test('resterend is 0 na 26 trekkingen', zak.resterend() === 0);
+
+  var herhaling = 0, verkeerdeTelling = 0;
+  for (var seed = 1; seed <= 200; seed++) {
+    var z = Letters.nieuweLetterzak(maakRandom(seed));
+    var vorige = null, tel = {};
+    for (var n = 0; n < 26 * 20; n++) {
+      var l = z.volgende();
+      if (l === vorige) herhaling++;
+      vorige = l;
+      tel[l] = (tel[l] || 0) + 1;
+    }
+    Letters.LETTERS.forEach(function (x) { if (tel[x] !== 20) verkeerdeTelling++; });
+  }
+  test('nooit dezelfde letter twee keer achter elkaar (200 seeds x 20 zakken)', herhaling === 0, herhaling + ' herhalingen');
+  test('elke letter even vaak over 20 volle zakken', verkeerdeTelling === 0, verkeerdeTelling);
+
+  var z2 = Letters.nieuweLetterzak(), v2 = null, herh2 = 0;
+  for (var m = 0; m < 26 * 200; m++) { var l2 = z2.volgende(); if (l2 === v2) herh2++; v2 = l2; }
+  test('geen herhaling met Math.random (5200 trekkingen)', herh2 === 0, herh2);
+
+  var solo = new Letters.ShuffleBag(['q'], maakRandom(1));
+  test('zak met één item blijft dat item geven', solo.volgende() === 'q' && solo.volgende() === 'q');
+
+  var orig = [1, 2, 3, 4, 5], kopie = Letters.schud(orig, maakRandom(7));
+  test('schud laat het origineel intact', orig.join() === '1,2,3,4,5' && kopie.length === 5);
+
+
+  /* ---- Lettersets en kaartenzak ---- */
+  test('vier lettersets, schrijf-klein is de basis',
+       Letters.SETS.length === 4 && Letters.BASISSET === 'schrijf-klein' &&
+       Letters.SETS.indexOf('blok-hoofd') >= 0, Letters.SETS.join(' '));
+  test('vorm: hoofdletter alleen bij een hoofdletterset',
+       Letters.vorm('a', 'schrijf-klein') === 'a' && Letters.vorm('a', 'schrijf-hoofd') === 'A' &&
+       Letters.vorm('a', 'blok-klein') === 'a' && Letters.vorm('a', 'blok-hoofd') === 'A');
+  test('vormKlassen: font en kast',
+       Letters.vormKlassen('schrijf-klein') === 'schrijfletter kast-klein' &&
+       Letters.vormKlassen('blok-hoofd') === 'blokletter kast-hoofd', Letters.vormKlassen('blok-hoofd'));
+  test('onbekende set valt terug op de basisset',
+       Letters.vormKlassen('onzin') === 'schrijfletter kast-klein' && Letters.vorm('a', 'onzin') === 'a');
+
+  (function () {
+    var kz = new Letters.Kaartenzak(['blok-hoofd'], maakRandom(7));
+    test('één set aanzetten kan: alleen blokletter-hoofdletters', kz.sets().join() === 'blok-hoofd', kz.sets().join());
+    kz.zetSets(['onzin', 'blok-klein']);
+    test('onbekende sets worden genegeerd', kz.sets().join() === 'blok-klein', kz.sets().join());
+    kz.zetSets([]);
+    test('alles uitzetten kan niet: de laatste set blijft staan', kz.sets().join() === 'blok-klein', kz.sets().join());
+    kz.zetSets(Letters.SETS);
+    test('alle vier de sets kunnen aan staan', kz.sets().join() === Letters.SETS.join(), kz.sets().join());
+    test('een lege zak begint met de basisset', new Letters.Kaartenzak([], maakRandom(8)).sets().join() === Letters.BASISSET);
+  })();
+
+  (function () {
+    // Zonder de schrijfletter: alle kaartjes zijn dan hoofdletters in blokletters.
+    var kz = new Letters.Kaartenzak(['blok-hoofd'], maakRandom(11)), afwijkend = 0;
+    for (var i = 0; i < 100; i++) {
+      var k = kz.volgende();
+      if (k.set !== 'blok-hoofd' || k.vorm !== k.letter.toUpperCase()) afwijkend++;
+    }
+    test('met alleen hoofdletters aan komen er alleen hoofdletters', afwijkend === 0, afwijkend);
+  })();
+  (function () {
+    var kz = new Letters.Kaartenzak(Letters.SETS, maakRandom(9));
+    var perLetter = {}, perSet = {}, herhaling = 0, vormFout = 0, vorige = null;
+    for (var i = 0; i < 26 * 4 * 10; i++) {
+      var k = kz.volgende();
+      if (k.letter === vorige) herhaling++;
+      vorige = k.letter;
+      if (k.vorm !== Letters.vorm(k.letter, k.set)) vormFout++;
+      perLetter[k.letter] = (perLetter[k.letter] || 0) + 1;
+      perSet[k.set] = (perSet[k.set] || 0) + 1;
+    }
+    test('kaartenzak: elke letter even vaak (1040 kaartjes)',
+         Letters.LETTERS.every(function (l) { return perLetter[l] === 40; }), JSON.stringify(perLetter));
+    test('kaartenzak: elke aangezette set even vaak',
+         Letters.SETS.every(function (s) { return perSet[s] === 260; }), JSON.stringify(perSet));
+    test('kaartenzak: nooit dezelfde letter twee keer achter elkaar', herhaling === 0, herhaling);
+    test('kaartenzak: vorm hoort altijd bij de set', vormFout === 0, vormFout);
+  })();
+
+  /* ================= sommen.js ================= */
+  test = maakTester('uit-sommen');
+
+  var N = 10000;
+  var REGELS = {
+    klein: {
+      plus: function (s) { return s.a >= 0 && s.a <= 10 && s.b >= 0 && s.b <= 10 && s.antwoord <= 10; },
+      min:  function (s) { return s.a >= 0 && s.a <= 10 && s.b >= 0 && s.b <= s.a && s.antwoord >= 0; },
+      maal: function (s) { return (s.a >= 1 && s.a <= 5 && s.b >= 1 && s.b <= 10) || (s.b >= 1 && s.b <= 5 && s.a >= 1 && s.a <= 10); },
+      deel: function (s) { return s.b >= 1 && s.b <= 5 && s.antwoord >= 1 && s.antwoord <= 10 && s.a === s.b * s.antwoord; }
+    },
+    groot: {
+      plus: function (s) { return s.a >= 0 && s.a <= 10 && s.b >= 0 && s.b <= 10 && s.antwoord <= 20; },
+      min:  function (s) { return s.a >= 0 && s.a <= 20 && s.b >= 0 && s.b <= 10 && s.b <= s.a && s.antwoord >= 0; },
+      maal: function (s) { return s.a >= 1 && s.a <= 10 && s.b >= 1 && s.b <= 10; },
+      deel: function (s) { return s.b >= 1 && s.b <= 10 && s.antwoord >= 1 && s.antwoord <= 10 && s.a === s.b * s.antwoord; }
+    }    ,
+    'super': {
+      plus: function (s) { return s.a >= 0 && s.a <= 100 && s.b >= 0 && s.b <= 100 && s.antwoord <= 100; },
+      min:  function (s) { return s.a >= 0 && s.a <= 100 && s.b >= 0 && s.b <= s.a && s.antwoord >= 0; },
+      maal: function (s) { return s.a >= 1 && s.a <= 10 && s.b >= 1 && s.b <= 10; },
+      deel: function (s) { return s.b >= 1 && s.b <= 10 && s.antwoord >= 1 && s.antwoord <= 10 && s.a === s.b * s.antwoord; }
+    }
+  };
+  var UITKOMST = { plus: function (s) { return s.a + s.b; }, min: function (s) { return s.a - s.b; },
+                   maal: function (s) { return s.a * s.b; }, deel: function (s) { return s.a / s.b; } };
+
+  ['klein', 'groot', 'super'].forEach(function (niveau) {
+    Sommen.OPERATOREN.forEach(function (op) {
+      var r = maakRandom(1000 + op.length + niveau.length);
+      var fouten = 0, rekenfout = 0, voorbeeld = '', beideVolgordes = {};
+      for (var i = 0; i < N; i++) {
+        var s = Sommen.maak(op, niveau, r);
+        if (!REGELS[niveau][op](s)) { fouten++; voorbeeld = s.tekst + ' = ' + s.antwoord; }
+        if (UITKOMST[op](s) !== s.antwoord || s.antwoord !== Math.floor(s.antwoord)) rekenfout++;
+        if (s.a !== s.b) beideVolgordes[s.a < s.b ? 'ab' : 'ba'] = true;
+      }
+      test(N + ' x ' + op + ' (' + niveau + '): binnen de regels van §5.2', fouten === 0, fouten + ' fout, bijv. ' + voorbeeld);
+      test(N + ' x ' + op + ' (' + niveau + '): antwoord klopt en is een geheel getal', rekenfout === 0, rekenfout);
+      if (op === 'plus' || op === 'maal') {
+        test(op + ' (' + niveau + '): beide volgordes komen voor (3 + 4 én 4 + 3)', beideVolgordes.ab && beideVolgordes.ba);
+      }
+    });
+  });
+
+  // Bereik wordt echt benut: bij groot komen uitkomsten boven 10 voor, bij klein niet.
+  (function () {
+    var r = maakRandom(5), boven10groot = 0, boven10klein = 0;
+    for (var i = 0; i < N; i++) {
+      if (Sommen.maak('plus', 'groot', r).antwoord > 10) boven10groot++;
+      if (Sommen.maak('plus', 'klein', r).antwoord > 10) boven10klein++;
+    }
+    test('plus groot geeft ook uitkomsten boven 10; plus klein nooit', boven10groot > 0 && boven10klein === 0);
+    var tafel10 = 0;
+    for (var j = 0; j < N; j++) { var s = Sommen.maak('maal', 'groot', r); if (s.a > 5 && s.b > 5) tafel10++; }
+    test('maal groot gebruikt ook tafels 6-10', tafel10 > 0);
+  })();
+
+  // Superraket: plus en min benutten het bereik tot 100 en gaan er nooit boven.
+  (function () {
+    var r = maakRandom(77), boven20 = 0, boven50 = 0, teHoog = 0, aftrekBoven20 = 0, tweecijferigB = 0;
+    for (var i = 0; i < N; i++) {
+      var p = Sommen.maak('plus', 'super', r);
+      if (p.antwoord > 20) boven20++;
+      if (p.antwoord > 50) boven50++;
+      if (p.antwoord > 100) teHoog++;
+      var m = Sommen.maak('min', 'super', r);
+      if (m.a > 20) aftrekBoven20++;
+      if (m.b > 10) tweecijferigB++;
+      if (m.a > 100 || m.antwoord < 0) teHoog++;
+    }
+    test('super: plussommen komen boven 20 en boven 50 uit', boven20 > 0 && boven50 > 0, boven20 + ' / ' + boven50);
+    test('super: minsommen hebben aftrektallen boven 20 en aftrekgetallen boven 10',
+         aftrekBoven20 > 0 && tweecijferigB > 0, aftrekBoven20 + ' / ' + tweecijferigB);
+    test('super: nooit boven 100 en nooit negatief', teHoog === 0, teHoog);
+    test('niveaus: drie stappen met maxima 10, 20 en 100',
+         Sommen.NIVEAUS.klein.maxUitkomst === 10 && Sommen.NIVEAUS.groot.maxUitkomst === 20 &&
+         Sommen.NIVEAUS['super'].maxUitkomst === 100 && Object.keys(Sommen.NIVEAUS).length === 3,
+         Object.keys(Sommen.NIVEAUS).join());
+    test('super: keer en delen blijven de tafels 1 t/m 10 (10 x 10 = 100 is de bovengrens)',
+         Sommen.NIVEAUS['super'].maxTafel === 10);
+    var g = new Sommen.Generator({ operators: ['plus'], niveau: 'super' }, maakRandom(4));
+    test('generator: niveau super werkt en blijft binnen 100', g.niveau() === 'super' &&
+         (function () { for (var i = 0; i < 500; i++) { if (g.volgende().antwoord > 100) return false; } return true; })());
+    g.zetNiveau('onzin');
+    test('generator: een onbekend niveau wordt genegeerd', g.niveau() === 'super');
+  })();
+
+  // Generator: even verdeling, nooit dezelfde som twee keer achter elkaar, plus altijd aan.
+  (function () {
+    var g = new Sommen.Generator({ operators: ['plus', 'min', 'maal', 'deel'], niveau: 'groot' }, maakRandom(99));
+    var tel = { plus: 0, min: 0, maal: 0, deel: 0 }, herh = 0, vorige = null, triviaal = 0;
+    for (var i = 0; i < N; i++) {
+      var s = g.volgende();
+      tel[s.op]++;
+      if (vorige && vorige.sleutel === s.sleutel) herh++;
+      if (Sommen.isTriviaal(s)) triviaal++;
+      vorige = s;
+    }
+    var min = Math.min(tel.plus, tel.min, tel.maal, tel.deel), max = Math.max(tel.plus, tel.min, tel.maal, tel.deel);
+    test('generator: elke actieve operator ongeveer even vaak (' + JSON.stringify(tel) + ')', min > N / 4 * 0.85 && max < N / 4 * 1.15);
+    test('generator: nooit twee keer dezelfde som achter elkaar (' + N + ')', herh === 0, herh);
+    test('generator: triviale sommen (+0, :1) hoogstens af en toe (< 4 %)', triviaal < N * 0.04, triviaal);
+
+    var g2 = new Sommen.Generator({ operators: ['maal'] }, maakRandom(3));
+    test('generator: plus staat altijd aan, ook als hij niet is meegegeven', g2.operators().indexOf('plus') >= 0 && g2.operators().indexOf('maal') >= 0);
+    g2.zetOperators([]);
+    test('generator: alles uitzetten laat plus aan', g2.operators().join() === 'plus');
+    var alleenPlus = true;
+    for (var k = 0; k < 500; k++) if (g2.volgende().op !== 'plus') alleenPlus = false;
+    test('generator: met alleen plus komen alleen plussommen', alleenPlus);
+
+    var g3 = new Sommen.Generator({ operators: ['plus'], niveau: 'klein' }, maakRandom(11));
+    var herh3 = 0, v3 = null;
+    for (var q = 0; q < N; q++) { var s3 = g3.volgende(); if (v3 && v3.sleutel === s3.sleutel) herh3++; v3 = s3; }
+    test('generator: ook bij weinig verschillende sommen (plus klein) geen directe herhaling', herh3 === 0, herh3);
+  })();
+
+  // Auto-controle (§5.2 punt 3)
+  var tabel = [
+    ['1', 15, 'wacht'], ['15', 15, 'goed'], ['2', 15, 'fout'], ['16', 15, 'fout'],
+    ['0', 0, 'goed'], ['1', 0, 'fout'], ['', 7, 'wacht'], ['7', 7, 'goed'], ['07', 7, 'fout'],
+    ['2', 20, 'wacht'], ['20', 20, 'goed'], ['1', 10, 'wacht'], ['10', 10, 'goed'], ['100', 10, 'fout']
+  ];
+  tabel.forEach(function (rij) {
+    var uit = Sommen.controleer(rij[0], rij[1]);
+    test('controleer("' + rij[0] + '", ' + rij[1] + ') = ' + rij[2], uit === rij[2], 'kreeg ' + uit);
+  });
+
+  test('symbolen: + − × ÷', Sommen.SYMBOOL.plus === '+' && Sommen.SYMBOOL.min === '−' && Sommen.SYMBOOL.maal === '×' && Sommen.SYMBOOL.deel === '÷');
+  test('toetsen +, -, *, / en x, : sturen operatoren', Sommen.TOETS_NAAR_OPERATOR['+'] === 'plus' && Sommen.TOETS_NAAR_OPERATOR['-'] === 'min' &&
+       Sommen.TOETS_NAAR_OPERATOR['*'] === 'maal' && Sommen.TOETS_NAAR_OPERATOR['/'] === 'deel' && Sommen.TOETS_NAAR_OPERATOR.x === 'maal' && Sommen.TOETS_NAAR_OPERATOR[':'] === 'deel');
+
+  /* ================= kralen.js ================= */
+  test = maakTester('uit-kralen');
+
+  test('kleuren van de kralentrap 1 t/m 10 zijn er allemaal',
+       [1,2,3,4,5,6,7,8,9,10].every(function (n) { return /^#[0-9A-F]{6}$/i.test(Kralen.KLEUR[n]); }));
+  test('staafjes: 7 -> [7], 10 -> [10], 14 -> [10,4], 20 -> [10,10], 0 -> [0]',
+       Kralen.staafjes(7).join() === '7' && Kralen.staafjes(10).join() === '10' &&
+       Kralen.staafjes(14).join() === '10,4' && Kralen.staafjes(20).join() === '10,10' &&
+       Kralen.staafjes(0).join() === '0');
+  test('staven: de laatste kralen worden doorgestreept (14 - 6)',
+       JSON.stringify(Kralen.staven(Kralen.staafjes(14), 6)) ===
+       JSON.stringify([{ lengte: 10, weg: 2 }, { lengte: 4, weg: 4 }]));
+
+  /* Kralen tellen in een model: alles, wat blijft staan en de langste staaf. */
+  function telKralen(m) {
+    var totaal = 0, blijft = 0, langste = 0, staven = 0;
+    m.groepen.forEach(function (g) {
+      g.staven.forEach(function (s) {
+        totaal += s.lengte;
+        blijft += s.lengte - s.weg;
+        langste = Math.max(langste, s.lengte);
+        staven++;
+      });
+    });
+    return { totaal: totaal, blijft: blijft, langste: langste, staven: staven };
+  }
+
+  (function () {
+    var m = Kralen.model({ op: 'plus', a: 3, b: 4, antwoord: 7, symbool: '+' });
+    var t = telKralen(m);
+    test('plus 3 + 4: twee staafjes naast elkaar met een plusteken, 7 kralen',
+         m.groepen.length === 2 && m.teken === '+' && t.totaal === 7 && m.rijen === 1 && m.kolommen === 9,
+         JSON.stringify(m));
+
+    m = Kralen.model({ op: 'min', a: 14, b: 6, antwoord: 8, symbool: '\u2212' });
+    t = telKralen(m);
+    test('min 14 - 6: staafjes 10 en 4, er blijven 8 kralen staan',
+         m.groepen.length === 1 && t.totaal === 14 && t.blijft === 8 && m.rijen === 2, JSON.stringify(m));
+
+    m = Kralen.model({ op: 'maal', a: 3, b: 4, antwoord: 12, symbool: '\u00d7' });
+    t = telKralen(m);
+    test('maal 3 x 4: drie staafjes van 4, samen 12 kralen',
+         t.staven === 3 && t.langste === 4 && t.totaal === 12 && m.rijen === 3 && m.kolommen === 4);
+
+    m = Kralen.model({ op: 'deel', a: 12, b: 3, antwoord: 4, symbool: '\u00f7' });
+    t = telKralen(m);
+    test('deel 12 : 3: de 12 kralen verdeeld over 3 staafjes van 4',
+         t.staven === 3 && t.langste === 4 && t.totaal === 12 && m.rijen === 3);
+
+    m = Kralen.model({ op: 'plus', a: 0, b: 5, antwoord: 5, symbool: '+' });
+    test('plus 0 + 5: een leeg staafje naast een staafje van 5',
+         m.groepen[0].staven[0].lengte === 0 && m.groepen[1].staven[0].lengte === 5 && m.kolommen === 8);
+  })();
+
+  (function () {
+    var mis = { plus: 0, min: 0, maal: 0, deel: 0 }, teLang = 0, teGroot = 0;
+    var r = maakRandom(303);
+    ['klein', 'groot', 'super'].forEach(function (niveau) {
+      Sommen.OPERATOREN.forEach(function (op) {
+        for (var i = 0; i < 2500; i++) {
+          var som = Sommen.maak(op, niveau, r);
+          var m = Kralen.model(som);
+          var t = telKralen(m);
+          // Wat blijft staan is het antwoord; bij delen zijn het de a kralen die
+          // eerlijk over b staafjes van het antwoord verdeeld worden.
+          var klopt = op === 'deel'
+            ? (t.totaal === som.a && t.langste === som.antwoord && t.staven === som.b)
+            : (t.blijft === som.antwoord);
+          if (!klopt) mis[op]++;
+          if (t.langste > Kralen.MAX_STAAF) teLang++;
+          if (m.rijen > 10 || m.kolommen > 22) teGroot++;
+        }
+      });
+    });
+    test('30.000 sommen: de kralen kloppen altijd met de som',
+         mis.plus + mis.min + mis.maal + mis.deel === 0, JSON.stringify(mis));
+    test('30.000 sommen: nooit een staafje langer dan 10 kralen', teLang === 0, teLang);
+    test('30.000 sommen: hoogstens 10 rijen en 22 kolommen', teGroot === 0, teGroot);
+  })();
+
+  (function () {
+    var m = Kralen.model({ op: 'maal', a: 4, b: 5, antwoord: 20, symbool: '\u00d7' });
+    var h = Kralen.html(m);
+    test('html: 20 kralen in 4 staafjes',
+         (h.match(/class="kraal/g) || []).length === 20 && (h.match(/class="kralen-staaf/g) || []).length === 4);
+    var hm = Kralen.html(Kralen.model({ op: 'min', a: 9, b: 4, antwoord: 5, symbool: '\u2212' }));
+    test('html: doorgestreepte kralen krijgen de klasse weg',
+         (hm.match(/kraal weg/g) || []).length === 4, hm);
+  })();
+
+  /* ================= animaties.js ================= */
+  test = maakTester('uit-animaties');
+  test('aapje heeft minstens 3 varianten (' + Animaties.VARIANTEN.aapje.join(', ') + ')', Animaties.VARIANTEN.aapje.length >= 3);
+  test('raket heeft minstens 3 varianten (' + Animaties.VARIANTEN.raket.join(', ') + ')', Animaties.VARIANTEN.raket.length >= 3);
+  test('duur van een beloningsanimatie is hoogstens 1,5 s (' + Animaties.DUUR + ' ms)', Animaties.DUUR <= 1500);
+  (function () {
+    var r = maakRandom(21), herh = 0, gezien = {}, v = null;
+    for (var i = 0; i < 2000; i++) { var k = Animaties.kies('aapje', r); if (k === v) herh++; v = k; gezien[k] = true; }
+    test('kies: nooit twee keer dezelfde aapje-variant achter elkaar', herh === 0, herh);
+    test('kies: alle aapje-varianten komen voor', Object.keys(gezien).length === Animaties.VARIANTEN.aapje.length);
+    var r2 = maakRandom(22), herh2 = 0, v2 = null;
+    for (var j = 0; j < 2000; j++) { var k2 = Animaties.kies('raket', r2); if (k2 === v2) herh2++; v2 = k2; }
+    test('kies: nooit twee keer dezelfde raket-variant achter elkaar', herh2 === 0, herh2);
+  })();
+  test('alle iconen uit §6.3 bestaan', ['aapje','raket','huisje','luidspreker','luidsprekerUit','fullscreen','fullscreenUit','plus','min','maal','deel','slot','raketKlein','raketGroot','raketSuper','banaan','bananentros','ster','maan','liaan','aapjeFiguur','raketFiguur','letterSchrijfKlein','letterSchrijfHoofd','letterBlokKlein','letterBlokHoofd','kralen','toetsenbord'].every(function (n) { return Icons.svg(n).indexOf('<svg') === 0; }));
+
+  /* ================= keyboardHint.js (fase 10: tikbaar toetsenbord) ================= */
+  test = maakTester('uit-hint');
+  (function () {
+    var proef = document.getElementById('hint-proef');
+    var cL = document.createElement('div'), cC = document.createElement('div');
+    proef.appendChild(cL); proef.appendChild(cC);
+    var letters = KeyboardHint.maak(cL, 'letters');
+    var cijfers = KeyboardHint.maak(cC, 'cijfers');
+
+    test('letters: 26 toetsen in 3 rijen, geen wistoets',
+         cL.querySelectorAll('.hint-toets').length === 26 && cL.querySelectorAll('.hint-rij').length === 3 && !cL.querySelector('.hint-wis'));
+    test('cijfers: 10 cijfers plus een wistoets (Backspace), in twee groepjes 1-5 en 6-0',
+         cC.querySelectorAll('.hint-toets').length === 11 && cC.querySelectorAll('.hint-rij').length === 2 &&
+         cC.querySelectorAll('.hint-rij')[0].textContent === '12345' && cC.querySelectorAll('.hint-rij')[1].textContent === '67890⌫' &&
+         cC.querySelector('.hint-wis') && cC.querySelector('.hint-wis').getAttribute('data-toets') === KeyboardHint.WIS);
+    test('containers krijgen de klassen hint-letters / hint-cijfers',
+         cL.classList.contains('hint-letters') && cC.classList.contains('hint-cijfers'));
+
+    letters.toon('K');
+    test('toon("K") laat de k pulseren en maakt de hint zichtbaar',
+         cL.querySelector('[data-toets="k"]').classList.contains('pulseer') && letters.isZichtbaar());
+    letters.verberg();
+    test('verberg() haalt puls en zichtbaarheid weg', !cL.querySelector('.pulseer') && !letters.isZichtbaar());
+
+    // Toetsaanslagen die op document aankomen bijhouden.
+    var ontvangen = [];
+    var luister = function (e) { ontvangen.push(e.key); };
+    document.addEventListener('keydown', luister);
+
+    test('standaard niet tikbaar (pc-stand)', KeyboardHint.isTikbaar() === false);
+    cL.querySelector('[data-toets="k"]').click();
+    test('pc-stand: een klik op een toets stuurt geen toetsaanslag', ontvangen.length === 0, ontvangen.join());
+
+    KeyboardHint.zetTikbaar(true);
+    cL.querySelector('[data-toets="k"]').click();
+    test('aanraakstand: tik op K komt aan als keydown met key "k"', ontvangen.join() === 'k', ontvangen.join());
+    cC.querySelector('[data-toets="7"]').click();
+    cC.querySelector('.hint-wis').click();
+    test('aanraakstand: tik op 7 en op de wistoets geven "7" en "Backspace"', ontvangen.join() === 'k,7,Backspace', ontvangen.join());
+    var ev = KeyboardHint.tik('Escape');
+    test('tik() geeft een echte KeyboardEvent (bubbles, cancelable) en komt aan',
+         ev instanceof KeyboardEvent && ev.bubbles && ev.cancelable && ontvangen[ontvangen.length - 1] === 'Escape');
+    var voor = ontvangen.length;
+    cC.click();                                          // naast de toetsen
+    test('tik naast een toets doet niets', ontvangen.length === voor);
+
+    KeyboardHint.zetTikbaar(false);
+    cL.querySelector('[data-toets="a"]').click();
+    test('zetTikbaar(false) maakt het weer een stille hint', ontvangen.length === voor);
+    document.removeEventListener('keydown', luister);
+  })();
+
+  var s = document.getElementById('samenvatting');
+  s.textContent = goed + ' goed, ' + fout + ' fout.';
+  s.className = fout ? 'fout' : 'ok';
+  document.title = (fout ? 'FOUT ' : 'OK ') + document.title;
+})();
+</script>
+</body>
+</html>

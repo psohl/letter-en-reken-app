@@ -1,0 +1,282 @@
+/* base.css - reset, kleuren, typografie, grote knoppen (ontwikkelplan §6)
+   plus gedeelde spelonderdelen: teller, hint-toetsenbord, figuren, effecten en animaties. */
+
+:root {
+  --kleur-achtergrond: #FFF8E7;   /* warm crème */
+  --kleur-klinker:     #2F6FB5;   /* Montessori-blauw */
+  --kleur-medeklinker: #E8607A;   /* Montessori-roze/rood */
+  --kleur-aapje:       #8B5A2B;
+  --kleur-aapje-licht: #D9A066;
+  --kleur-raket:       #E63946;
+  --kleur-raket-grijs: #B8C0CC;
+  --kleur-vlam:        #FF9F1C;
+  --kleur-goed:        #4CAF50;
+  --kleur-uit:         #C8C8C8;
+  --kleur-accent:      #FFD23F;   /* zonnig geel: sterren, bananen, focusring */
+  --kleur-tekst:       #3B2A1A;
+
+  /* Knopmaat: 96 px op een normaal scherm; op smalle schermen krimpen de knoppen
+     mee tot 76 px zodat alle schakelaars in de bovenbalk zichtbaar blijven. */
+  --knop-min: clamp(76px, 7.5vw, 96px);
+  --radius: 28px;
+  --schaduw: 0 8px 0 rgba(0, 0, 0, 0.12);
+
+  /* Maten die met het scherm meeschalen. Hoogte is de beperkende factor op laptops. */
+  --balk-pad: clamp(6px, 1.2vh, 20px);
+  --hint-toets: clamp(36px, 5.6vh, 64px);
+  --hint-gap: clamp(3px, 0.6vh, 8px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;                 /* geen scrollen, alles past op één scherm */
+  background: var(--kleur-achtergrond);
+  color: var(--kleur-tekst);
+  font-family: "Segoe UI Rounded", "Arial Rounded MT Bold", "Nunito", "Fredoka", "Segoe UI", Arial, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Zachte stippen op de achtergrond: rustig, niet afleidend. */
+body {
+  background-image: radial-gradient(rgba(255, 210, 63, 0.18) 2px, transparent 2.5px);
+  background-size: 48px 48px;
+}
+
+/* ---- Schermen: precies één is actief ---- */
+.scherm {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+}
+.scherm.actief { display: flex; }
+.scherm:focus { outline: none; }
+
+/* Bovenbalk: links terug, midden alle instellingen (in knopgroepen met een
+   scheidingslijntje ertussen), rechts geluid/fullscreen */
+.balk {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 24px);
+  padding: var(--balk-pad) clamp(8px, 1.5vw, 24px);
+  min-height: calc(var(--knop-min) + 2 * var(--balk-pad));
+}
+.balk-links  { display: flex; gap: clamp(8px, 1vw, 20px); justify-content: flex-start; }
+.balk-midden { display: flex; gap: clamp(8px, 1vw, 20px); justify-content: center; }
+.balk-rechts { display: flex; gap: clamp(8px, 1vw, 20px); justify-content: flex-end; align-items: center; }
+
+.speelveld {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Onderbalk: teller en (verborgen) hint-toetsenbord. Ruimte is altijd gereserveerd
+   zodat het speelveld niet verspringt als de hint verschijnt. */
+.onderbalk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 0.8vh, 12px);
+  padding: 0 clamp(8px, 1.5vw, 24px) var(--balk-pad);
+}
+
+/* ---- Knoppen ---- */
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
+.knop-icoon {
+  position: relative;
+  flex: none;
+  width: var(--knop-min);
+  height: var(--knop-min);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--schaduw);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, filter 0.2s ease, box-shadow 0.12s ease;
+}
+.knop-icoon > svg { width: 66%; height: 66%; }
+.knop-icoon > span > svg { width: 100%; height: 100%; }
+.knop-icoon:hover { transform: scale(1.06); }
+.knop-icoon:active { transform: scale(0.94) translateY(3px); box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12); }
+.knop-geluid.uit { background: #F2F2F2; }
+.knop-icoon[hidden] { display: none; }
+
+/* ---- Instel-schakelaars in de bovenbalk ----
+   Lettersets bij Aapje, operatoren en kralen bij Raketje: aan = gekleurd,
+   uit = grijs. De eerste schakelaar van een groep kan vergrendeld zijn
+   (altijd aan) en heeft dan een slotje. */
+.knopgroep { display: flex; gap: clamp(8px, 1vw, 20px); }
+.knopgroep + .knopgroep {
+  padding-left: clamp(8px, 1.2vw, 24px);
+  border-left: 3px solid rgba(0, 0, 0, 0.08);
+}
+.knop-toggle .toggle-icoon { display: block; width: 80%; height: 80%; }
+.knop-toggle:not(.aan) .toggle-icoon { filter: grayscale(1) opacity(0.45); }
+.knop-toggle.vergrendeld { cursor: default; }
+.knop-toggle.vergrendeld:hover { transform: none; }
+.knop-toggle.vergrendeld:active { transform: none; box-shadow: var(--schaduw); }
+.slotje {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 38%;
+  height: 38%;
+  background: #fff;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Zichtbare, kindvriendelijke focusring (dikke gele rand), alleen bij toetsenbordbediening */
+:focus { outline: none; }
+:focus-visible {
+  outline: 8px solid var(--kleur-accent);
+  outline-offset: 4px;
+}
+
+/* ---- Letterkleuren: klinker blauw, medeklinker roze/rood ---- */
+.klinker     { color: var(--kleur-klinker); }
+.medeklinker { color: var(--kleur-medeklinker); }
+
+svg { display: block; }
+
+/* ---- Sessieteller (bananen / sterren) ---- */
+.teller {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.6vw, 10px);
+  min-height: clamp(44px, 7.5vh, 96px);
+}
+.teller-item { width: clamp(36px, 6.5vh, 84px); height: clamp(36px, 6.5vh, 84px); }
+.teller-item.nieuw { animation: pop-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; animation-delay: 0.7s; animation-fill-mode: backwards; }
+.teller-tros { width: clamp(52px, 9vh, 120px); height: clamp(52px, 9vh, 120px); }
+.teller-getal {
+  font-size: clamp(32px, 6.5vh, 84px);
+  font-weight: 700;
+  color: var(--kleur-tekst);
+  margin-left: 0.2em;
+}
+
+/* ---- Hint-toetsenbord ---- */
+.hint-toetsenbord {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--hint-gap);
+  /* Ruimte voor drie rijen is altijd gereserveerd; alleen zichtbaarheid wisselt. */
+  min-height: calc(3 * var(--hint-toets) + 2 * var(--hint-gap));
+  opacity: 0;
+  transform: translateY(30%);
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+.hint-toetsenbord.zichtbaar { opacity: 1; transform: none; visibility: visible; }
+.hint-rij { display: flex; gap: var(--hint-gap); }
+/* Cijfers staan in twee groepjes (1-5 en 6-0); op een breed scherm naast elkaar, dus één rij
+   met dezelfde tussenruimte. Op een smal scherm zet mobiel.css ze onder elkaar. */
+.hint-cijfers { flex-direction: row; justify-content: center; align-items: flex-start; }
+.hint-toets {
+  width: var(--hint-toets);
+  height: var(--hint-toets);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--hint-toets) * 0.48);
+  font-weight: 700;
+  color: #9A9A9A;
+}
+.hint-toets.pulseer {
+  color: #fff;
+  background: var(--kleur-goed);
+  animation: pulseer 0.8s ease-in-out infinite alternate;   /* ~0,6 Hz, ruim onder 3 Hz */
+}
+
+/* ---- Speelfiguur (aapje / raket) in de hoek ---- */
+.figuur {
+  position: absolute;
+  right: clamp(16px, 4vw, 90px);
+  bottom: 0;
+  width: clamp(100px, 17vh, 220px);
+  pointer-events: none;
+  will-change: transform;
+  z-index: 2;
+}
+.figuur svg { width: 100%; height: auto; overflow: visible; }
+
+/* Laag voor tijdelijke effecten (vliegend icoon, liaan, maan, rook) */
+.effecten {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+.effecten.voorgrond { z-index: 3; }        /* even vóór de figuur (banaan bij de mond) */
+.effect { position: absolute; }
+.effect svg { width: 100%; height: 100%; }
+
+/* Beloningsicoon vliegt naar de teller (--dx/--dy gezet door animaties.js) */
+.vlieg-icoon {
+  animation: vlieg-naar-teller 0.9s cubic-bezier(0.3, 0.1, 0.3, 1) 0.15s both;
+}
+@keyframes vlieg-naar-teller {
+  0%   { transform: translate(0, 0) scale(0.6) rotate(0); opacity: 0; }
+  15%  { transform: translate(0, -20px) scale(1.4) rotate(-10deg); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.8) rotate(20deg); opacity: 0; }
+}
+
+/* ---- Gedeelde animaties ---- */
+@keyframes schud {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-14px) rotate(-1.5deg); }
+  40%      { transform: translateX(12px) rotate(1.5deg); }
+  60%      { transform: translateX(-8px); }
+  80%      { transform: translateX(6px); }
+}
+.schudt { animation: schud 0.4s ease both; }
+
+@keyframes pulseer {
+  from { transform: scale(1);    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12); }
+  to   { transform: scale(1.22); box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12), 0 0 0 10px rgba(76, 175, 80, 0.25); }
+}
+
+@keyframes pop-in {
+  from { transform: scale(0) rotate(-20deg); }
+  60%  { transform: scale(1.25) rotate(5deg); }
+  to   { transform: scale(1) rotate(0); }
+}
+
+@keyframes goed-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Geen knipperende beelden, rustige overgangen. Respecteer systeemvoorkeur. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,134 @@
+/* mobiel.css - aanraakstand en kleine schermen (ontwikkelplan §4.5, fase 10).
+   Alles hier geldt alleen in de aanraakstand (body.aanraak, gezet door app.js) of
+   via media queries voor smalle en lage schermen. Op een pc vanaf 1024 px breed
+   verandert er niets aan de opmaak uit base.css, menu.css, aapje.css en raketje.css. */
+
+/* ---- Aanraakdetails (overal actief, op een pc onzichtbaar) ---- */
+html, body {
+  touch-action: manipulation;         /* geen dubbeltik-zoom, geen vertraging op tikken */
+  -webkit-touch-callout: none;        /* geen iOS-menu bij lang indrukken */
+  overscroll-behavior: none;          /* geen "stuiteren" van de pagina */
+}
+/* Randen van telefoons met een inkeping (alleen in de app-op-beginscherm-stand; elders 0) */
+.scherm {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+/* Op een echt aanraakscherm de pagina vastzetten, zodat Safari hem niet kan verschuiven. */
+@media (pointer: coarse) {
+  body { position: fixed; inset: 0; }
+}
+/* Zweefeffect alleen met een muis: op een aanraakscherm blijft :hover anders "hangen" na een tik. */
+@media (hover: none) {
+  .knop-icoon:hover:not(:active), .menu-knop:hover:not(:active) { transform: none; }
+}
+
+/* ---- Aanraakstand: het hint-toetsenbord staat altijd in beeld en is tikbaar ---- */
+body.aanraak {
+  --hint-toets: clamp(44px, 5.6vh, 64px);                                      /* minstens vingerbreed */
+  --hint-b: min(var(--hint-toets), calc((100vw - 16px - 10 * var(--hint-gap)) / 11));   /* 11 toetsen passen altijd */
+}
+body.aanraak .hint-toetsenbord {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition: none;
+}
+body.aanraak .hint-toets {
+  width: var(--hint-b);
+  color: #5A5A5A;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.16);
+}
+body.aanraak .hint-toets:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.16); }
+body.aanraak .hint-toets.pulseer { color: #fff; }
+/* Wistoets (Backspace) achter de cijfers: bestaat alleen in de aanraakstand */
+.hint-wis { display: none; }
+body.aanraak .hint-wis {
+  display: inline-flex;
+  width: calc(var(--hint-b) * 1.5);
+  color: var(--kleur-raket);
+  font-size: calc(var(--hint-toets) * 0.42);
+}
+
+/* ---- Smallere schermen (tablet rechtop, kleine laptopvensters): kleinere knoppen ---- */
+@media (max-width: 1000px) {
+  :root { --knop-min: clamp(50px, 7.2vw, 76px); }
+  .balk { gap: clamp(6px, 1vw, 16px); padding-left: clamp(6px, 1.2vw, 24px); padding-right: clamp(6px, 1.2vw, 24px); }
+  .balk-links, .balk-midden, .balk-rechts, .knopgroep { gap: clamp(5px, 0.9vw, 12px); }
+  .knopgroep + .knopgroep { padding-left: clamp(6px, 1vw, 16px); }
+}
+
+/* ---- Telefoon rechtop en kleine tablets: instellingen op een eigen rij ---- */
+@media (max-width: 700px) {
+  :root { --radius: 22px; }
+
+  /* Bovenbalk van de spellen: terugknop en geluid op rij 1, alle schakelaars op rij 2 (mogen omlopen) */
+  .spel .balk {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "links leeg rechts" "midden midden midden";
+    row-gap: clamp(4px, 1vh, 10px);
+  }
+  .spel .balk-links  { grid-area: links; }
+  .spel .balk-rechts { grid-area: rechts; }
+  .spel .balk-midden { grid-area: midden; flex-wrap: wrap; justify-content: center; row-gap: clamp(4px, 1vh, 10px); }
+  .knopgroep + .knopgroep { padding-left: clamp(5px, 1.5vw, 12px); }
+
+  /* Menu: de twee grote knoppen onder elkaar */
+  #scherm-menu .menu-keuzes { flex-direction: column; gap: clamp(14px, 3.5vh, 40px); padding: 1vh 4vw 3vh; }
+  .menu-knop { width: min(68vw, 34vh); height: min(68vw, 34vh); min-width: 150px; min-height: 150px; }
+  .blokje-letter .schrijfletter { font-size: min(19vw, 9.5vh); }
+  .blokje-cijfers { font-size: min(9vw, 4.5vh); }
+
+  /* Speelveld: figuur klein in de hoek, kaart en som wat hoger zodat ze de figuur niet raken */
+  .speelveld { padding-bottom: clamp(24px, 8vh, 80px); }
+  .figuur { width: clamp(64px, 12vh, 120px); right: clamp(4px, 2vw, 16px); }
+
+  /* Aapje: de letterkaart volgt de schermbreedte */
+  .letterkaart { width: min(64vw, 36vh); height: min(64vw, 36vh); min-width: 150px; min-height: 150px; box-shadow: var(--schaduw), inset 0 0 0 8px currentColor; }
+  .letter-groot                          { font-size: min(41vw, 23vh); }
+  .letter-groot.schrijfletter.kast-hoofd { font-size: min(34vw, 19vh); }
+  .letter-groot.blokletter               { font-size: min(33vw, 18.5vh); }
+  .letter-groot.blokletter.kast-hoofd    { font-size: min(30vw, 16.5vh); }
+
+  /* Raketje: de som volgt de schermbreedte ("100 − 37 = ___" past op 360 px) */
+  .som { font-size: min(12vh, 13vw); }
+  .speelveld.met-kralen .som { font-size: min(9vh, 11vw); }
+  .som-kolom { gap: clamp(8px, 2vh, 24px); }
+  .kralen { --kraal: min(46px, calc(30vh / (var(--rijen, 1) * 1.5)), calc(88vw / (var(--kolommen, 1) * 1.35))); }
+
+  /* Cijfers in twee rijen (1-5 en 6-0 met de wistoets), met bredere toetsen */
+  .hint-cijfers { flex-direction: column; align-items: center; }
+  body.aanraak .hint-cijfers { --hint-b: min(var(--hint-toets), calc((100vw - 16px - 6 * var(--hint-gap)) / 6.5)); }
+
+  /* Onderbalk compacter */
+  .teller { min-height: clamp(36px, 6vh, 96px); }
+  .teller-item { width: clamp(30px, 5.5vh, 84px); height: clamp(30px, 5.5vh, 84px); }
+  .teller-tros { width: clamp(44px, 8vh, 120px); height: clamp(44px, 8vh, 120px); }
+  .teller-getal { font-size: clamp(28px, 5.5vh, 84px); }
+}
+
+/* ---- Lage schermen (telefoon liggend): alles een slag kleiner in de hoogte ---- */
+@media (max-height: 520px) {
+  :root {
+    --balk-pad: 4px;
+    --hint-toets: clamp(30px, 5.6vh, 64px);
+    --hint-gap: 3px;
+  }
+  body.aanraak { --hint-toets: clamp(34px, 8.5vh, 64px); }
+  .balk { min-height: 0; }
+  .teller { min-height: clamp(30px, 8vh, 96px); }
+  .teller-item { width: clamp(26px, 7vh, 84px); height: clamp(26px, 7vh, 84px); }
+  .teller-tros { width: clamp(38px, 10vh, 120px); height: clamp(38px, 10vh, 120px); }
+  .teller-getal { font-size: clamp(26px, 7vh, 84px); }
+  .onderbalk { gap: 2px; }
+  /* Raketje heeft maar één toetsenrij: reserveer niet de ruimte voor drie */
+  .hint-cijfers { min-height: var(--hint-toets); }
+  .letterkaart { min-width: 110px; min-height: 110px; box-shadow: var(--schaduw), inset 0 0 0 7px currentColor; }
+  .figuur { width: clamp(56px, 16vh, 220px); }
+  .menu-knop { min-width: 140px; min-height: 140px; }
+  .speelveld.met-kralen .som-kolom { gap: 6px; }
+  .kralen { --kraal: min(46px, calc(28vh / (var(--rijen, 1) * 1.5)), calc(58vw / (var(--kolommen, 1) * 1.35))); }
+}

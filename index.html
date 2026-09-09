@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aapje &amp; Raketje</title>
+  <!-- Tablet/telefoon: als app op het beginscherm te zetten (manifest + icoon), zonder browserbalken -->
+  <meta name="theme-color" content="#FFF8E7">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Aapje &amp; Raketje">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icoon/icoon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icoon/icoon-180.png">
+  <!-- Geen ES-modules en geen externe bronnen: de app moet werken vanaf file:// -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/aapje.css">
+  <link rel="stylesheet" href="css/raketje.css">
+  <link rel="stylesheet" href="css/mobiel.css">
+</head>
+<body>
+
+  <!-- ===== Hoofdmenu ===== -->
+  <section id="scherm-menu" class="scherm" data-scherm="menu" aria-label="Hoofdmenu">
+    <header class="balk">
+      <div class="balk-links"></div>
+      <div class="balk-midden"></div>
+      <div class="balk-rechts">
+        <button class="knop-icoon knop-toggle knop-toetsenbord" type="button" data-actie="toetsenbord"
+                aria-label="Toetsenbord op het scherm aan of uit" aria-pressed="false">
+          <span class="toggle-icoon" data-icoon="toetsenbord"></span>
+        </button>
+        <button class="knop-icoon knop-geluid" type="button" data-actie="geluid"
+                aria-label="Geluid aan of uit" aria-pressed="true"></button>
+        <button class="knop-icoon knop-fullscreen" type="button" data-actie="fullscreen"
+                aria-label="Volledig scherm aan of uit" aria-pressed="false"></button>
+      </div>
+    </header>
+
+    <div class="menu-keuzes">
+      <button id="knop-aapje" class="menu-knop menu-knop-aapje" type="button"
+              data-ga-naar="aapje" aria-label="Aapje: letters oefenen">
+        <span class="icoon-groot" data-icoon="aapje"></span>
+        <span class="blokje blokje-letter" aria-hidden="true"><span class="schrijfletter klinker">a</span></span>
+      </button>
+
+      <button id="knop-raketje" class="menu-knop menu-knop-raketje" type="button"
+              data-ga-naar="raketje" aria-label="Raketje: sommen oefenen">
+        <span class="icoon-groot" data-icoon="raket"></span>
+        <span class="blokje blokje-cijfers" aria-hidden="true">1+2</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== Aapje (taal) ===== -->
+  <section id="scherm-aapje" class="scherm spel" data-scherm="aapje" aria-label="Aapje: letters" tabindex="-1" hidden>
+    <header class="balk">
+      <div class="balk-links">
+        <button class="knop-icoon knop-terug" type="button" data-ga-naar="menu" data-icoon="huisje"
+                aria-label="Terug naar het menu"></button>
+      </div>
+      <div class="balk-midden">
+        <div class="knopgroep lettersets" role="group" aria-label="Soorten letters">
+          <button class="knop-icoon knop-toggle letterset-toggle" type="button" data-set="schrijf-klein"
+                  aria-label="Kleine schrijfletters aan of uit" aria-pressed="true">
+            <span class="toggle-icoon" data-icoon="letterSchrijfKlein"></span>
+          </button>
+          <button class="knop-icoon knop-toggle letterset-toggle" type="button" data-set="schrijf-hoofd"
+                  aria-label="Hoofdletters in schrijfletters aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="letterSchrijfHoofd"></span>
+          </button>
+          <button class="knop-icoon knop-toggle letterset-toggle" type="button" data-set="blok-klein"
+                  aria-label="Kleine blokletters aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="letterBlokKlein"></span>
+          </button>
+          <button class="knop-icoon knop-toggle letterset-toggle" type="button" data-set="blok-hoofd"
+                  aria-label="Hoofdletters in blokletters aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="letterBlokHoofd"></span>
+          </button>
+        </div>
+      </div>
+      <div class="balk-rechts">
+        <button class="knop-icoon knop-geluid" type="button" data-actie="geluid"
+                aria-label="Geluid aan of uit" aria-pressed="true"></button>
+      </div>
+    </header>
+
+    <main class="speelveld">
+      <div class="letterkaart" id="aapje-kaart">
+        <span class="schrijfletter letter-groot" id="aapje-letter" aria-live="polite"></span>
+      </div>
+      <div class="effecten" id="aapje-effecten" aria-hidden="true"></div>
+      <div class="figuur figuur-aapje" id="aapje-figuur" aria-hidden="true"></div>
+    </main>
+
+    <footer class="onderbalk">
+      <div class="teller" id="aapje-teller" aria-label="Bananen verdiend"></div>
+      <div class="hint-toetsenbord" id="aapje-hint" aria-hidden="true"></div>
+    </footer>
+  </section>
+
+  <!-- ===== Raketje (rekenen) ===== -->
+  <section id="scherm-raketje" class="scherm spel" data-scherm="raketje" aria-label="Raketje: sommen" tabindex="-1" hidden>
+    <header class="balk">
+      <div class="balk-links">
+        <button class="knop-icoon knop-terug" type="button" data-ga-naar="menu" data-icoon="huisje"
+                aria-label="Terug naar het menu"></button>
+      </div>
+
+      <div class="balk-midden">
+        <div class="knopgroep operatoren" role="group" aria-label="Soorten sommen">
+          <button class="knop-icoon knop-toggle operator-toggle vergrendeld" type="button" data-op="plus"
+                  aria-label="Plussommen (staan altijd aan)" aria-pressed="true" aria-disabled="true">
+            <span class="toggle-icoon" data-icoon="plus"></span>
+            <span class="slotje" data-icoon="slot"></span>
+          </button>
+          <button class="knop-icoon knop-toggle operator-toggle" type="button" data-op="min"
+                  aria-label="Minsommen aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="min"></span>
+          </button>
+          <button class="knop-icoon knop-toggle operator-toggle" type="button" data-op="maal"
+                  aria-label="Keersommen aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="maal"></span>
+          </button>
+          <button class="knop-icoon knop-toggle operator-toggle" type="button" data-op="deel"
+                  aria-label="Deelsommen aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="deel"></span>
+          </button>
+        </div>
+        <div class="knopgroep niveau" role="group" aria-label="Niveau">
+          <button class="knop-icoon niveau-knop" type="button" data-niveau="klein" data-icoon="raketKlein"
+                  aria-label="Klein raketje: uitkomsten tot 10, tafels 1 tot 5" aria-pressed="true"></button>
+          <button class="knop-icoon niveau-knop" type="button" data-niveau="groot" data-icoon="raketGroot"
+                  aria-label="Groot raketje: uitkomsten tot 20, tafels 1 tot 10" aria-pressed="false"></button>
+          <button class="knop-icoon niveau-knop" type="button" data-niveau="super" data-icoon="raketSuper"
+                  aria-label="Superraketje: plussen en minnen tot 100, tafels 1 tot 10" aria-pressed="false"></button>
+        </div>
+        <div class="knopgroep hulpmiddelen" role="group" aria-label="Hulpmiddel">
+          <button class="knop-icoon knop-toggle kralen-toggle" type="button"
+                  aria-label="Montessori-kralen als hulpmiddel aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="kralen"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="balk-rechts">
+        <button class="knop-icoon knop-geluid" type="button" data-actie="geluid"
+                aria-label="Geluid aan of uit" aria-pressed="true"></button>
+      </div>
+    </header>
+
+    <main class="speelveld" id="raketje-veld">
+      <div class="som-kolom">
+        <div class="som" id="raketje-som" aria-live="polite">
+          <span class="som-a"></span>
+          <span class="som-op"></span>
+          <span class="som-b"></span>
+          <span class="som-is">=</span>
+          <span class="invulvak leeg"></span>
+        </div>
+        <!-- Montessori-kralen: alleen gevuld als het hulpmiddel aan staat -->
+        <div class="kralen" id="raketje-kralen" aria-hidden="true"></div>
+      </div>
+      <div class="effecten" id="raketje-effecten" aria-hidden="true"></div>
+      <div class="figuur figuur-raket" id="raketje-figuur" aria-hidden="true"></div>
+    </main>
+
+    <footer class="onderbalk">
+      <div class="teller" id="raketje-teller" aria-label="Sterren verdiend"></div>
+      <div class="hint-toetsenbord" id="raketje-hint" aria-hidden="true"></div>
+    </footer>
+  </section>
+
+  <!-- Scripts in vaste volgorde (geen modules). app.js vóór de spellen. -->
+  <script src="js/icons.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/animaties.js"></script>
+  <script src="js/keyboardHint.js"></script>
+  <script src="js/teller.js"></script>
+  <script src="js/letters.js"></script>
+  <script src="js/sommen.js"></script>
+  <script src="js/kralen.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/aapje.js"></script>
+  <script src="js/raketje.js"></script>
+</body>
+</html>

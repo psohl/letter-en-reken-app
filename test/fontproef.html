@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Fontproef: schrijfletters, hoofdletters en blokletters</title>
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/fonts.css">
+<style>
+  html, body { overflow: auto; height: auto; }
+  body { padding: 24px; font-family: Segoe UI, Arial, sans-serif; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin: 24px 0 8px; color: #555; }
+  img { max-width: 100%; display: block; }
+  .rij { display: flex; flex-wrap: wrap; gap: 8px; }
+  .kaart { width: 132px; height: 150px; display: flex; align-items: center; justify-content: center;
+           background: #FFFDF7; border-radius: 16px; box-shadow: 0 4px 0 rgba(0,0,0,.1), inset 0 0 0 5px currentColor; }
+  .kaart .schrijfletter { font-size: 96px; transform: translateY(-4%); }
+  .kaart .blokletter { font-size: 76px; }
+  .kaart .hoofd.schrijfletter { font-size: 80px; }
+  .kaart .hoofd.blokletter { font-size: 68px; }
+  .rij.zonder .schrijfletter { -webkit-text-stroke: 0; }
+  .rij.plat .schrijfletter { font-feature-settings: normal; }
+  .woorden { font-size: 72px; margin: 0; color: var(--kleur-medeklinker); }
+  p.uitleg { max-width: 900px; color: #444; }
+</style>
+</head>
+<body>
+<h1>Fontproef schrijfletters (fase 1)</h1>
+<p class="uitleg">Boven: de referentie uit de klas (<code>letters.png</code>). Daaronder: alle 26 letters in het
+gekozen font <strong>Lusletters</strong> (standaardhelling) met stylistic set <strong>ss01</strong>
+(aanhaal vanaf de grondlijn) en een dikkere lijn, precies zoals de app ze toont via <code>css/fonts.css</code>.
+Klinkers blauw, medeklinkers roze/rood.</p>
+
+<h2>Referentie: letters.png</h2>
+<img src="../letters.png" alt="Referentie schrijfletters uit de klas">
+
+<h2>Lusletters, ss01, dikkere lijn (zoals in de app)</h2>
+<div class="rij" id="rij-app"></div>
+
+<h2>Ter vergelijking: zonder ss01 (geen aanhaal) en zonder verdikking</h2>
+<div class="rij zonder plat" id="rij-kaal"></div>
+
+<h2>Hoofdletters in schrijfletters (letterset 2)</h2>
+<p class="uitleg">Controleer deze vormen tegen het schrijfschrift van de klas: de hoofdletters komen uit
+hetzelfde font (Lusletters) en zijn niet apart nagetekend.</p>
+<div class="rij" id="rij-schrijf-hoofd"></div>
+
+<h2>Kleine blokletters (letterset 3)</h2>
+<p class="uitleg">Drukletters uit de fontstapel in <code>css/fonts.css</code>: op deze pc Century Gothic,
+met de enkelvoudige <strong>a</strong> en <strong>g</strong> van het Montessori-drukletteralfabet.
+Staat geen van die fonts op de pc, dan valt de browser terug op de systeemletter en is de a dubbel.</p>
+<div class="rij" id="rij-blok-klein"></div>
+
+<h2>Hoofdletters in blokletters (letterset 4)</h2>
+<div class="rij" id="rij-blok-hoofd"></div>
+
+<h2>Verbonden woorden (alleen ter controle; de app toont losse letters)</h2>
+<p class="woorden schrijfletter">aap boom kat zon fee vis</p>
+
+<script src="../js/letters.js"></script>
+<script>
+  function vul(id, set) {
+    var rij = document.getElementById(id);
+    Letters.LETTERS.forEach(function (l) {
+      var k = document.createElement('div');
+      k.className = 'kaart ' + Letters.kleurKlasse(l);
+      var klassen = Letters.vormKlassen(set || Letters.BASISSET).replace('kast-hoofd', 'hoofd').replace('kast-klein', '');
+      k.innerHTML = '<span class="' + klassen + '">' + Letters.vorm(l, set || Letters.BASISSET) + '</span>';
+      rij.appendChild(k);
+    });
+  }
+  vul('rij-app'); vul('rij-kaal');
+  vul('rij-schrijf-hoofd', 'schrijf-hoofd');
+  vul('rij-blok-klein', 'blok-klein');
+  vul('rij-blok-hoofd', 'blok-hoofd');
+</script>
+</body>
+</html>

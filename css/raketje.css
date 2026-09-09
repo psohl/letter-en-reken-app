@@ -1,0 +1,155 @@
+/* raketje.css - rekenspel (ontwikkelplan §5.1, §7.2) */
+
+.som {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+  font-size: min(16vh, 9.5vw, 220px);   /* 9,5vw: ook "100 - 0 = 100" past naast de raket op 1024 px */
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--kleur-tekst);
+}
+.som-op { color: var(--kleur-raket); }
+
+.invulvak {
+  display: inline-block;
+  min-width: 1.4em;
+  text-align: center;
+  color: var(--kleur-raket);
+  border-bottom: 0.08em solid var(--kleur-raket-grijs);
+  line-height: 1.1;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.invulvak.leeg::after { content: "\00a0"; }          /* houdt de hoogte vast als er niets staat */
+.invulvak.goed { color: var(--kleur-goed); border-color: var(--kleur-goed); animation: goed-pop 0.5s ease both; }
+
+/* Niveau: klein / groot / superraketje; het gekozen niveau krijgt een gekleurde rand. */
+.niveau-knop > svg { width: 84%; height: 84%; }
+.niveau-knop:not(.aan) { filter: grayscale(0.7) opacity(0.6); }
+.niveau-knop.aan { box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-raket); }
+
+/* ---- Som met kralen eronder ---- */
+.som-kolom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 3vh, 48px);
+}
+/* Met het hulpmiddel aan is de som iets kleiner, zodat de kralen erbij passen. */
+.speelveld.met-kralen .som { font-size: min(12vh, 9vw, 170px); }
+
+/* ---- Montessori-kralen als visueel hulpmiddel (ontwikkelplan §5.3) ----
+   kralen.js zet --rijen en --kolommen (de maat van de figuur in kralen);
+   daarmee rekent de CSS de kraalgrootte uit, zodat ook 10 x 10 past. */
+.kralen {
+  --kraal: min(46px, calc(34vh / (var(--rijen, 1) * 1.5)), calc(58vw / (var(--kolommen, 1) * 1.35)));
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--kraal) * 0.6);
+}
+.kralen.zichtbaar { display: flex; }
+
+.kralen-groep { display: flex; flex-direction: column; align-items: flex-start; gap: calc(var(--kraal) * 0.45); }
+.kralen-staaf { position: relative; display: flex; gap: calc(var(--kraal) * 0.16); }
+/* Het draadje waar de kralen aan geregen zijn. */
+.kralen-staaf::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: rgba(0, 0, 0, 0.22);
+}
+.kraal {
+  position: relative;
+  width: var(--kraal);
+  height: var(--kraal);
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 58%),
+              var(--kleur, #EDA320);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22);
+}
+/* Minsommen: wat eraf gaat blijft staan, maar doorgestreept. */
+.kraal.weg { opacity: 0.5; filter: grayscale(0.85); }
+.kraal.weg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent 44%, rgba(0, 0, 0, 0.55) 44%,
+                              rgba(0, 0, 0, 0.55) 56%, transparent 56%);
+}
+/* Nul kralen: een leeg rondje. */
+.kraal.nul { background: none; box-shadow: none; border: 2px dashed rgba(0, 0, 0, 0.28); }
+
+.kralen-teken {
+  font-size: calc(var(--kraal) * 1.9);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--kleur-raket);
+}
+
+/* ---- Raket in de hoek: rust (wiegt, vlam flakkert) ---- */
+.figuur-raket { transform-origin: 50% 100%; animation: wieg 3s ease-in-out infinite; }
+.figuur-raket .vlam { animation: flakker 0.35s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 0; }
+
+/* ---- Beloningsanimaties (Animaties.speel('raket')), alle 1,4 s ----
+   --r = straal van de looping, --dx/--dy = afstand naar de maan (gezet door animaties.js). */
+
+/* 1. Stijgt op met rook en vlam; ster valt naar de teller (vlieg-icoon in base.css) */
+.figuur-raket.anim-lancering { animation: raket-lancering 1.4s cubic-bezier(0.5, 0, 0.6, 1) both; }
+@keyframes raket-lancering {
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  15%  { transform: translateY(3%) rotate(-3deg) scaleY(0.96); }
+  60%  { transform: translateY(-190%) rotate(4deg); opacity: 1; }
+  66%  { transform: translateY(-220%) rotate(0); opacity: 0; }
+  67%  { transform: translateY(45%) rotate(0); opacity: 0; }
+  100% { transform: translateY(0) rotate(0); opacity: 1; }
+}
+.figuur-raket.anim-lancering .vlam { animation: vlam-groot 0.12s ease-in-out infinite alternate; }
+@keyframes vlam-groot { from { transform: scaleY(1.4); } to { transform: scaleY(2.1); } }
+
+.effect.rook {
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #fff, #D8D8D8);
+  animation: rook 1s ease-out both;
+}
+.effect.rook-1 { animation-delay: 0.08s; }
+.effect.rook-2 { animation-delay: 0.16s; }
+.effect.rook-3 { animation-delay: 0.24s; }
+@keyframes rook {
+  0%   { transform: scale(0.2) translateY(0); opacity: 0.9; }
+  100% { transform: scale(2.2) translate(var(--rook-x, 0), 20%); opacity: 0; }
+}
+.effect.rook-0 { --rook-x: -30%; }
+.effect.rook-3 { --rook-x: 30%; }
+
+/* 2. Looping: draait een rondje om een punt links van de raket, neus steeds vooruit */
+.figuur-raket.anim-looping { animation: raket-looping 1.4s cubic-bezier(0.45, 0, 0.55, 1) both; }
+@keyframes raket-looping {
+  0%   { transform: translate(0, 0) translate(calc(-1 * var(--r)), 0) rotate(0deg) translate(var(--r), 0); }
+  18%  { transform: translate(0, calc(-1.1 * var(--r))) translate(calc(-1 * var(--r)), 0) rotate(0deg) translate(var(--r), 0); }
+  82%  { transform: translate(0, calc(-1.1 * var(--r))) translate(calc(-1 * var(--r)), 0) rotate(-360deg) translate(var(--r), 0); }
+  100% { transform: translate(0, 0) translate(calc(-1 * var(--r)), 0) rotate(-360deg) translate(var(--r), 0); }
+}
+
+/* 3. Vliegt langs de maan (linksboven) en komt van onderen terug */
+.figuur-raket.anim-maan { animation: raket-maan 1.4s cubic-bezier(0.4, 0, 0.5, 1) both; }
+@keyframes raket-maan {
+  0%   { transform: translate(0, 0) rotate(0); opacity: 1; }
+  10%  { transform: translate(0, 3%) rotate(-10deg); opacity: 1; }
+  55%  { transform: translate(var(--dx), var(--dy)) rotate(-50deg); opacity: 1; }
+  62%  { transform: translate(calc(var(--dx) - 30%), calc(var(--dy) - 30%)) rotate(-50deg); opacity: 0; }
+  63%  { transform: translate(0, 45%) rotate(0); opacity: 0; }
+  100% { transform: translate(0, 0) rotate(0); opacity: 1; }
+}
+.effect.maan { animation: maan 1.4s ease-in-out both; }
+@keyframes maan {
+  0%   { transform: scale(0.6) rotate(-10deg); opacity: 0; }
+  25%  { transform: scale(1) rotate(0); opacity: 1; }
+  80%  { transform: scale(1) rotate(6deg); opacity: 1; }
+  100% { transform: scale(0.8) rotate(10deg); opacity: 0; }
+}

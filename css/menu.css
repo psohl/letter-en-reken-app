@@ -1,0 +1,74 @@
+/* menu.css - hoofdmenu met twee zeer grote knoppen (ontwikkelplan §5.1) */
+
+#scherm-menu .menu-keuzes {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 6vw, 120px);
+  padding: 2vh 4vw 6vh;
+}
+
+.menu-knop {
+  position: relative;
+  width: min(32vw, 62vh, 520px);
+  height: min(32vw, 62vh, 520px);
+  min-width: 220px;
+  min-height: 220px;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--schaduw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.menu-knop:hover { transform: translateY(-6px) scale(1.03); }
+.menu-knop:active { transform: translateY(2px) scale(0.98); box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12); }
+
+.menu-knop-aapje   { background: #FBEBD3; }
+.menu-knop-raketje { background: #E4ECF7; }
+
+.icoon-groot { display: block; width: 68%; height: 68%; }
+.icoon-groot svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Rust-animaties: aapje knippert, raketje wiegt met flakkerende vlam. */
+.menu-knop-aapje .oog { animation: knipper 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.menu-knop-raketje .icoon-groot { animation: wieg 3s ease-in-out infinite; transform-origin: 50% 90%; }
+.menu-knop-raketje .vlam { animation: flakker 0.35s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 0; }
+
+/* Blokje in de hoek dat laat zien wat je gaat oefenen: een schrijfletter of een sommetje */
+.blokje {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  width: 30%;
+  height: 30%;
+  border-radius: 18%;
+  background: #FFFDF7;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12), inset 0 0 0 5px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.blokje-letter .schrijfletter { font-size: min(9vw, 17vh, 150px); transform: translateY(-6%); }
+.blokje-cijfers {
+  font-size: min(4.2vw, 8vh, 70px);
+  font-weight: 700;
+  color: var(--kleur-raket);
+  letter-spacing: 0.02em;
+}
+
+@keyframes knipper {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+@keyframes wieg {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+@keyframes flakker {
+  from { transform: scaleY(0.8); }
+  to   { transform: scaleY(1.15); }
+}
