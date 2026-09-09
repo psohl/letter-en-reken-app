@@ -1,7 +1,7 @@
-# Aapje & Raketje
+# Letters en Cijfers
 
-Een vrolijke oefen-app voor kinderen van 6-7 jaar: **letters herkennen en intoetsen** (Aapje) en
-**sommetjes maken** (Raketje). Gemaakt voor thuis en in de klas, aansluitend bij de Montessori-
+Een vrolijke oefen-app voor kinderen van 6-7 jaar: **letters herkennen en intoetsen** en
+**sommetjes maken**. Gemaakt voor thuis en in de klas, aansluitend bij de Montessori-
 schrijfletters (klinkers blauw, medeklinkers roze). Werkt op de computer, en ook op een tablet of
 telefoon (zie verderop).
 
