@@ -5,7 +5,7 @@ Het font Lusletters en de hulpbestanden zijn gemaakt door Liesbeth Flobbe en wor
 ter beschikking gesteld onder de SIL Open Font License, Version 1.1 (bron: syboor.eu,
 gedownload op 8 september 2026, versie 1.15 van het font).
 
-Gebruikt in de app 'Aapje & Raketje': lusletters.ttf (standaardhelling), ingesloten als
+Gebruikt in de app 'Letter en Cijfer-app': lusletters.ttf (standaardhelling), ingesloten als
 base64 in css/fonts.css. Het origineel staat hiernaast als lusletters.ttf.
 
 -----------------------------------------------------------
