@@ -7,7 +7,13 @@ telefoon (zie verderop).
 
 ## Starten
 
-1. Pak de map `taal-en-rekenapp` uit (of kopieer hem) naar een plek op de computer, bijvoorbeeld het bureaublad.
+De snelste manier: open **https://psohl.github.io/letter-en-reken-app/** in de browser. Dat werkt op
+de computer, maar ook op een tablet of telefoon.
+
+Liever zonder internet? Dan zo:
+
+1. Download de app van GitHub (**github.com/psohl/letter-en-reken-app** → groene knop **Code** →
+   **Download ZIP**) en pak de map uit op een plek op de computer, bijvoorbeeld het bureaublad.
 2. Dubbelklik op **`index.html`**. De app opent in de browser (Edge, Chrome of Firefox).
 3. Klik op het **aapje** voor letters of op de **raket** voor sommen. Meer uitleg heeft het kind niet nodig.
 
@@ -24,11 +30,14 @@ verschijnt dan vanzelf een **toetsenbord onderin het scherm**: het kind tikt daa
 cijfer aan. Bij de sommen staat achter de cijfers een wistoets (⌫) voor het laatste cijfer. Verder is
 alles hetzelfde als op de computer.
 
-Een telefoon of tablet kan geen bestand van de computer openen; de map moet daarvoor **op internet**
-staan. Dat is gratis en zonder programmeerwerk te doen, bijvoorbeeld zo:
+Een telefoon of tablet kan geen bestand van de computer openen; de app moet daarvoor **op internet**
+staan. Dat is al geregeld: open op de tablet of telefoon **https://psohl.github.io/letter-en-reken-app/**.
+
+Wil je een eigen kopie online zetten (bijvoorbeeld na een aanpassing)? Dat kan gratis en zonder
+programmeerwerk:
 
 1. Ga op de computer naar **app.netlify.com/drop** (of gebruik GitHub Pages, als je dat al kent).
-2. Sleep de hele map `taal-en-rekenapp` in het venster. Na een paar seconden krijg je een webadres.
+2. Sleep de hele app-map (met `index.html` erin) in het venster. Na een paar seconden krijg je een webadres.
 3. Open dat adres op de tablet of telefoon. Klaar.
 
 Handig: zet de app op het **beginscherm**, dan opent hij zonder browserbalken, net als een echte app.
@@ -143,7 +152,8 @@ Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
 - Alle iconen, animaties en geluiden zijn zelf gemaakt en zitten in de code.
 - `manifest.webmanifest` en de iconen in `assets/icoon/` zorgen dat de app op een tablet of telefoon
   op het beginscherm gezet kan worden. Op de computer doen ze niets.
-- Het ontwikkelplan met alle ontwerpkeuzes staat in `taal-en-reken-app-ontwikkelplan.md`
-  (bij de bron, niet nodig om te spelen).
+- De broncode staat op **github.com/psohl/letter-en-reken-app**; de app zelf draait via GitHub Pages
+  op **psohl.github.io/letter-en-reken-app**. Het ontwikkelplan met alle ontwerpkeuzes
+  (`taal-en-reken-app-ontwikkelplan.md`) wordt bij de bron bewaard, buiten de repo; niet nodig om te spelen.
 
 Veel plezier!

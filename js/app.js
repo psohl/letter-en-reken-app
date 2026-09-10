@@ -62,7 +62,7 @@ var App = (function () {
 
   /* ---- Volledig scherm ----
      Safari op de iPad kende lange tijd alleen de webkit-variant; op de iPhone bestaat de
-     functie niet voor webpagina's (daar verbergt de knop zichzelf; zie LEESMIJ.md). */
+     functie niet voor webpagina's (daar verbergt de knop zichzelf; zie README.md). */
   var docEl = document.documentElement;
 
   function fullscreenBeschikbaar() {
