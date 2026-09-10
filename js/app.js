@@ -2,7 +2,7 @@
    en de aanraakstand (toetsenbord op het scherm voor tablet/telefoon)
    (ontwikkelplan §4.4, §4.5, §5.1, §7.3).
    Schermen registreren zich met App.registreer(naam, { binnen, buiten, toets }).
-   Laadvolgorde: app.js vóór aapje.js en raketje.js; alle init gebeurt op DOMContentLoaded
+   Laadvolgorde: app.js vóór aapje.js, raketje.js en vis.js; alle init gebeurt op DOMContentLoaded
    in scriptvolgorde, dus App.start draait eerst. */
 
 var App = (function () {
@@ -168,6 +168,7 @@ var App = (function () {
     var k = e.key.toLowerCase();
     if (k === 'a' || k === '1') { e.preventDefault(); Geluid.speel('klik'); toon('aapje'); return; }
     if (k === 'r' || k === '2') { e.preventDefault(); Geluid.speel('klik'); toon('raketje'); return; }
+    if (k === 'v' || k === '3') { e.preventDefault(); Geluid.speel('klik'); toon('vis'); return; }
     if (k === 't') { e.preventDefault(); wisselAanraak(); return; }     // toetsenbord op het scherm
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
       e.preventDefault();

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Plaatjesproef: alle woordplaatjes van Vis per niveau</title>
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/fonts.css">
+<style>
+  html, body { overflow: auto; height: auto; }
+  body { padding: 24px; font-family: Segoe UI, Arial, sans-serif; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin: 24px 0 8px; color: #555; }
+  p.uitleg { max-width: 900px; color: #444; }
+  .rij { display: flex; flex-wrap: wrap; gap: 10px; }
+  .kaart { width: 140px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+           padding: 8px 6px; background: #FFFDF7; border-radius: 16px; box-shadow: 0 4px 0 rgba(0,0,0,.1); }
+  .kaart svg { width: 112px; height: 112px; }
+  .kaart .woord { font-size: 30px; line-height: 1.1; white-space: nowrap; }
+  .kaart .woord.blokletter { font-size: 22px; font-weight: 600; }
+  .kaart.leeg { outline: 3px dashed #c62828; }
+  .kaart .plaatje { width: 112px; height: 112px; display: flex; align-items: center; justify-content: center; color: #c62828; font-size: 13px; }
+  .samenvatting { font-weight: bold; }
+  .ok { color: #2e7d32; } .fout { color: #c62828; }
+</style>
+</head>
+<body>
+<h1>Plaatjesproef: de woordplaatjes van Vis</h1>
+<p class="uitleg">Alle woorden uit <code>js/woorden.js</code> met hun tekening uit <code>js/plaatjes.js</code>, per niveau,
+in schrijfletters (boven) en blokletters (onder), met klinkers blauw en medeklinkers rood, precies zoals in het spel.
+Een kaart met een rode rand mist zijn plaatje. Beoordeel: zou een kind van 6 bij elk plaatje meteen het juiste woord zeggen?</p>
+<p id="samenvatting" class="samenvatting"></p>
+<div id="uit"></div>
+
+<script src="../js/letters.js"></script>
+<script src="../js/woorden.js"></script>
+<script src="../js/plaatjes.js"></script>
+<script>
+  var NAMEN = { klein: 'Niveau 1 · kleine vis', groot: 'Niveau 2 · grote vis', haai: 'Niveau 3 · haai' };
+  var uit = document.getElementById('uit'), ontbreekt = [], totaal = 0;
+  Woorden.NIVEAUS.forEach(function (niveau) {
+    var lijst = Woorden.LIJST[niveau];
+    var h = document.createElement('h2');
+    h.textContent = NAMEN[niveau] + ' (' + lijst.length + ' woorden)';
+    uit.appendChild(h);
+    var rij = document.createElement('div');
+    rij.className = 'rij';
+    lijst.forEach(function (w) {
+      totaal++;
+      var heeft = Plaatjes.heeft(w);
+      if (!heeft) ontbreekt.push(w);
+      var k = document.createElement('div');
+      k.className = 'kaart' + (heeft ? '' : ' leeg');
+      k.innerHTML = (heeft ? Plaatjes.svg(w) : '<div class="plaatje">geen plaatje</div>') +
+        '<span class="woord schrijfletter">' + Woorden.html(w) + '</span>' +
+        '<span class="woord blokletter">' + Woorden.html(w) + '</span>';
+      rij.appendChild(k);
+    });
+    uit.appendChild(rij);
+  });
+  var s = document.getElementById('samenvatting');
+  s.textContent = ontbreekt.length ? 'Ontbreekt (' + ontbreekt.length + ' van ' + totaal + '): ' + ontbreekt.join(', ')
+                                   : 'Alle ' + totaal + ' woorden hebben een plaatje.';
+  s.className = 'samenvatting ' + (ontbreekt.length ? 'fout' : 'ok');
+</script>
+</body>
+</html>

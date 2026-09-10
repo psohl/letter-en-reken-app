@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/aapje.css">
   <link rel="stylesheet" href="css/raketje.css">
+  <link rel="stylesheet" href="css/vis.css">
   <link rel="stylesheet" href="css/mobiel.css">
 </head>
 <body>
@@ -51,6 +52,12 @@
               data-ga-naar="raketje" aria-label="Raketje: sommen oefenen">
         <span class="icoon-groot" data-icoon="raket"></span>
         <span class="blokje blokje-cijfers" aria-hidden="true">1+2</span>
+      </button>
+
+      <button id="knop-vis" class="menu-knop menu-knop-vis" type="button"
+              data-ga-naar="vis" aria-label="Vis: woorden lezen">
+        <span class="icoon-groot" data-icoon="vis"></span>
+        <span class="blokje blokje-woord" aria-hidden="true"><span class="schrijfletter woord"><span class="medeklinker">v</span><span class="klinker">i</span><span class="medeklinker">s</span></span></span>
       </button>
     </div>
   </section>
@@ -174,17 +181,81 @@
     </footer>
   </section>
 
+  <!-- ===== Vis (woorden lezen) ===== -->
+  <section id="scherm-vis" class="scherm spel" data-scherm="vis" aria-label="Vis: woorden lezen" tabindex="-1" hidden>
+    <header class="balk">
+      <div class="balk-links">
+        <button class="knop-icoon knop-terug" type="button" data-ga-naar="menu" data-icoon="huisje"
+                aria-label="Terug naar het menu"></button>
+      </div>
+
+      <div class="balk-midden">
+        <div class="knopgroep spelvormen" role="group" aria-label="Spelvorm">
+          <button class="knop-icoon knop-toggle vorm-toggle" type="button" data-vorm="woord"
+                  aria-label="Woord in beeld, plaatje kiezen: aan of uit" aria-pressed="true">
+            <span class="toggle-icoon" data-icoon="vormWoord"></span>
+          </button>
+          <button class="knop-icoon knop-toggle vorm-toggle" type="button" data-vorm="plaatje"
+                  aria-label="Plaatje in beeld, woord kiezen: aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="vormPlaatje"></span>
+          </button>
+        </div>
+        <div class="knopgroep niveau" role="group" aria-label="Niveau">
+          <button class="knop-icoon niveau-knop vis-niveau" type="button" data-niveau="klein" data-icoon="visKlein"
+                  aria-label="Kleine vis: korte klankzuivere woorden" aria-pressed="true"></button>
+          <button class="knop-icoon niveau-knop vis-niveau" type="button" data-niveau="groot" data-icoon="visGroot"
+                  aria-label="Grote vis: woorden met tweetekenklanken en medeklinkerclusters" aria-pressed="false"></button>
+          <button class="knop-icoon niveau-knop vis-niveau" type="button" data-niveau="haai" data-icoon="haai"
+                  aria-label="Haai: lange woorden van twee of drie lettergrepen" aria-pressed="false"></button>
+        </div>
+        <div class="knopgroep schriften" role="group" aria-label="Soort letters">
+          <button class="knop-icoon knop-toggle schrift-knop" type="button" data-schrift="schrijf"
+                  aria-label="Schrijfletters" aria-pressed="true">
+            <span class="toggle-icoon" data-icoon="letterSchrijfKlein"></span>
+          </button>
+          <button class="knop-icoon knop-toggle schrift-knop" type="button" data-schrift="blok"
+                  aria-label="Blokletters" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="letterBlokKlein"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="balk-rechts">
+        <button class="knop-icoon knop-geluid" type="button" data-actie="geluid"
+                aria-label="Geluid aan of uit" aria-pressed="true"></button>
+      </div>
+    </header>
+
+    <main class="speelveld speelveld-vis vorm-woord" id="vis-veld">
+      <div class="vis-opgave" id="vis-opgave" aria-live="polite"></div>
+      <div class="vis-keuzes" id="vis-keuzes" role="group" aria-label="Kies het juiste antwoord">
+        <button class="keuze" type="button" data-index="0"></button>
+        <button class="keuze" type="button" data-index="1"></button>
+        <button class="keuze" type="button" data-index="2"></button>
+      </div>
+      <div class="effecten" id="vis-effecten" aria-hidden="true"></div>
+      <div class="figuur figuur-vis" id="vis-figuur" aria-hidden="true"></div>
+    </main>
+
+    <footer class="onderbalk">
+      <div class="teller" id="vis-teller" aria-label="Schelpen verdiend"></div>
+    </footer>
+  </section>
+
   <!-- Scripts in vaste volgorde (geen modules). app.js vóór de spellen. -->
   <script src="js/icons.js"></script>
+  <script src="js/plaatjes.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/animaties.js"></script>
   <script src="js/keyboardHint.js"></script>
   <script src="js/teller.js"></script>
   <script src="js/letters.js"></script>
+  <script src="js/woorden.js"></script>
   <script src="js/sommen.js"></script>
   <script src="js/kralen.js"></script>
   <script src="js/app.js"></script>
   <script src="js/aapje.js"></script>
   <script src="js/raketje.js"></script>
+  <script src="js/vis.js"></script>
 </body>
 </html>

@@ -10,6 +10,8 @@
   --kleur-raket:       #E63946;
   --kleur-raket-grijs: #B8C0CC;
   --kleur-vlam:        #FF9F1C;
+  --kleur-vis:         #2A9D8F;   /* zeegroen: rand en niveau-ring bij Vis */
+  --kleur-vis-licht:   #D9F2EA;
   --kleur-goed:        #4CAF50;
   --kleur-uit:         #C8C8C8;
   --kleur-accent:      #FFD23F;   /* zonnig geel: sterren, bananen, focusring */

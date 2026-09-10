@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>Tests: letters.js, sommen.js, kralen.js, keyboardHint.js</title>
+<title>Tests: letters.js, woorden.js, sommen.js, kralen.js, keyboardHint.js</title>
 <style>
   body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; max-width: 960px; }
   .ok { color: #2e7d32; } .fout { color: #c62828; font-weight: bold; }
@@ -13,6 +13,7 @@
 <h1>Tests</h1>
 <p>Open dit bestand in de browser (dubbelklik). Alle regels moeten groen zijn.</p>
 <h2>letters.js</h2><ul id="uit-letters"></ul>
+<h2>woorden.js en plaatjes.js (Vis)</h2><ul id="uit-woorden"></ul>
 <h2>sommen.js</h2><ul id="uit-sommen"></ul>
 <h2>kralen.js</h2><ul id="uit-kralen"></ul>
 <h2>animaties.js</h2><ul id="uit-animaties"></ul>
@@ -21,6 +22,8 @@
 <p id="samenvatting"></p>
 
 <script src="../js/letters.js"></script>
+<script src="../js/woorden.js"></script>
+<script src="../js/plaatjes.js"></script>
 <script src="../js/sommen.js"></script>
 <script src="../js/kralen.js"></script>
 <script src="../js/icons.js"></script>
@@ -88,6 +91,111 @@
 
   var orig = [1, 2, 3, 4, 5], kopie = Letters.schud(orig, maakRandom(7));
   test('schud laat het origineel intact', orig.join() === '1,2,3,4,5' && kopie.length === 5);
+
+  /* ================= woorden.js en plaatjes.js (Vis) ================= */
+  test = maakTester('uit-woorden');
+  (function () {
+    var MK = '[bcdfghjklmnpqrstvwxz]';
+    var alle = Woorden.alle();
+    test('drie niveaus: klein, groot, haai', Woorden.NIVEAUS.join() === 'klein,groot,haai');
+    Woorden.NIVEAUS.forEach(function (n) {
+      test('niveau ' + n + ' heeft minstens 50 woorden (' + Woorden.LIJST[n].length + ')', Woorden.LIJST[n].length >= 50);
+    });
+    var uniek = {}; alle.forEach(function (w) { uniek[w] = true; });
+    test('geen dubbele woorden over de drie niveaus (' + alle.length + ' woorden)', Object.keys(uniek).length === alle.length);
+    test('alle woorden bestaan alleen uit kleine letters a-z', alle.every(function (w) { return /^[a-z]+$/.test(w); }));
+    test('kleine vis: alleen klankzuivere (m)k(m)-woorden met één klinker(teken)',
+         Woorden.LIJST.klein.every(function (w) { return new RegExp('^' + MK + '?(a|e|i|o|u|aa|ee|oo|uu|oe|ie)' + MK + '?$').test(w); }),
+         Woorden.LIJST.klein.filter(function (w) { return !new RegExp('^' + MK + '?(a|e|i|o|u|aa|ee|oo|uu|oe|ie)' + MK + '?$').test(w); }).join());
+    test('grote vis: elk woord heeft een tweetekenklank (ui, ij, ei, eu, ou, au) of een medeklinkercluster, en is één lettergreep',
+         Woorden.LIJST.groot.every(function (w) {
+           var klank = /(ui|ij|ei|eu|ou|au)/.test(w) || new RegExp(MK + MK).test(w);
+           var lettergrepen = (w.replace(/ij/g, 'i').replace(/eeuw/g, 'eu').match(/[aeiou]+/g) || []).length;
+           return klank && lettergrepen === 1;
+         }),
+         Woorden.LIJST.groot.filter(function (w) { return (w.replace(/ij/g, 'i').replace(/eeuw/g, 'eu').match(/[aeiou]+/g) || []).length !== 1; }).join());
+    test('haai: elk woord heeft minstens twee lettergrepen',
+         Woorden.LIJST.haai.every(function (w) { return (w.replace(/ij/g, 'i').match(/[aeiou]+/g) || []).length >= 2; }),
+         Woorden.LIJST.haai.filter(function (w) { return (w.replace(/ij/g, 'i').match(/[aeiou]+/g) || []).length < 2; }).join());
+    var zonderPlaatje = alle.filter(function (w) { return !Plaatjes.heeft(w); });
+    test('elk woord heeft een plaatje in plaatjes.js (' + (alle.length - zonderPlaatje.length) + ' van ' + alle.length + ')',
+         zonderPlaatje.length === 0, 'ontbreekt: ' + zonderPlaatje.join(', '));
+    test('elk plaatje is een SVG zonder tekst, id of externe verwijzing',
+         Plaatjes.namen().every(function (n) {
+           var s = Plaatjes.svg(n);
+           return s.indexOf('<svg') === 0 && !/<text|<image|\shref=|\sid=|<use|url\(/.test(s);
+         }));
+
+    /* Letters met kleur */
+    var vis = Woorden.letters('vis');
+    test('letters("vis"): v rood, i blauw, s rood',
+         vis.length === 3 && !vis[0].klinker && vis[1].klinker && !vis[2].klinker);
+    var ijs = Woorden.letters('ijs');
+    test('letters("ijs"): de ij telt als één klinker, beide letters blauw',
+         ijs.length === 3 && ijs[0].klinker && ijs[1].klinker && !ijs[2].klinker);
+    test('letters("jas"): een losse j blijft een medeklinker', !Woorden.letters('jas')[0].klinker);
+    test('html("koe") geeft drie spans met kleurklasse',
+         (Woorden.html('koe').match(/<span class="letter (klinker|medeklinker)">/g) || []).length === 3 &&
+         Woorden.html('koe').indexOf('<span class="letter medeklinker">k</span><span class="letter klinker">o</span>') === 0);
+    test('schriftKlasse: schrijf → schrijfletter, blok → blokletter',
+         Woorden.schriftKlasse('schrijf') === 'schrijfletter' && Woorden.schriftKlasse('blok') === 'blokletter');
+
+    /* Opgavezak */
+    var zak = new Woorden.Opgavezak('klein', ['woord'], maakRandom(5));
+    var n = Woorden.LIJST.klein.length, tel = {}, fouten = 0, herhaling = 0, vorige = null;
+    for (var i = 0; i < n * 20; i++) {
+      var o = zak.volgende();
+      tel[o.woord] = (tel[o.woord] || 0) + 1;
+      if (o.woord === vorige) herhaling++;
+      vorige = o.woord;
+      var ok = o.keuzes.length === 3 && o.keuzes[o.antwoord] === o.woord && o.vorm === 'woord' && o.niveau === 'klein' &&
+               o.keuzes[0] !== o.keuzes[1] && o.keuzes[1] !== o.keuzes[2] && o.keuzes[0] !== o.keuzes[2] &&
+               o.keuzes.every(function (w) { return Woorden.LIJST.klein.indexOf(w) >= 0; });
+      if (!ok) fouten++;
+    }
+    test('opgavezak: drie verschillende keuzes uit het niveau, het woord zit erbij op de plek van antwoord (' + (n * 20) + ' opgaven)', fouten === 0, fouten);
+    test('opgavezak: elk woord even vaak (20 x per ' + n + ' woorden)', Object.keys(tel).length === n && Object.keys(tel).every(function (w) { return tel[w] === 20; }));
+    test('opgavezak: nooit twee keer hetzelfde woord achter elkaar', herhaling === 0, herhaling);
+    var posities = { 0: 0, 1: 0, 2: 0 };
+    for (var j = 0; j < 600; j++) posities[zak.volgende().antwoord]++;
+    test('opgavezak: het goede antwoord staat op alle drie de plekken (' + posities[0] + '/' + posities[1] + '/' + posities[2] + ')',
+         posities[0] > 100 && posities[1] > 100 && posities[2] > 100);
+
+    zak.zetVormen(['woord', 'plaatje']);
+    var vormen = { woord: 0, plaatje: 0 }, vormHerhaling = 0, vorigeVorm = null;
+    for (var k = 0; k < 200; k++) { var v = zak.volgende().vorm; vormen[v]++; if (v === vorigeVorm) vormHerhaling++; vorigeVorm = v; }
+    test('beide spelvormen aan: ze wisselen elkaar af, elk 100 van 200', vormen.woord === 100 && vormen.plaatje === 100 && vormHerhaling === 0, JSON.stringify(vormen));
+    zak.zetVormen([]);
+    test('lege vormenlijst wordt genegeerd (minstens één vorm blijft aan)', zak.vormen().join() === 'woord,plaatje');
+    zak.zetVormen(['plaatje', 'onzin']);
+    test('onbekende vormnaam wordt genegeerd', zak.vormen().join() === 'plaatje' && zak.volgende().vorm === 'plaatje');
+
+    zak.zetNiveau('haai');
+    var haaiOk = true;
+    for (var m = 0; m < 300; m++) {
+      var oh = zak.volgende();
+      if (oh.niveau !== 'haai' || !oh.keuzes.every(function (w) { return Woorden.LIJST.haai.indexOf(w) >= 0; })) haaiOk = false;
+    }
+    test('zetNiveau("haai"): alle woorden en keuzes komen uit het niveau haai', haaiOk);
+    zak.zetNiveau('onzin');
+    test('onbekend niveau wordt genegeerd', zak.niveau() === 'haai');
+
+    /* Afleiders: bij grote vis en haai lijken ze op het woord */
+    var r = maakRandom(9), lijkt = 0, totaal = 0;
+    Woorden.LIJST.haai.forEach(function (w) {
+      for (var t = 0; t < 10; t++) {
+        var af = Woorden.afleiders(w, 'haai', r);
+        totaal++;
+        if (af.length === 2 && af[0] !== af[1] && af.indexOf(w) < 0 &&
+            (Woorden.gelijkenis(w, af[0]) > 0 || Woorden.gelijkenis(w, af[1]) > 0)) lijkt++;
+      }
+    });
+    test('haai: afleiders zijn twee andere woorden waarvan minstens één op het woord lijkt (beginletter, lengte of eindletter)', lijkt === totaal, lijkt + ' van ' + totaal);
+    var afKlein = Woorden.afleiders('vis', 'klein', maakRandom(3));
+    test('kleine vis: twee afleiders, niet het woord zelf', afKlein.length === 2 && afKlein[0] !== afKlein[1] && afKlein.indexOf('vis') < 0);
+    test('gelijkenis: beginletter 2, lengte 1, eindletter 1',
+         Woorden.gelijkenis('kat', 'kip') === 3 && Woorden.gelijkenis('kat', 'pot') === 2 && Woorden.gelijkenis('kat', 'boom') === 0);
+  })();
 
 
   /* ---- Lettersets en kaartenzak ---- */
@@ -370,6 +478,7 @@
   test = maakTester('uit-animaties');
   test('aapje heeft minstens 3 varianten (' + Animaties.VARIANTEN.aapje.join(', ') + ')', Animaties.VARIANTEN.aapje.length >= 3);
   test('raket heeft minstens 3 varianten (' + Animaties.VARIANTEN.raket.join(', ') + ')', Animaties.VARIANTEN.raket.length >= 3);
+  test('vis heeft minstens 3 varianten (' + Animaties.VARIANTEN.vis.join(', ') + ')', Animaties.VARIANTEN.vis.length >= 3);
   test('duur van een beloningsanimatie is hoogstens 1,5 s (' + Animaties.DUUR + ' ms)', Animaties.DUUR <= 1500);
   (function () {
     var r = maakRandom(21), herh = 0, gezien = {}, v = null;
@@ -379,8 +488,14 @@
     var r2 = maakRandom(22), herh2 = 0, v2 = null;
     for (var j = 0; j < 2000; j++) { var k2 = Animaties.kies('raket', r2); if (k2 === v2) herh2++; v2 = k2; }
     test('kies: nooit twee keer dezelfde raket-variant achter elkaar', herh2 === 0, herh2);
+    var r3 = maakRandom(23), herh3 = 0, v3 = null, gezien3 = {};
+    for (var q = 0; q < 2000; q++) { var k3 = Animaties.kies('vis', r3); if (k3 === v3) herh3++; v3 = k3; gezien3[k3] = true; }
+    test('kies: nooit twee keer dezelfde vis-variant achter elkaar, alle varianten komen voor',
+         herh3 === 0 && Object.keys(gezien3).length === Animaties.VARIANTEN.vis.length, herh3);
   })();
-  test('alle iconen uit §6.3 bestaan', ['aapje','raket','huisje','luidspreker','luidsprekerUit','fullscreen','fullscreenUit','plus','min','maal','deel','slot','raketKlein','raketGroot','raketSuper','banaan','bananentros','ster','maan','liaan','aapjeFiguur','raketFiguur','letterSchrijfKlein','letterSchrijfHoofd','letterBlokKlein','letterBlokHoofd','kralen','toetsenbord'].every(function (n) { return Icons.svg(n).indexOf('<svg') === 0; }));
+  test('alle iconen uit §6.3 bestaan', ['aapje','raket','huisje','luidspreker','luidsprekerUit','fullscreen','fullscreenUit','plus','min','maal','deel','slot','raketKlein','raketGroot','raketSuper','banaan','bananentros','ster','maan','liaan','aapjeFiguur','raketFiguur','letterSchrijfKlein','letterSchrijfHoofd','letterBlokKlein','letterBlokHoofd','kralen','toetsenbord',
+    'vis','visFiguur','visKlein','visGroot','haai','vormWoord','vormPlaatje','schelp','schatkist'].every(function (n) { return Icons.svg(n).indexOf('<svg') === 0; }));
+  test('het visje heeft een staart die CSS kan laten zwaaien', Icons.svg('visFiguur').indexOf('class="staart"') > 0 && Icons.svg('vis').indexOf('class="staart"') > 0);
 
   /* ================= keyboardHint.js (fase 10: tikbaar toetsenbord) ================= */
   test = maakTester('uit-hint');

@@ -1,22 +1,23 @@
 # Ontwikkelplan: Letter en Cijfer-app
 
-Versie 1.5 · 10 september 2026
+Versie 1.6 · 10 september 2026
 
-> **Status (10 sept 2026):** **Alle fases 0 t/m 11 zijn afgerond** ✅. De app heet **Letter en Cijfer-app** (zo staat het in `index.html`, `manifest.webmanifest` en `README.md`) en staat als Git-repository op GitHub: **github.com/psohl/letter-en-reken-app** (openbaar). Lokaal is dat de map `letter-en-reken-app-github/`; start met dubbelklik op `index.html`. Online draait dezelfde app via GitHub Pages op **psohl.github.io/letter-en-reken-app/** (voor tablet en telefoon). Fontkeuze: **Lusletters (standaardhelling) met stylistic set ss01**. Zie §9 en het voortgangslog in §13.
+> **Status (10 sept 2026):** **Alle fases 0 t/m 12 zijn afgerond** ✅. De app heet **Letter en Cijfer-app** (zo staat het in `index.html`, `manifest.webmanifest` en `README.md`) en staat als Git-repository op GitHub: **github.com/psohl/letter-en-reken-app** (openbaar). Lokaal is dat de map `letter-en-reken-app/`; start met dubbelklik op `index.html`. Online draait dezelfde app via GitHub Pages op **psohl.github.io/letter-en-reken-app/** (voor tablet en telefoon). Fontkeuze: **Lusletters (standaardhelling) met stylistic set ss01**. Fase 12 (10 sept) voegt een derde onderdeel toe: **Vis**, woorden lezen (§5.5, `woordenlijst-vis.md`). Zie §9 en het voortgangslog in §13.
 >
-> *Aapje* en *Raketje* zijn in dit plan de namen van de twee onderdelen (letters en sommen), overgenomen van de klasprogramma's; het zijn geen namen van de app.
+> *Aapje*, *Raketje* en *Vis* zijn in dit plan de namen van de drie onderdelen (letters, sommen en woorden); Aapje en Raketje zijn overgenomen van de klasprogramma's, Vis is de eigen naam van het derde onderdeel. Het zijn geen namen van de app.
 
 ---
 
 ## 1. Doel en doelgroep
 
 Een vrolijke, kleurrijke oefen-app voor kinderen van 6-7 jaar op een Montessori-basisschool: de **Letter en Cijfer-app**.
-De app bestaat uit twee onderdelen die aansluiten bij de programma's die in de klas worden gebruikt:
+De app bestaat uit drie onderdelen; de eerste twee sluiten aan bij de programma's die in de klas worden gebruikt, het derde (fase 12) bouwt op Aapje voort:
 
 | Onderdeel | Klasprogramma | Wat het kind oefent |
 |-----------|---------------|---------------------|
 | **Aapje** | Taal | Letter herkennen (schrijfletter, eventueel hoofdletter of blokletter) en intoetsen op het toetsenbord |
 | **Raketje** | Rekenen | Sommen met kleine getallen (+, −, ×, ÷) intoetsen |
+| **Vis** | Taal (vervolg op Aapje) | Woorden lezen: bij een woord het juiste plaatje kiezen, of bij een plaatje het juiste woord (§5.5) |
 
 Randvoorwaarden:
 
@@ -42,6 +43,7 @@ Randvoorwaarden:
 | Letterset | 26 letters in vier soorten: kleine/hoofd schrijfletter en kleine/hoofd blokletter | Vier vrij te combineren schakelaars in de balk (§5.2); minstens één soort staat aan, welke maakt niet uit. Later optioneel: tweetekenklanken (ee, oe, ui, ij, ...). |
 | Visueel hulpmiddel bij rekenen | Montessori-kralen, met schakelaar, standaard uit (fase 8) | De som in kralenstaafjes onder de som; het kind telt en typt zelf (§5.3). |
 | Tablet en telefoon | Dezelfde app, met een aanraakstand: toetsenbord op het scherm (fase 10) | Staat vanzelf aan op een tablet of telefoon, op de pc verandert niets. Voor gebruik op een telefoon moet de map online staan (§4.5). |
+| Woorden lezen (Vis, fase 12) | Kiezen uit drie, niet typen | Woord → plaatje en plaatje → woord als twee spelvormen (beide aan/uit, minstens één aan). Drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3; 56 woorden per niveau, elk met een eigen SVG-tekening. Schrijf- of blokletters (alleen kleine letters), klinkers blauw en medeklinkers rood. Zie §5.5 en `woordenlijst-vis.md`. |
 
 ---
 
@@ -53,6 +55,7 @@ Randvoorwaarden:
 - **Letterapps (Juf Jannie, LetterSchool, Lollige Letters)**: één ding per scherm, grote letter centraal, direct belonen, korte animaties (1-2 s) zodat het tempo hoog blijft.
 - **Rekenapps (Rekenraket, Rekenkoning, Rekenspelletjes)**: operatoren apart aan/uit te zetten, kleine getallen eerst, geen negatieve uitkomsten, alleen opgaande delingen.
 - **Fonts** (syboor.eu, Juffrouw Femke, Juf Maike): er bestaan gratis Nederlandse verbonden-schrift-fonts, zie §4.3. Geen enkel font is officieel "Montessori"; visuele controle tegen `letters.png` is nodig.
+- **Leerlijn lezen groep 3** (fase 12, voor Vis): alle methodes (Veilig leren lezen kim-versie, Lijn 3) en de AVI-niveaus bouwen hetzelfde op: eerst klankzuivere (m)k(m)-woorden met korte en lange klinkers (AVI Start/M3: *vis, maan, boom*), dan tweetekenklanken en medeklinkerclusters (M3/E3: *klap, strand, lamp, school*), dan twee- en drielettergrepige woorden en samenstellingen (E3/M4: *voetbal, konijn, paraplu*). Dat zijn precies de drie niveaus van Vis. Uitgewerkt met bronnen in `woordenlijst-vis.md`.
 
 Bronnen staan in §12.
 
@@ -73,38 +76,46 @@ Bronnen staan in §12.
 ### 4.2 Mappenstructuur
 
 ```
-letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app; lokaal letter-en-reken-app-github/)
-├── index.html                 startpunt, bevat de drie schermen; titel "Letter en Cijfer-app"
-├── README.md                  uitleg voor ouders/leerkracht (heette t/m fase 10 LEESMIJ.md) ✅ fase 7 (tablet/telefoon fase 10, hernoemd fase 11)
+letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app)
+├── index.html                 startpunt, bevat de vier schermen (menu, Aapje, Raketje, Vis); titel "Letter en Cijfer-app"
+├── README.md                  uitleg voor ouders/leerkracht (heette t/m fase 10 LEESMIJ.md) ✅ fase 7 (tablet/telefoon fase 10, hernoemd fase 11, Vis fase 12)
 ├── manifest.webmanifest       web-app-manifest: naam, iconen, standalone (beginscherm) ✅ fase 10
+├── taal-en-reken-app-ontwikkelplan.md   dit plan
+├── woordenlijst-vis.md        de 168 woorden van Vis per niveau, met onderbouwing en bronnen ✅ fase 12
+├── letters.png                referentie-afbeelding van de schrijfletters uit de klas (voor test/fontproef.html)
 ├── css/
 │   ├── base.css               reset, kleuren, typografie, grote knoppen           ✅ fase 0
-│   ├── menu.css                                                                   ✅ fase 0
+│   ├── menu.css               hoofdmenu met drie grote knoppen                    ✅ fase 0 (drie knoppen fase 12)
 │   ├── aapje.css              letterkaart, aapje-figuur, spring-animatie          ✅ fase 2
 │   ├── raketje.css            som, invulvak, niveau, kralen, raket-animatie        ✅ fase 3 (kralen fase 8)
+│   ├── vis.css                woordkaart, plaatjes- en woordkeuzes, visje, vis-animaties ✅ fase 12
 │   ├── fonts.css              @font-face base64 + .schrijfletter en .blokletter   ✅ fase 1 (blok fase 8)
-│   └── mobiel.css             aanraakstand (body.aanraak) en media queries voor smalle/lage schermen ✅ fase 10
+│   └── mobiel.css             aanraakstand (body.aanraak) en media queries voor smalle/lage schermen ✅ fase 10 (Vis fase 12)
 ├── js/
 │   ├── app.js                 schermwisseling, globale toetsafhandeling, geluid aan/uit, aanraakstand ✅ fase 0 (geluid fase 5, aanraak fase 10)
-│   ├── audio.js               Web Audio geluidseffecten (globaal object `Geluid`)  ✅ fase 5
-│   ├── icons.js               SVG-iconen als strings: Icons.svg('huisje'), Icons.vul() ✅ fase 4 (28 iconen)
+│   ├── audio.js               Web Audio geluidseffecten (globaal object `Geluid`)  ✅ fase 5 (blub fase 12)
+│   ├── icons.js               SVG-iconen als strings: Icons.svg('huisje'), Icons.vul() ✅ fase 4 (37 iconen)
+│   ├── plaatjes.js            de 168 woordplaatjes van Vis als SVG-strings: Plaatjes.svg('kat') ✅ fase 12
 │   ├── keyboardHint.js        hint-toetsenbord; in de aanraakstand tikbaar (tik = keydown) ✅ fase 2 (tikbaar fase 10)
-│   ├── teller.js              sessieteller (bananen/sterren, tros + getal > 10)   ✅ fase 2
+│   ├── teller.js              sessieteller (bananen/sterren/schelpen, tros + getal > 10) ✅ fase 2
 │   ├── letters.js             letters, klinker/medeklinker, shuffle-bag, lettersets ✅ fase 1 (sets fase 8)
+│   ├── woorden.js             woordenlijst (3 niveaus), letterkleuren, afleiders, opgavezak (pure functies) ✅ fase 12
 │   ├── aapje.js               spel Aapje                                          ✅ fase 2
 │   ├── sommen.js              somgenerator (3 niveaus), auto-controle (pure functies) ✅ fase 3 (super fase 9)
 │   ├── kralen.js              Montessori-kralen: model + weergave (pure functies)  ✅ fase 8
 │   ├── raketje.js             spel Raketje                                        ✅ fase 3
-│   └── animaties.js           beloningsanimaties: 4 aapje- en 3 raketvarianten, effectenlaag ✅ fase 5
+│   ├── vis.js                 spel Vis                                            ✅ fase 12
+│   └── animaties.js           beloningsanimaties: 4 aapje-, 3 raket- en 3 visvarianten, effectenlaag ✅ fase 5 (vis fase 12)
 ├── assets/
 │   ├── font/                  lusletters.ttf + LICENTIE-Lusletters-OFL.txt       ✅ fase 1
 │   └── icoon/                 icoon-180/192/512.png voor beginscherm en tabblad   ✅ fase 10
 └── test/
-    ├── test.html              121 tests: letters.js, sommen.js, kralen.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10
-    └── fontproef.html         alle letters per letterset naast letters.png        ✅ fase 1 (sets fase 8)
+    ├── test.html              152 tests: letters.js, woorden.js, plaatjes.js, sommen.js, kralen.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10, 12
+    ├── fontproef.html         alle letters per letterset naast letters.png        ✅ fase 1 (sets fase 8)
+    └── plaatjesproef.html     alle 168 woordplaatjes per niveau, met het woord in schrijf- en blokletters ✅ fase 12
 ```
 
-Het ontwikkelplan zelf staat buiten de repo, één map hoger (`taal-en-reken-app-ontwikkelplan.md`). De referentie-afbeelding `letters.png` uit de klas zit **niet** in de repo (fase 11): `test/fontproef.html` verwijst naar `../letters.png` en toont die alleen als het bestand lokaal in de app-map wordt gezet; de letters zelf worden altijd getoond. De map `assets/svg/` uit het oorspronkelijke plan is weggelaten: alle iconen zijn rechtstreeks in `js/icons.js` getekend, er zijn geen losse werkbestanden.
+Het ontwikkelplan staat sinds fase 11 **in** de repo, in de hoofdmap, net als `letters.png` (beide staan in `git ls-files`; de eerdere tekst in dit plan dat ze buiten de repo zouden blijven is op 10 september gecorrigeerd). `test/fontproef.html` verwijst naar `../letters.png`. De map `assets/svg/` uit het oorspronkelijke plan is weggelaten: alle iconen en woordplaatjes zijn rechtstreeks in `js/icons.js` en `js/plaatjes.js` getekend, er zijn geen losse werkbestanden.
 
 ### 4.3 Font voor de schrijfletters
 
@@ -205,10 +216,10 @@ rechtsboven een knop extra.
 
 **Hoofdmenu**
 
-- Twee zeer grote knoppen naast elkaar: **Aapje** (aapje met letter-blokje) en **Raketje** (raket met cijfers).
+- Drie zeer grote knoppen naast elkaar: **Aapje** (aapje met letter-blokje), **Raketje** (raket met cijfers) en **Vis** (visje met het woordje *vis* in schrijfletters, fase 12). Op een smal scherm staan ze onder elkaar.
 - Kleine knoppen rechtsboven: toetsenbord op het scherm aan/uit (aanraakstand, §4.5; toets `T`, fase 10), geluid aan/uit (luidspreker-icoon), volledig scherm (pijltjes-icoon).
-- Toetsenbord: `A` of `1` → Aapje, `R` of `2` → Raketje; pijltjes links/rechts + Enter werkt ook.
-- Kleine animaties in rust ("idle"): aapje knippert met de ogen, raketje wiegt.
+- Toetsenbord: `A` of `1` → Aapje, `R` of `2` → Raketje, `V` of `3` → Vis; pijltjes links/rechts + Enter werkt ook.
+- Kleine animaties in rust ("idle"): aapje knippert met de ogen, raketje wiegt, visje zwaait met zijn staart.
 
 **Aapje**
 
@@ -229,6 +240,18 @@ rechtsboven een knop extra.
 - Rechtsboven blijft alleen het geluid-icoon staan (sinds fase 9; het niveau stond daar eerst).
 - Onderin: sterren als sessieteller; hint-toetsenbord met cijfers 0-9 (in de aanraakstand met een wistoets ⌫).
 - Toetsen: `Backspace` wist het laatste cijfer, `Escape` = terug. Toggles ook via `+`, `-`, `*` (of `x`), `/` (of `:`) op het toetsenbord; niveau via `K` (klein), `G` (groot) en `S` (super); kralen via `H` (hulp).
+
+**Vis** (fase 12, zie §5.5)
+
+- Midden, boven: de **opgave** op een kaart met zeegroene rand: een woord (brede kaart, letters in klinker-/medeklinkerkleur) of een plaatje (vierkante kaart).
+- Daaronder: drie **keuzekaarten** naast elkaar, met plaatjes (bij een woord als opgave) of woorden (bij een plaatje als opgave). Klikken of tikken kiest; er is geen toetsenbord nodig, ook niet in de aanraakstand.
+- Bovenaan in de middenbalk drie groepen met een scheidingslijntje:
+  1. twee spelvorm-toggles: *woord in beeld, plaatje kiezen* en *plaatje in beeld, woord kiezen*; beide vrij aan/uit, minstens één aan (zoals de lettersets van Aapje). Toetsen `W` en `P`.
+  2. drie niveauknoppen: kleine vis, grote vis, haai (drie duidelijk verschillende visjes, de haai grijs met rugvin). Toetsen `K`, `G`, `H`.
+  3. twee lettersoortknoppen (precies één aan): schrijfletters (`a` in Lusletters) of blokletters (`a` in drukletters), dezelfde iconen als bij Aapje. Toetsen `S` en `B`.
+- Linksboven terugknop, rechtsboven geluid. Onderin: schelpen als sessieteller; boven tien schelpen een schatkist met getal. Geen hint-toetsenbord.
+- Het visje zit rechtsonder en wiegt; bij een goed antwoord springt het, zwemt het naar de goede kaart of blaast het bubbels (§7.4).
+- Toetsen: `1`, `2`, `3` kiezen de linker, middelste of rechter kaart; pijltjes links/rechts verplaatsen de focus over de kaarten en Enter of spatie kiest; `Escape` = terug.
 
 ### 5.2 Spelregels
 
@@ -304,8 +327,61 @@ uit `--rijen` en `--kolommen`, zodat ook 10 × 10 = 100 kralen binnen het speelv
 ### 5.4 Wat we bewust *niet* doen
 
 - Geen tijdsdruk, geen countdown, geen "game over".
-- Geen tekstuele meldingen; alleen iconen, kleur, beweging en geluid.
+- Geen tekstuele meldingen; alleen iconen, kleur, beweging en geluid. (De woorden van Vis zijn de opgave zelf, geen melding.)
 - Geen opslag, geen accounts, geen internetverbinding.
+
+### 5.5 Vis: woorden lezen (fase 12)
+
+Vis is de volgende stap na Aapje: het kind kent de letters en gaat nu **woorden lezen**. Het kind
+typt niet, maar kiest uit drie kaarten; zo blijft het tempo hoog en telt alleen het lezen.
+
+**Twee spelvormen** (schakelaars in de balk, beide vrij te combineren, minstens één aan):
+
+| Vorm | In beeld | Keuzes | Wat het kind doet |
+|------|----------|--------|-------------------|
+| `woord` | één woord (brede kaart) | drie plaatjes | het woord lezen en het bijbehorende plaatje kiezen |
+| `plaatje` | één plaatje (vierkante kaart) | drie woorden | het plaatje benoemen en het bijbehorende woord lezen en kiezen |
+
+Staan beide vormen aan, dan komt de vorm uit een shuffle-bag over de aangezette vormen (om en om,
+nooit twee keer dezelfde). Gaat de vorm van de opgave in beeld uit, dan komt meteen een nieuwe opgave.
+
+**Drie niveaus** (knoppen in de balk; §3 en `woordenlijst-vis.md`), elk **56 woorden**, allemaal
+concrete, klankzuivere zelfstandige naamwoorden uit de woordenschat van een 6-7-jarige:
+
+| Niveau | Woordtype (leerlijn groep 3) | AVI | Voorbeelden |
+|--------|------------------------------|-----|-------------|
+| **kleine vis** | (m)k(m)-woorden met één klinkerteken: a, e, i, o, u, aa, ee, oo, uu, oe, ie | Start / M3 | vis, kip, zon, bus, maan, boom, koe, mier |
+| **grote vis** | eenlettergrepig met tweetekenklank (ui, ij, ei, eu, ou, au, eeuw) en/of medeklinkercluster (mmkm, mkmm, mmkmm), sch-, -ng, -nk | M3 / E3 | muis, ijs, geit, deur, touw, stoel, hond, schaap, kwast |
+| **haai** | twee- en drielettergrepige woorden en samenstellingen | E3 / M4 | konijn, paraplu, olifant, voetbal, tandenborstel, vuurtoren |
+
+**Opgavezak** (`Woorden.Opgavezak`, pure functies in `js/woorden.js`): het woord komt uit een
+shuffle-bag over alle woorden van het niveau (elk woord even vaak, nooit twee keer achter elkaar).
+De twee **afleiders** komen uit hetzelfde niveau: bij kleine vis willekeurig, bij grote vis en haai
+met voorrang voor woorden die op het doelwoord lijken (zelfde beginletter telt 2, zelfde lengte 1,
+zelfde eindletter 1; de meest gelijkende plus één willekeurige uit de top zes). Zo moet het kind het
+hele woord lezen en niet alleen naar de eerste letter kijken. De drie kaarten staan in willekeurige
+volgorde; het goede antwoord staat even vaak links, midden en rechts.
+
+**Letters en kleuren.** Elke letter staat in een eigen `<span>` met klasse `klinker` (blauw) of
+`medeklinker` (rood), volgens `Letters.isKlinker`; de **ij** telt als één klinker en is dus in zijn
+geheel blauw. Chrome, Edge en Firefox vormen de schrijfletters ook over die span-grenzen heen
+verbonden (gecontroleerd met een screenshot van *tandenborstel*), zodat het woord er als één
+geschreven woord uitziet. De lettergrootte volgt uit de kaartbreedte en het aantal letters
+(`--letters`, met een gemeten gemiddelde letterbreedte van 0,28 em voor Lusletters), zodat ook
+*tandenborstel* op een kaart past. **Lettersoort**: schrijfletters (Lusletters + ss01, standaard) of
+blokletters (de drukletter-fontstapel van §6.4), altijd kleine letters; één knop is aan.
+
+**Goed en fout.** Goed → kaart wordt groen, goed-geluid plus *blub*, schelp erbij, visanimatie
+(1,4 s, invoer geblokkeerd), nieuwe opgave. Fout → de kaart schudt, klinkt het zachte fout-geluidje
+en de kaart vervaagt en doet niet meer mee (geen rood kruis, geen aftrek). Na twee fouten is er nog
+één kaart over: die pulseert zachtjes als hint. Klikken op een vervaagde kaart doet niets.
+
+**Plaatjes.** Elk woord heeft een eigen tekening in `js/plaatjes.js` (168 SVG's in de stijl van
+`js/icons.js`: dikke ronde omtreklijn, vlakke zachte kleuren, geen tekst, geen `id`'s of `<defs>`,
+zodat er honderden op één pagina kunnen staan). Woorden binnen één niveau die op elkaar lijken
+(*kip*/*haan*, *boom*/*bos*, *dolfijn*/*walvis*/*zeehond*) zijn zo getekend dat ze duidelijk
+verschillen; synoniemen (*kat*/*poes*) zitten niet samen in één niveau. `test/plaatjesproef.html`
+toont alle plaatjes per niveau ter beoordeling.
 
 ---
 
@@ -329,8 +405,10 @@ uit `--rijen` en `--kolommen`, zodat ook 10 × 10 = 100 kralen binnen het speelv
 | Goed | Frisgroen | `#4CAF50` |
 | Neutraal / uit | Lichtgrijs | `#C8C8C8` |
 | Accent (sterren, bananen) | Zonnig geel | `#FFD23F` |
+| Vis (rand opgavekaart, niveau-ring, spelvorm-iconen) | Zeegroen / licht zeegroen | `#2A9D8F` / `#D9F2EA` |
+| Visje | Oranje / donkeroranje | `#FF9F1C` / `#B85C00` |
 
-### 6.3 Iconenlijst (alle als eigen SVG) ✅ allemaal getekend in `js/icons.js` (fase 4; toetsenbord fase 10)
+### 6.3 Iconenlijst (alle als eigen SVG) ✅ allemaal getekend in `js/icons.js` (fase 4; toetsenbord fase 10; Vis fase 12)
 
 | Icoon | Betekenis | Waar |
 |-------|-----------|------|
@@ -348,6 +426,14 @@ uit `--rijen` en `--kolommen`, zodat ook 10 × 10 = 100 kralen binnen het speelv
 | Toets-blokjes | Hint-toetsenbord | Beide |
 | `a` `A` in schrijfletters, `a` `A` in blokletters (bruine cirkels) | Letterset aan/uit | Aapje |
 | Kralentrap 1-2-3 | Montessori-kralen aan/uit | Raketje |
+| Visje met bubbels | Start woordenspel | Hoofdmenu |
+| Visje (klein, groot) en haai | Niveau kleine vis / grote vis / haai | Vis |
+| Kaartje met woordlijn en drie plaatjes; kaartje met plaatje en drie regels (zeegroene cirkels) | Spelvorm woord → plaatje / plaatje → woord aan/uit | Vis |
+| `a` in schrijfletters, `a` in blokletters | Lettersoort (dezelfde iconen als bij Aapje) | Vis |
+| Schelp, schatkist | Sessieteller | Vis |
+| Visje met staart en vin (klassen voor animatie) | Speelfiguur | Vis |
+
+Daarnaast bevat `js/plaatjes.js` de 168 woordplaatjes van Vis (§5.5), in dezelfde stijl maar los van de iconenlijst.
 
 ### 6.4 Typografie
 
@@ -376,13 +462,21 @@ Rust-animaties: knipperen, staart wiegt.
 2. Raket maakt een looping.
 3. Raket vliegt langs een planeet of maan.
 
-### 7.3 Geluid (Web Audio, gesynthetiseerd) ✅ fase 5: alle zeven geluiden in `js/audio.js`
+### 7.4 Vis-animaties (~1,4 s) ✅ fase 12: alle drie gebouwd
+
+1. Visje springt op uit het water (boog met draai), spetters bij de start; schelp vliegt naar de teller.
+2. Visje zwemt naar de goede kaart, keert om (spiegelt) en zwemt terug.
+3. Visje blaast zes bubbels die opstijgen en wiebelt van plezier.
+
+Rust-animatie: wiegt zachtjes, staart zwaait heen en weer (ook in het menu).
+
+### 7.3 Geluid (Web Audio, gesynthetiseerd) ✅ fase 5: zeven geluiden in `js/audio.js`; fase 12: *blub* erbij
 
 | Moment | Geluid |
 |--------|--------|
 | Goed | Korte vrolijke drieklank omhoog (do-mi-sol) |
 | Fout | Zacht, laag "boing", nooit hard of schril |
-| Animatie | Korte "whoosh" of aapje-"oe-oe" (synthetische toon met vibrato) |
+| Animatie | Korte "whoosh" (raket), aapje-"oe-oe" (synthetische toon met vibrato) of "blub" (vis: twee korte bubbeltoontjes omhoog) |
 | Knop klikken | Zachte klik/pop |
 | Toggle aan/uit | Toon omhoog / omlaag |
 
@@ -418,14 +512,17 @@ Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binne
 | **10. Tablet en telefoon** (½ dag) ✅ **klaar 9 sept 2026** | Aanraakstand (§4.5): hint-toetsenbord permanent en tikbaar, wistoets bij de cijfers, automatisch aan op tablet/telefoon, toetsenbordknop in het menu (`T`); `css/mobiel.css` voor smalle en lage schermen; `manifest.webmanifest` en iconen voor het beginscherm; hosting-uitleg in de handleiding. | ✅ 121 tests groen (12 nieuwe); 36 gedragschecks in Chrome; pc-opmaak op 1024, 1366 en 1920 px gemeten gelijk aan fase 9; op 390×844, 360×780, 844×390, 768×1024, 820×1180 en 1180×820 niets buiten beeld. Nog te doen: op een echte iPad en iPhone proberen. |
 | **11. GitHub-repo en naam** (¼ dag) ✅ **klaar 9 sept 2026, plan bijgewerkt 10 sept** | App onder de naam **Letter en Cijfer-app** (titel, manifest, README) in de openbare repo `psohl/letter-en-reken-app`; `LEESMIJ.md` hernoemd naar `README.md`; `letters.png` en de zip-opleveringen niet in de repo; GitHub Pages aan op `main`. | ✅ 27 bestanden in de repo, precies de structuur van §4.2; 121 tests groen vanaf `file://` in Chrome (10 sept 2026); `https://psohl.github.io/letter-en-reken-app/` antwoordt met de app; README en app.js-commentaar op 10 sept bijgewerkt (zie §13). |
 
-Totaal ca. 6-8 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn onafhankelijk en kunnen parallel.
+| **12. Vis: woorden lezen** (1 dag) ✅ **klaar 10 sept 2026** | Derde onderdeel naast Aapje en Raketje (§5.5): twee spelvormen (woord → plaatje, plaatje → woord), drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3, 56 woorden per niveau met onderbouwing in `woordenlijst-vis.md`, 168 eigen SVG-plaatjes in `js/plaatjes.js`, schrijf- of blokletters, klinkers blauw en medeklinkers rood, schelpenteller, drie visanimaties, negen nieuwe iconen, menu met drie knoppen. | ✅ 152 tests groen (31 nieuwe); 37 gedragschecks in Chrome; layout gemeten op 1024×768 en 1366×768 en op telefoon- en tabletformaten: niets buiten beeld, visje raakt de kaarten niet; alle 168 plaatjes visueel beoordeeld op contactbladen. |
+
+Totaal ca. 7-9 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn onafhankelijk en kunnen parallel.
 
 ### 9.1 Latere uitbreidingen (buiten fase 1)
 
 - Tweetekenklanken (ee, oo, oe, eu, ui, ij, au, ou, ei, ie, ng, ch) met aan/uit-icoon; kind typt twee toetsen.
 - ✅ *Gedaan in fase 8:* hoofdletters en blokletters als alternatieve lettersets (§5.2).
 - Voortgang opslaan in `localStorage` met avatar-keuze voor meerdere kinderen.
-- Woordjes typen (klankzuivere mkm-woorden: b-oo-m) als tweede taalspel.
+- Woordjes typen (klankzuivere mkm-woorden: b-oo-m) als tweede taalspel. ✅ *Grotendeels gedaan in fase 12*, maar anders: Vis laat het kind woorden **lezen** en kiezen uit drie (§5.5), niet typen. Woorden typen (bij een plaatje het woord intoetsen, met de woordenlijst van Vis) blijft een mogelijke vierde spelvorm.
+- Vis: eigen klankopnames of voorgelezen woorden; een vierde niveau met niet-klankzuivere woorden (groep 4); de woordenlijst uitbreiden of per kind aanpassen.
 - ✅ *Gedaan in fase 8:* Montessori-kralen als visueel hulpmiddel bij de sommen (§5.3). Een getallenlijn is niet gemaakt.
 - Eigen klankopnames per letter (Montessori-klank) als geluid later toch gewenst is.
 
@@ -441,6 +538,7 @@ Totaal ca. 6-8 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn on
 - ✅ Kaartenzak (fase 8/9): met alle vier de lettersets aan komt over 1040 kaartjes elke letter 40× en elke set 260× voorbij, nooit dezelfde letter twee keer achter elkaar, en de getoonde vorm hoort altijd bij de set; elke set kan ook los aan staan, en de laatst aangezette set is niet uit te zetten.
 - ✅ Kralen (fase 8/9): over 30.000 gegenereerde sommen (4 operatoren × 3 niveaus) klopt het kralenmodel altijd met de som (wat blijft staan is het antwoord; bij delen `a` kralen in `b` staafjes), nooit een staafje langer dan tien kralen, hoogstens 10 rijen en 22 kolommen.
 - ✅ keyboardHint.js (fase 10): 26 lettertoetsen in drie rijen, 10 cijfertoetsen in de groepjes 1-5 en 6-0 plus wistoets; in de pc-stand stuurt een klik niets; in de aanraakstand komt een tik aan als `keydown` met de juiste `key` (letter, cijfer, `Backspace`), een tik naast de toetsen doet niets, en `zetTikbaar(false)` maakt het weer een stille hint.
+- ✅ woorden.js en plaatjes.js (fase 12): drie niveaus met minstens 50 woorden, geen dubbele, alleen a-z; kleine vis voldoet aan het (m)k(m)-patroon met één klinkerteken, grote vis heeft een tweetekenklank of cluster en één lettergreep, haai minstens twee lettergrepen; elk woord heeft een plaatje en geen plaatje bevat tekst, `id`, `<use>` of externe verwijzingen; letterkleuren (ij als klinker); opgavezak over 1120 opgaven: drie verschillende keuzes uit het niveau met het woord op de plek van `antwoord`, elk woord even vaak, nooit hetzelfde woord twee keer achter elkaar, goede antwoord op alle drie de plekken; beide vormen aan → om en om; lege of onbekende vormen en niveaus genegeerd; afleiders bij haai lijken altijd op het woord.
 
 **Handmatig (checklist)**
 
@@ -449,6 +547,7 @@ Totaal ca. 6-8 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn on
 - Muis: alle knoppen; dubbelklik geeft geen dubbele actie.
 - ✅ Gedragstest fase 8/9 (geautomatiseerd in Chrome, 27 checks): letterset-schakelaars via klik en toets `1`-`4`, basisset niet uit te zetten, dubbelklik geeft één actie, hoofdletter op de kaart wordt met de kleine letter goed beantwoord, kralen aan/uit via klik en `H`, kralen kloppen met plus/min/keer/deel-sommen en blijven staan na een bezoek aan het menu. Fase 9 erbij: de schrijfletter kan uit zolang er een andere soort aan staat, de laatste soort blijft altijd aan (klik en toets), de drie niveauknoppen werken via klik en `K`/`G`/`S`, supersommen blijven onder 100 en het niveau blijft staan na een bezoek aan het menu.
 - ✅ Gedragstest fase 10 (geautomatiseerd in Chrome, 36 checks): aanraakstand uit op een pc; aan via de menuknop en via `T`, dubbelklik geeft één actie; bij Aapje staat het toetsenbord meteen in beeld, een foute tik geeft nog geen hint, twee foute tikken laten de juiste toets pulseren, een goede tik telt een banaan, tikken tijdens de animatie worden genegeerd, na de animatie komt een nieuwe letter en blijft het toetsenbord staan; bij Raketje is de wistoets zichtbaar, een juist eerste cijfer blijft staan, de wistoets wist het, na twee fouten pulseert het eerste cijfer en springt de hint naar het tweede, het volledige antwoord geeft een ster; in de pc-stand doet een tik niets en is de wistoets weg.
+- ✅ Gedragstest fase 12 (geautomatiseerd in Chrome, 37 checks): `V` en `3` openen Vis, pijltjes in het menu lopen over drie knoppen; beginstand woord-vorm / kleine vis / schrijfletters; opgave toont het woord met gekleurde letters en drie plaatjeskaarten; foute klik vervaagt de kaart en schakelt hem uit, geen hint na één fout, tweede fout via cijfertoets laat de goede kaart pulseren; goed via toets telt een schelp, start een visanimatie, toetsen tijdens de animatie worden genegeerd, daarna nieuwe opgave met schone kaarten en opgeruimde effecten; pijltjes verplaatsen de focus; `P`/`W` en klikken schakelen de vormen (laatste blijft aan, dubbelklik één actie), `B`/`S` de lettersoort, `H`/`G`/`K` en klikken het niveau; Escape tijdens de animatie ruimt op, instellingen en schelpen blijven staan na een bezoek aan het menu.
 - Tijdens animatie tikken: geen dubbele beloning, geen overgeslagen opgave. ✅ Ook getikt (fase 10).
 - ✅ Geluid: beoordeeld tijdens de kindtest, werkt goed.
 - Schermformaten: 1366×768 laptop, 1920×1080, 2560×1440, venster half scherm. ✅ Fase 10 (headless, niets buiten beeld): 390×844 en 360×780 (telefoon rechtop), 844×390 (telefoon liggend), 768×1024 en 820×1180 (tablet rechtop), 1180×820 (tablet liggend).
@@ -478,7 +577,12 @@ Totaal ca. 6-8 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn on
 | Safari op de iPhone kent geen volledig scherm voor webpagina's | ✅ De knop verbergt zichzelf; via "Zet op beginscherm" (manifest) opent de app zonder browserbalken. |
 | De app moet online staan om op een telefoon te werken | ✅ Fase 11: de repo staat via GitHub Pages online (§4.5); `file://` op de pc blijft werken. Netlify Drop als alternatief staat in `README.md`. |
 | Test op een echt apparaat ontbreekt nog | Headless Chrome meet tikken en maten, maar bootst iOS-Safari niet na. Op een iPad en iPhone het GitHub Pages-adres openen; let op geluid na de eerste tik en op de wistoets. |
-| `letters.png` zit niet in de repo | Bewust: de klasreferentie is geen onderdeel van de app. `test/fontproef.html` toont dan een leeg plaatje bij "Referentie"; de letters zelf zijn gewoon te beoordelen. Wie de vergelijking wil, zet `letters.png` lokaal in de app-map. |
+| `letters.png` in de repo | Staat er wel in (zie §4.2). De klasreferentie is geen onderdeel van de app; wil Peter hem er niet in, dan `git rm letters.png` en `test/fontproef.html` toont een leeg plaatje bij "Referentie". |
+| Een woordplaatje van Vis is niet duidelijk voor het kind | Alle 168 plaatjes zijn op contactbladen beoordeeld; de minst sterke (mug, jas, zak, reus, neus, touw, egel, pauw) staan in het voortgangslog. `test/plaatjesproef.html` toont ze per niveau. Bij de kindtest letten op welke plaatjes twijfel geven en die hertekenen of het woord vervangen in `js/woorden.js`. |
+| Twee woorden in één niveau passen bij hetzelfde plaatje | Synoniemen (*kat*/*poes*) zijn uit één niveau gehouden; lookalikes (*kip*/*haan*, *boom*/*bos*) zijn verschillend getekend. De afleiders komen alleen uit het eigen niveau. |
+| De haai is te moeilijk of te makkelijk | Het niveau is een keuze van de ouder/leerkracht; de drie niveaus volgen de leerlijn van groep 3 (`woordenlijst-vis.md`) en zijn zo in de code (`Woorden.LIJST`) aan te passen. |
+| Zeven schakelaars in de balk van Vis passen niet op 1024 px | Gemeten: past (kleinste knop 77 px), net als de acht van Raketje. |
+| Kindtest voor Vis ontbreekt nog | Zoals bij fase 8-10 nog niet gedaan; zie §13. |
 
 ---
 
@@ -498,6 +602,15 @@ Totaal ca. 6-8 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn on
 - Rekenraket (gratis rekenen oefenen): https://www.rekenraket.com/
 - Rekenkoning: https://rekenkoning.nl/
 - Top 100 leerzame apps, rekenen (Meester Sander): https://meestersander.nl/meester-sanders-apps/top-100-leerzame-apps-voor-de-basisschool-versie-2018/nr-11-t-m-30-rekenen-top-100-leerzame-apps-voor-de-basisschool/
+
+Leerlijn lezen groep 3 (fase 12, Vis); de volledige lijst staat in `woordenlijst-vis.md`:
+
+- Syboor, decodeerbare woorden per kern bij Veilig leren lezen kim-versie: https://syboor.eu/woordjes/lijsten/kim_maan
+- Syboor, decodeerbare woorden bij Lijn 3: https://syboor.eu/woordjes/lijsten/lijn3
+- Beter leren lezen, AVI M3 en E3: https://www.beterlerenlezen.nl/page/leesniveau-m3 · https://www.beterlerenlezen.nl/page/leesniveau-e3
+- Leerlijnen taal, tussendoelen technisch lezen start en vervolg: https://www.leerlijnentaal.nl/page/150/technisch-lezen-en-schrijven-start-en-vervolg.html
+- Taal-oefenen.nl, klankzuivere mkm-woorden: https://www.taal-oefenen.nl/ondersteunende-materialen/spelling/woordkaarten/klankwoorden/klankzuivere-mkm-woorden
+- Leerlijn maan technisch lezen, Veilig leren lezen kim-versie (pdf): https://obspwa.nl/wp-content/uploads/2018/04/vllkim-art-leerlijn-maan-technisch-lezen.pdf
 
 ---
 
@@ -836,3 +949,77 @@ Dit plan is op 10 september met de repo in overeenstemming gebracht.
   geen effect op de werking; nog niet gecommit.
 - Op een echte iPad en iPhone proberen via het Pages-adres (open sinds fase 10).
 - Handmatige controle in Edge vanaf `file://` staat nog open (sinds fase 7).
+
+### 10 september 2026 · Fase 12: Vis, woorden lezen
+
+Wens van Peter: een nieuwe tak naast Aapje en Raketje waarin het kind een stap verder gaat en
+letters én woorden oefent, met twee spelvormen (woord → plaatje, plaatje → woord), drie niveaus
+(kleine vis, grote vis, haai), een onderbouwde woordenlijst van minstens 50 woorden per niveau,
+een duidelijk plaatje per woord, instelbare lettersoort, klinker-/medeklinkerkleuren en een teller.
+
+**Onderzoek**
+
+- Webonderzoek naar wat kinderen van 6-7 jaar leren lezen (Veilig leren lezen kim-versie, Lijn 3,
+  AVI Start/M3/E3/M4, tussendoelen technisch lezen). Conclusie: eerst klankzuivere (m)k(m)-woorden,
+  dan tweetekenklanken en medeklinkerclusters, dan meerlettergrepige woorden en samenstellingen. Dat
+  is de indeling van de drie niveaus. Samengevat in §3 en uitgewerkt met bronnen in het nieuwe
+  `woordenlijst-vis.md` (56 woorden per niveau, per klank/kenmerk gerubriceerd, met de redenen om
+  woorden weg te laten: niet-klankzuivere spelling, abstracte woorden, synoniemen binnen een niveau).
+
+**Gemaakt**
+
+- `js/woorden.js`: `Woorden.LIJST` (3 × 56 woorden), `letters()`/`html()` voor de kleuren (ij als één
+  klinker), `gelijkenis()`/`afleiders()` (bij grote vis en haai lijken de afleiders op het woord) en
+  `Woorden.Opgavezak` (shuffle-bag over de woorden van het niveau plus een tweede over de aangezette
+  spelvormen, zoals `Letters.Kaartenzak`). Pure functies, getest.
+- `js/plaatjes.js`: 168 eigen SVG-tekeningen, één per woord, in de stijl van `icons.js` (viewBox
+  100 × 100, omtreklijn `#3B2A1A`, palet van de app, geen tekst, geen `id`/`<defs>`). Getekend in vier
+  parallelle delen met dezelfde stijlgids, elk deel op een contactblad gerenderd met headless Chrome
+  en in twee of drie rondes bijgesteld (o.a. kam, vos, rat, leeuw, duif, voet, dolfijn, ijsbeer,
+  kabouter, egel). Tijdens de controle bleek *poes* een synoniem van *kat* in hetzelfde niveau; *poes*
+  is vervangen door *wip*.
+- `js/vis.js`: spelloop (opgave en drie keuzekaarten, foute kaart vervaagt en doet niet meer mee,
+  hint na twee fouten = de overgebleven kaart pulseert, goed = schelp + animatie + nieuwe opgave),
+  spelvorm-toggles (`W`/`P`, minstens één aan, dubbelklik-bescherming), niveau (`K`/`G`/`H`),
+  lettersoort (`S`/`B`), keuze via klik, `1`-`3` of pijltjes + Enter; registratie bij `App` als
+  scherm `vis`.
+- `css/vis.css`: opgavekaart (breed voor een woord, vierkant voor een plaatje) met zeegroene rand,
+  keuzekaarten, lettergrootte uit kaartbreedte en `--letters`, visje met staart-animatie, drie
+  beloningsanimaties (sprong met spetters, zwem heen en terug met spiegeling, bubbels) en de
+  effecten `spat` en `bubbel`. `css/mobiel.css`: menu met drie knoppen onder elkaar, woordkaarten
+  onder elkaar en plaatjes naast elkaar op een telefoon, lagere kaarten op een liggende telefoon.
+- `js/icons.js`: negen nieuwe iconen (vis, visFiguur, visKlein, visGroot, haai, vormWoord,
+  vormPlaatje, schelp, schatkist; totaal 37). `js/animaties.js`: varianten `vis: sprong, zwem,
+  bubbels` met effecten. `js/audio.js`: geluid `blub`. `js/app.js`: `V`/`3` in het menu.
+  `index.html`: derde menuknop (visje met het woordje *vis*), scherm Vis, scripts en stylesheet;
+  `manifest.webmanifest`: beschrijving "Letters intoetsen, woorden lezen en sommetjes maken".
+- `css/menu.css`: drie knoppen van `min(26vw, 58vh, 460px)`; `css/base.css`: `--kleur-vis`.
+- `test/test.html`: 31 nieuwe tests (§10); `test/plaatjesproef.html`: alle plaatjes per niveau met
+  het woord in schrijf- en blokletters. `README.md`: hoofdstuk "Woorden", toetsen, menu.
+
+**Gecontroleerd**
+
+- `test/test.html`: 152 tests groen in Chrome vanaf `file://`.
+- Gedragstest in de echte DOM (headless Chrome via het DevTools-protocol, 37 checks, alle groen;
+  zie §10). Geen consolefouten bij `index.html`, `test/test.html` en `test/plaatjesproef.html`.
+- Layout gemeten: op 1366×768 en 1024×768 staan alle negen knoppen in de balk (96 resp. 77 px), de
+  woordkaart met *tandenborstel*, drie plaatjeskaarten of drie woordkaarten en het visje zonder
+  overlap (na een correctie: het speelveld houdt onderaan ruimte voor het visje, want de derde
+  woordkaart raakte het). Op 390×844 (telefoon rechtop, beide vormen), 844×390 (telefoon liggend) en
+  768×1024 (tablet rechtop) niets buiten beeld en geen overlap met het visje; de drie menuknoppen
+  passen onder elkaar op 390×844. De drie visanimaties zijn halverwege bevroren en gescreenshot:
+  het visje bereikt de goede kaart (zwem), de spetters en de schelp verschijnen (sprong), de bubbels
+  stijgen op (bubbels). Blokletter-woorden (Century Gothic) passen ook bij *tandenborstel* in de kaart.
+- Verbonden schrijfletters: Chrome vormt Lusletters ook over de gekleurde `<span>`-grenzen heen als
+  één verbonden woord (screenshot van *tandenborstel*). De gemiddelde letterbreedte is gemeten
+  (0,28 em) en gebruikt om de lettergrootte uit de kaartbreedte te berekenen.
+- Alle 168 plaatjes op vier contactbladen bekeken (en de vervanger *wip*). Minder sterk, maar
+  herkenbaar: mug (druk), jas (lijkt op een shirt), zak, reus (man naast klein huisje), neus, touw,
+  egel, pauw. Kandidaten om te hertekenen na de kindtest.
+
+**Nog te doen / aandachtspunten**
+
+- Kindtest met Vis: begrijpt het kind de twee spelvormen zonder uitleg? Welke plaatjes geven twijfel?
+- De blokletter-woorden hangen, net als bij Aapje, af van het font op de pc (§6.4).
+- Op een echte iPad en iPhone proberen (open sinds fase 10); Edge handmatig (open sinds fase 7).
+- Niet gecommit: alle wijzigingen van fase 12 staan lokaal klaar; Peter commit en pusht zelf.

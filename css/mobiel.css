@@ -76,11 +76,23 @@ body.aanraak .hint-wis {
   .spel .balk-midden { grid-area: midden; flex-wrap: wrap; justify-content: center; row-gap: clamp(4px, 1vh, 10px); }
   .knopgroep + .knopgroep { padding-left: clamp(5px, 1.5vw, 12px); }
 
-  /* Menu: de twee grote knoppen onder elkaar */
-  #scherm-menu .menu-keuzes { flex-direction: column; gap: clamp(14px, 3.5vh, 40px); padding: 1vh 4vw 3vh; }
-  .menu-knop { width: min(68vw, 34vh); height: min(68vw, 34vh); min-width: 150px; min-height: 150px; }
-  .blokje-letter .schrijfletter { font-size: min(19vw, 9.5vh); }
-  .blokje-cijfers { font-size: min(9vw, 4.5vh); }
+  /* Menu: de drie grote knoppen onder elkaar */
+  #scherm-menu .menu-keuzes { flex-direction: column; gap: clamp(10px, 2.5vh, 30px); padding: 1vh 4vw 3vh; }
+  .menu-knop { width: min(60vw, 24vh); height: min(60vw, 24vh); min-width: 130px; min-height: 130px; }
+  .blokje-letter .schrijfletter { font-size: min(17vw, 7vh); }
+  .blokje-cijfers { font-size: min(8vw, 3.4vh); }
+  .blokje-woord .schrijfletter { font-size: min(8vw, 3.4vh); }
+
+  /* Vis: woordkaarten onder elkaar, plaatjes naast elkaar; het visje klein rechtsonder */
+  .speelveld-vis { justify-content: flex-start; padding-top: 1vh; padding-bottom: clamp(56px, 13vh, 110px); gap: clamp(8px, 1.8vh, 20px); }
+  .vorm-woord .vis-opgave { width: 90vw; height: min(15vh, 130px); min-height: 72px; box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-vis); }
+  .vorm-plaatje .vis-opgave { width: min(34vw, 20vh); height: min(34vw, 20vh); min-width: 100px; min-height: 100px; box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-vis); }
+  .vis-keuzes { gap: clamp(8px, 2vw, 16px); }
+  .vorm-plaatje .vis-keuzes { flex-direction: column; }
+  .keuze-plaatje { width: min(28vw, 19vh); height: min(28vw, 19vh); }
+  .keuze-woord { width: 84vw; height: min(11vh, 90px); min-height: 52px; }
+  .vis-opgave .woord { font-size: min(11vh, calc(90vw * 0.84 / (var(--letters, 5) * var(--letterbreedte, 0.6)))); }
+  .keuze-woord .woord { font-size: min(8vh, calc(84vw * 0.86 / (var(--letters, 5) * var(--letterbreedte, 0.6)))); }
 
   /* Speelveld: figuur klein in de hoek, kaart en som wat hoger zodat ze de figuur niet raken */
   .speelveld { padding-bottom: clamp(24px, 8vh, 80px); }
@@ -130,5 +142,11 @@ body.aanraak .hint-wis {
   .figuur { width: clamp(56px, 16vh, 220px); }
   .menu-knop { min-width: 140px; min-height: 140px; }
   .speelveld.met-kralen .som-kolom { gap: 6px; }
+  /* Vis liggend op een telefoon: kleinere kaarten in de hoogte */
+  .speelveld-vis { gap: clamp(6px, 1.5vh, 14px); }
+  .vorm-woord .vis-opgave { height: min(20vh, 220px); min-height: 60px; }
+  .vorm-plaatje .vis-opgave { width: min(26vh, 26vw); height: min(26vh, 26vw); min-width: 90px; min-height: 90px; }
+  .keuze-plaatje { width: min(30vh, 17vw); height: min(30vh, 17vw); }
+  .keuze-woord { height: min(24vh, 190px); min-height: 50px; }
   .kralen { --kraal: min(46px, calc(28vh / (var(--rijen, 1) * 1.5)), calc(58vw / (var(--kolommen, 1) * 1.35))); }
 }

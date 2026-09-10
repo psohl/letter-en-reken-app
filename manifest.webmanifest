@@ -1,7 +1,7 @@
 {
   "name": "Letter en Cijfer-app",
   "short_name": "Letter en Cijfer-app",
-  "description": "Letters intoetsen en sommetjes maken, voor kinderen van 6-7 jaar.",
+  "description": "Letters intoetsen, woorden lezen en sommetjes maken, voor kinderen van 6-7 jaar.",
   "lang": "nl",
   "start_url": "./index.html",
   "scope": "./",
