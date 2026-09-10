@@ -1,4 +1,4 @@
-/* menu.css - hoofdmenu met twee zeer grote knoppen (ontwikkelplan §5.1) */
+/* menu.css - hoofdmenu met drie zeer grote knoppen (ontwikkelplan §5.1) */
 
 #scherm-menu .menu-keuzes {
   flex: 1;
@@ -6,16 +6,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(24px, 6vw, 120px);
-  padding: 2vh 4vw 6vh;
+  gap: clamp(20px, 4vw, 90px);
+  padding: 2vh 3vw 6vh;
 }
 
+/* Drie knoppen naast elkaar: 3 x 26vw + 2 x 4vw past op elk pc-scherm vanaf 1024 px. */
 .menu-knop {
   position: relative;
-  width: min(32vw, 62vh, 520px);
-  height: min(32vw, 62vh, 520px);
-  min-width: 220px;
-  min-height: 220px;
+  width: min(26vw, 58vh, 460px);
+  height: min(26vw, 58vh, 460px);
+  min-width: 200px;
+  min-height: 200px;
   border-radius: var(--radius);
   background: #fff;
   box-shadow: var(--schaduw);
@@ -29,14 +30,17 @@
 
 .menu-knop-aapje   { background: #FBEBD3; }
 .menu-knop-raketje { background: #E4ECF7; }
+.menu-knop-vis     { background: var(--kleur-vis-licht); }
 
 .icoon-groot { display: block; width: 68%; height: 68%; }
 .icoon-groot svg { width: 100%; height: 100%; overflow: visible; }
 
-/* Rust-animaties: aapje knippert, raketje wiegt met flakkerende vlam. */
+/* Rust-animaties: aapje knippert, raketje wiegt met flakkerende vlam, visje zwaait met zijn staart. */
 .menu-knop-aapje .oog { animation: knipper 4.5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .menu-knop-raketje .icoon-groot { animation: wieg 3s ease-in-out infinite; transform-origin: 50% 90%; }
 .menu-knop-raketje .vlam { animation: flakker 0.35s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 0; }
+.menu-knop-vis .icoon-groot { animation: vis-wieg 3.4s ease-in-out infinite; transform-origin: 50% 50%; }
+.menu-knop-vis .staart { animation: staart-zwaai 0.9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 0% 50%; }
 
 /* Blokje in de hoek dat laat zien wat je gaat oefenen: een schrijfletter of een sommetje */
 .blokje {
@@ -53,6 +57,7 @@
   justify-content: center;
 }
 .blokje-letter .schrijfletter { font-size: min(9vw, 17vh, 150px); transform: translateY(-6%); }
+.blokje-woord .schrijfletter  { font-size: min(4.6vw, 8.5vh, 76px); transform: translateY(-6%); white-space: nowrap; }
 .blokje-cijfers {
   font-size: min(4.2vw, 8vh, 70px);
   font-weight: 700;

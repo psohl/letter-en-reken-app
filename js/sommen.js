@@ -92,7 +92,8 @@ var Sommen = (function () {
   }
 
   /* Generator: actieve operatoren even vaak, nooit twee keer dezelfde som achter elkaar,
-     triviale sommen meestal overgeslagen. `plus` staat altijd aan. */
+     triviale sommen meestal overgeslagen. Er staat altijd minstens één operator aan:
+     een lege lijst wordt geweigerd (de huidige stand blijft dan staan). */
   function Generator(opties, random) {
     opties = opties || {};
     this._random = random || Math.random;
@@ -105,8 +106,9 @@ var Sommen = (function () {
   Generator.prototype.zetOperators = function (lijst) {
     var set = {};
     lijst.forEach(function (op) { if (OPERATOREN.indexOf(op) >= 0) set[op] = true; });
-    set.plus = true;                         // vergrendeld
-    this._operators = OPERATOREN.filter(function (op) { return set[op]; });
+    var nieuw = OPERATOREN.filter(function (op) { return set[op]; });
+    if (nieuw.length === 0) nieuw = this._operators.length ? this._operators : ['plus'];
+    this._operators = nieuw;
   };
 
   Generator.prototype.operators = function () { return this._operators.slice(); };

@@ -10,6 +10,7 @@ var Icons = (function () {
   var BRUIN = '#8B5A2B', LICHTBRUIN = '#D9A066', HUID = '#FFF1DC', DONKER = '#3B2A1A';
   var ROOD = '#E63946', DONKERROOD = '#7A1F28', GRIJS = '#B8C0CC', VLAM = '#FF9F1C', GEEL = '#FFD23F';
   var OKER = '#9A7B00';
+  var VIS = '#FF9F1C', VISDONKER = '#B85C00', VISBUIK = '#FFD98A', ZEE = '#2A9D8F', ZEEDONKER = '#1B6F66';
 
   function svg(vb, binnen) {
     return '<svg viewBox="' + vb + '" aria-hidden="true">' + binnen + '</svg>';
@@ -64,6 +65,23 @@ var Icons = (function () {
       '<circle cx="50" cy="50" r="44" fill="' + BRUIN + '" stroke="rgba(0,0,0,0.22)" stroke-width="5"/>' +
       '<text class="' + klasse + '" x="50" y="' + grondlijn + '" text-anchor="middle" font-size="' + maat +
       '" fill="#fff" style="color:#fff">' + teken + '</text>');
+  }
+
+  /* Visje voor het spel Vis: kijkt naar links, staart en vin hebben klassen zodat CSS ze kan
+     animeren (staart zwaait). `s` schaalt het visje binnen 100 x 100 (niveau-iconen). */
+  function visLijf(s) {
+    var sc = s || 1, t = (1 - sc) * 50;
+    return '<g transform="translate(' + t + ' ' + t + ') scale(' + sc + ')">' +
+      '<path class="staart" d="M74 50 L96 28 L91 50 L96 72 Z" fill="' + VIS + '" stroke="' + VISDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<ellipse cx="46" cy="50" rx="35" ry="23" fill="' + VIS + '" stroke="' + VISDONKER + '" stroke-width="5"/>' +
+      '<path d="M18 58 Q46 78 74 56 Q48 68 18 58 Z" fill="' + VISBUIK + '"/>' +
+      '<path class="vin" d="M38 30 Q46 8 64 28 Z" fill="' + VIS + '" stroke="' + VISDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M42 70 Q50 84 62 70 Z" fill="' + VIS + '" stroke="' + VISDONKER + '" stroke-width="4" ' + W + '/>' +
+      '<path d="M56 40 Q64 50 56 60" fill="none" stroke="' + VISDONKER + '" stroke-width="4" ' + W + '/>' +
+      '<circle class="oog" cx="26" cy="44" r="5.5" fill="' + DONKER + '"/>' +
+      '<circle cx="24.5" cy="42" r="2" fill="#fff"/>' +
+      '<path d="M13 54 Q17 59 22 55" fill="none" stroke="' + VISDONKER + '" stroke-width="3.5" ' + W + '/>' +
+      '</g>';
   }
 
   /* Eén kralenstaafje voor het kralen-icoon: n kralen aan een draadje. */
@@ -151,7 +169,7 @@ var Icons = (function () {
     kralen: cirkel('#FFF1DC',
       kralenStaaf(1, 26, '#E63946') + kralenStaaf(2, 50, '#4CAF50') + kralenStaaf(3, 74, '#F2A0B4')),
 
-    /* Slotje: plus staat altijd aan */
+    /* Slotje (sinds fase 13 nergens meer in gebruik: geen enkele schakelaar is nog vergrendeld) */
     slot: svg('0 0 100 100',
       '<rect x="22" y="44" width="56" height="44" rx="10" fill="#7A5A00"/>' +
       '<path d="M34 44 V32 a16 16 0 0 1 32 0 V44" fill="none" stroke="#7A5A00" stroke-width="10"/>' +
@@ -183,7 +201,55 @@ var Icons = (function () {
       aapjesKop(50, 44, 27, 'oog')),
 
     /* Speelfiguur: de raket */
-    raketFiguur: svg('0 0 100 110', raketLijf(1))
+    raketFiguur: svg('0 0 100 110', raketLijf(1)),
+
+    /* ---- Vis (woorden lezen) ---- */
+
+    /* Hoofdmenu en speelfiguur: het visje, met een paar bubbels */
+    vis: svg('0 0 100 100', visLijf(0.92) +
+      '<circle cx="9" cy="30" r="4" fill="none" stroke="' + ZEE + '" stroke-width="3"/>' +
+      '<circle cx="16" cy="18" r="3" fill="none" stroke="' + ZEE + '" stroke-width="3"/>'),
+    visFiguur: svg('0 0 100 100', visLijf(1)),
+
+    /* Niveau: kleine vis, grote vis en haai */
+    visKlein: svg('0 0 100 100', visLijf(0.55)),
+    visGroot: svg('0 0 100 100', visLijf(0.85)),
+    haai: svg('0 0 100 100',
+      '<path d="M84 50 L98 26 L95 50 L98 74 Z" fill="' + GRIJS + '" stroke="' + DONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M44 34 L54 8 L68 34 Z" fill="' + GRIJS + '" stroke="' + DONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M4 52 Q28 24 62 30 Q82 34 90 50 Q82 68 60 72 Q28 76 4 52 Z" fill="' + GRIJS + '" stroke="' + DONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M10 56 Q34 74 66 68 Q40 78 12 60 Z" fill="#fff"/>' +
+      '<path d="M46 66 Q52 82 64 70 Z" fill="' + GRIJS + '" stroke="' + DONKER + '" stroke-width="4" ' + W + '/>' +
+      '<path d="M12 54 Q26 66 44 62" fill="none" stroke="' + DONKER + '" stroke-width="4" ' + W + '/>' +
+      '<path d="M16 56 l4 -5 l4 5 l4 -5 l4 5 l4 -4" fill="none" stroke="#fff" stroke-width="3" ' + W + '/>' +
+      '<circle cx="28" cy="44" r="5" fill="' + DONKER + '"/><circle cx="26.5" cy="42.5" r="1.8" fill="#fff"/>'),
+
+    /* Spelvorm: woord in beeld, plaatje kiezen / plaatje in beeld, woord kiezen */
+    vormWoord: cirkel(ZEE,
+      '<rect x="22" y="22" width="56" height="22" rx="8" fill="#fff"/>' +
+      '<path d="M30 33 q4 -6 8 0 t8 0 t8 0 t8 0 t6 0" fill="none" stroke="' + ZEEDONKER + '" stroke-width="3.5" ' + W + '/>' +
+      '<rect x="22" y="54" width="15" height="15" rx="4" fill="#fff"/><circle cx="29.5" cy="61.5" r="4" fill="' + VIS + '"/>' +
+      '<rect x="42.5" y="54" width="15" height="15" rx="4" fill="#fff"/><circle cx="50" cy="61.5" r="4" fill="' + GEEL + '"/>' +
+      '<rect x="63" y="54" width="15" height="15" rx="4" fill="#fff"/><circle cx="70.5" cy="61.5" r="4" fill="' + ROOD + '"/>'),
+    vormPlaatje: cirkel(ZEE,
+      '<rect x="36" y="18" width="28" height="28" rx="6" fill="#fff"/><circle cx="50" cy="32" r="8" fill="' + VIS + '"/>' +
+      '<rect x="22" y="54" width="56" height="8" rx="4" fill="#fff"/>' +
+      '<rect x="22" y="67" width="56" height="8" rx="4" fill="#fff"/>' +
+      '<rect x="22" y="80" width="40" height="6" rx="3" fill="#fff" opacity="0.8"/>'),
+
+    /* Sessieteller bij Vis: schelp, en een schatkist als het meer dan tien zijn */
+    schelp: svg('0 0 100 100',
+      '<path d="M50 88 L14 46 A38 38 0 0 1 86 46 Z" fill="#FFD6B0" stroke="#B36B2E" stroke-width="5" ' + W + '/>' +
+      '<path d="M50 88 L28 36 M50 88 L42 30 M50 88 L58 30 M50 88 L72 36" fill="none" stroke="#B36B2E" stroke-width="3.5" ' + W + '/>' +
+      '<rect x="40" y="82" width="20" height="12" rx="4" fill="#B36B2E"/>'),
+    schatkist: svg('0 0 100 100',
+      '<path d="M14 48 V34 A36 20 0 0 1 86 34 V48 Z" fill="' + BRUIN + '" stroke="' + DONKER + '" stroke-width="5" ' + W + '/>' +
+      '<rect x="14" y="48" width="72" height="40" rx="6" fill="' + LICHTBRUIN + '" stroke="' + DONKER + '" stroke-width="5"/>' +
+      '<path d="M30 48 V88 M70 48 V88" stroke="' + BRUIN + '" stroke-width="6"/>' +
+      '<rect x="41" y="52" width="18" height="18" rx="4" fill="' + GEEL + '" stroke="' + DONKER + '" stroke-width="4"/>' +
+      '<circle cx="50" cy="60" r="3" fill="' + DONKER + '"/>' +
+      '<circle cx="28" cy="24" r="6" fill="' + GEEL + '" stroke="' + OKER + '" stroke-width="3"/>' +
+      '<circle cx="72" cy="22" r="6" fill="' + GEEL + '" stroke="' + OKER + '" stroke-width="3"/>')
   };
 
   function get(naam) {

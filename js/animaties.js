@@ -17,7 +17,8 @@ var Animaties = (function () {
 
   var VARIANTEN = {
     aapje: ['spring', 'liaan', 'salto', 'eet'],
-    raket: ['lancering', 'looping', 'maan']
+    raket: ['lancering', 'looping', 'maan'],
+    vis: ['sprong', 'zwem', 'bubbels']
   };
 
   var vorige = {};
@@ -115,6 +116,37 @@ var Animaties = (function () {
         // Vlieg naar net voorbij de maan.
         figuur.style.setProperty('--dx', (veld.width * 0.12 + maat * 1.1 - f.x) + 'px');
         figuur.style.setProperty('--dy', (veld.height * 0.06 + maat * 0.3 - f.bottom) + 'px');
+        effecten.push(vliegIcoon(o));
+        break;
+
+      /* ---- Vis ---- */
+      case 'sprong':
+        // Springt op uit het water: spetters bij de start, schelp vliegt naar de teller.
+        for (var d = 0; d < 5; d++) {
+          var spat = maakEffect(laag, 'spat spat-' + d, '', {
+            left: (f.x - f.w * 0.3 + d * f.w * 0.15) + 'px', top: (f.bottom - 14) + 'px'
+          });
+          spat.style.setProperty('--sx', ((d - 2) * f.w * 0.22) + 'px');
+          effecten.push(spat);
+        }
+        effecten.push(vliegIcoon(o));
+        break;
+      case 'zwem':
+        // Zwemt naar de goede kaart en terug; --dy is hier de afstand tussen de middens.
+        figuur.style.setProperty('--dy', (doel.y - f.y) + 'px');
+        effecten.push(vliegIcoon(o));
+        break;
+      case 'bubbels':
+        // Blaast bubbels vanuit de mond (links), die opstijgen en verdwijnen.
+        for (var b = 0; b < 6; b++) {
+          var maatB = f.w * (0.1 + (b % 3) * 0.05);
+          var bubbel = maakEffect(laag, 'bubbel bubbel-' + b, '', {
+            left: (f.x - f.w * 0.5 - maatB / 2) + 'px', top: (f.top + f.h * 0.5 - maatB / 2) + 'px',
+            width: maatB + 'px', height: maatB + 'px'
+          });
+          bubbel.style.setProperty('--bx', ((b % 2 ? -1 : 1) * (10 + b * 6)) + 'px');
+          effecten.push(bubbel);
+        }
         effecten.push(vliegIcoon(o));
         break;
     }

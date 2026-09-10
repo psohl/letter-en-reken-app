@@ -3,7 +3,7 @@
    (browservereiste). Globale naam is `Geluid` (niet `Audio`, dat is al een browserobject).
 
    Geluid.ontgrendel()      aanroepen vanuit een klik/toets-handler
-   Geluid.speel(naam)       'goed' | 'fout' | 'whoosh' | 'oe-oe' | 'klik' | 'toggleAan' | 'toggleUit'
+   Geluid.speel(naam)       'goed' | 'fout' | 'whoosh' | 'oe-oe' | 'blub' | 'klik' | 'toggleAan' | 'toggleUit'
    Geluid.zetAan(bool) / Geluid.wissel() / Geluid.isAan()
    Geluid.bijWissel(cb)     cb(aan) wordt aangeroepen bij elke wissel */
 
@@ -79,6 +79,11 @@ var Geluid = (function () {
     /* Zachte klik/pop */
     klik: function (t) {
       toon(900, t, 0.05, 'square', 0.12, 500);
+    },
+    /* Vis: twee korte "blub"-bubbeltjes omhoog */
+    blub: function (t) {
+      toon(300, t, 0.12, 'sine', 0.35, 720);
+      toon(380, t + 0.14, 0.14, 'sine', 0.3, 960);
     },
     toggleAan: function (t) { toon(420, t, 0.12, 'triangle', 0.3, 640); },
     toggleUit: function (t) { toon(640, t, 0.12, 'triangle', 0.3, 420); }

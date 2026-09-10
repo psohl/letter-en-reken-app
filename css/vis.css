@@ -1,0 +1,159 @@
+/* vis.css - woordenspel Vis (ontwikkelplan §5.1, §5.5, §7.4) */
+
+:root {
+  /* Maten van de kaarten; hoogte is op laptops de beperkende factor. */
+  --keuze:        min(24vh, 17vw, 300px);       /* vierkante plaatjeskaart als keuze */
+  --woordkaart-b: min(72vw, 900px);             /* brede woordkaart als opgave */
+  --keuzewoord-b: min(28vw, 420px);             /* brede woordkaart als keuze */
+}
+
+.speelveld-vis {
+  flex-direction: column;
+  gap: clamp(10px, 3vh, 40px);
+  /* Onderaan ruimte voor het visje (17vh hoog), zodat de brede woordkaarten het niet raken. */
+  padding-bottom: clamp(70px, 18vh, 230px);
+}
+
+/* ---- Opgave: het woord (breed) of het plaatje (vierkant) op een kaart met zeegroene rand ---- */
+.vis-opgave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: #FFFDF7;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+  box-shadow: var(--schaduw), inset 0 0 0 8px var(--kleur-vis);
+}
+.vorm-woord   .vis-opgave { width: var(--woordkaart-b); height: min(24vh, 220px); min-height: 110px; }
+.vorm-plaatje .vis-opgave { width: min(30vh, 26vw, 340px); height: min(30vh, 26vw, 340px); min-width: 130px; min-height: 130px; }
+
+/* ---- Keuzes: drie kaarten naast elkaar ---- */
+.vis-keuzes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.5vw, 48px);
+}
+.keuze {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--schaduw);
+  transition: transform 0.15s ease, opacity 0.3s ease, filter 0.3s ease, box-shadow 0.15s ease;
+}
+.keuze-plaatje { width: var(--keuze); height: var(--keuze); }
+.keuze-woord   { width: var(--keuzewoord-b); height: min(20vh, 12vw, 190px); min-height: 84px; }
+.keuze:hover:not(:disabled)  { transform: translateY(-5px) scale(1.03); }
+.keuze:active:not(:disabled) { transform: translateY(2px) scale(0.98); box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12); }
+.keuze:disabled { cursor: default; }
+/* Een foute keuze doet niet meer mee: vervaagt, blijft wel zichtbaar (geen rood kruis). */
+.keuze.fout { opacity: 0.35; filter: grayscale(0.8); }
+.keuze.goed {
+  box-shadow: var(--schaduw), inset 0 0 0 8px var(--kleur-goed), 0 0 0 12px rgba(76, 175, 80, 0.25);
+  animation: goed-pop 0.5s ease both;
+}
+/* Hint na twee fouten: de enige overgebleven kaart pulseert zachtjes (~0,6 Hz). */
+.keuze.pulseer { animation: pulseer-kaart 0.8s ease-in-out infinite alternate; }
+@keyframes pulseer-kaart {
+  from { transform: scale(1);    box-shadow: var(--schaduw); }
+  to   { transform: scale(1.06); box-shadow: var(--schaduw), 0 0 0 12px rgba(76, 175, 80, 0.35); }
+}
+
+/* ---- Plaatjes ---- */
+.plaatje { display: block; width: 80%; height: 80%; }
+.plaatje svg { width: 100%; height: 100%; }
+
+/* ---- Woorden: elke letter in een eigen span (klinker blauw, medeklinker rood) ----
+   De lettergrootte volgt uit de kaartbreedte en het aantal letters (--letters, gezet door vis.js),
+   zodat ook "tandenborstel" op een kaart past; --letterbreedte is de gemiddelde letterbreedte in em. */
+.woord { display: inline-block; white-space: nowrap; line-height: 1; }
+.woord.schrijfletter { --letterbreedte: 0.34; transform: translateY(-5%); }   /* Lusletters is smal: gemeten 0,28 em per letter */
+.woord.blokletter    { --letterbreedte: 0.62; }
+.vis-opgave .woord {
+  font-size: min(17vh, 200px, calc(var(--woordkaart-b) * 0.84 / (var(--letters, 5) * var(--letterbreedte, 0.6))));
+}
+.keuze-woord .woord {
+  font-size: min(12vh, 120px, calc(var(--keuzewoord-b) * 0.86 / (var(--letters, 5) * var(--letterbreedte, 0.6))));
+}
+
+/* Niveau-ring in zeegroen (raketje.css zet hem in raketrood) */
+.vis-niveau.aan { box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-vis); }
+
+/* ---- Visje in de hoek: rust (wiegt, staart zwaait) ---- */
+.figuur-vis { transform-origin: 50% 50%; animation: vis-wieg 3s ease-in-out infinite; }
+.figuur-vis .staart { animation: staart-zwaai 0.9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 0% 50%; }
+@keyframes vis-wieg {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-6%) rotate(2deg); }
+}
+@keyframes staart-zwaai {
+  from { transform: rotate(-14deg); }
+  to   { transform: rotate(14deg); }
+}
+
+/* ---- Beloningsanimaties (Animaties.speel('vis')), alle 1,4 s ----
+   --dx/--dy = afstand van het visje naar de goede kaart, gezet door animaties.js. */
+
+/* 1. Springt op uit het water met spetters; schelp vliegt naar de teller */
+.figuur-vis.anim-sprong { animation: vis-sprong 1.4s cubic-bezier(0.3, 0.6, 0.4, 1) both; }
+@keyframes vis-sprong {
+  0%   { transform: translateY(0) rotate(0); }
+  15%  { transform: translateY(8%) scaleY(0.9); }
+  45%  { transform: translateY(-130%) rotate(-30deg); }
+  60%  { transform: translateY(-130%) rotate(20deg); }
+  90%  { transform: translateY(0) rotate(0) scaleY(0.94); }
+  100% { transform: translateY(0); }
+}
+.effect.spat {
+  width: 12px;
+  height: 16px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: #8FD3FF;
+  border: 2px solid #2F6FB5;
+  animation: spat 0.8s ease-out both;
+}
+.effect.spat-1, .effect.spat-3 { animation-delay: 0.06s; }
+.effect.spat-2 { animation-delay: 0.1s; }
+@keyframes spat {
+  0%   { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translate(var(--sx, 0), -70px) scale(1); opacity: 0; }
+}
+
+/* 2. Zwemt naar de goede kaart, draait om en zwemt terug */
+.figuur-vis.anim-zwem { animation: vis-zwem 1.4s ease-in-out both; }
+@keyframes vis-zwem {
+  0%   { transform: translate(0, 0) scaleX(1); }
+  42%  { transform: translate(var(--dx), var(--dy)) scaleX(1); }
+  50%  { transform: translate(var(--dx), var(--dy)) scaleX(-1); }
+  94%  { transform: translate(0, 0) scaleX(-1); }
+  100% { transform: translate(0, 0) scaleX(1); }
+}
+
+/* 3. Blaast bubbels en wiebelt van plezier */
+.figuur-vis.anim-bubbels { animation: vis-bubbels 1.4s ease-in-out both; }
+@keyframes vis-bubbels {
+  0%, 100% { transform: rotate(0) scale(1); }
+  25%      { transform: rotate(-8deg) scale(1.06); }
+  50%      { transform: rotate(6deg) scale(1); }
+  75%      { transform: rotate(-6deg) scale(1.06); }
+}
+.effect.bubbel {
+  border-radius: 50%;
+  border: 3px solid rgba(47, 111, 181, 0.7);
+  background: rgba(143, 211, 255, 0.35);
+  animation: bubbel 1.1s ease-out both;
+}
+.effect.bubbel-1 { animation-delay: 0.1s; }
+.effect.bubbel-2 { animation-delay: 0.2s; }
+.effect.bubbel-3 { animation-delay: 0.3s; }
+.effect.bubbel-4 { animation-delay: 0.4s; }
+.effect.bubbel-5 { animation-delay: 0.5s; }
+@keyframes bubbel {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translate(var(--bx, 0), -170px) scale(1); opacity: 0; }
+}
