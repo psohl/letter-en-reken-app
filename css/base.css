@@ -125,8 +125,8 @@ button {
 
 /* ---- Instel-schakelaars in de bovenbalk ----
    Lettersets bij Aapje, operatoren en kralen bij Raketje: aan = gekleurd,
-   uit = grijs. De eerste schakelaar van een groep kan vergrendeld zijn
-   (altijd aan) en heeft dan een slotje. */
+   uit = grijs. Een schakelaar kan vergrendeld zijn (altijd aan) en heeft dan
+   een slotje; sinds fase 13 gebruikt geen enkel scherm dat meer. */
 .knopgroep { display: flex; gap: clamp(8px, 1vw, 20px); }
 .knopgroep + .knopgroep {
   padding-left: clamp(8px, 1.2vw, 24px);

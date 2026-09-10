@@ -234,7 +234,7 @@ rechtsboven een knop extra.
 
 - Midden: de som groot in beeld, bijv. `3 + 4 = _` met een invulvakje dat de getypte cijfers toont.
 - Bovenaan staan alle instellingen in de middenbalk, in drie groepen met een scheidingslijntje ertussen:
-  1. vier operator-toggles met icoon (`+`, `−`, `×`, `÷`); aan = gekleurd, uit = grijs. De `+` staat altijd aan en is niet uit te zetten (visueel "vergrendeld" met een slotje).
+  1. vier operator-toggles met icoon (`+`, `−`, `×`, `÷`); aan = gekleurd, uit = grijs. Alle vier zijn vrij aan en uit te zetten (ook de `+`, sinds fase 13); er moet er alleen altijd minstens één aan staan: klikken op de laatst aangezette soort doet niets.
   2. drie niveauknoppen: klein / groot / superraketje, in drie duidelijk verschillende maten (klein = t/m 10, groot = t/m 20, super = plus en min t/m 100).
   3. schakelaar voor de Montessori-kralen als visueel hulpmiddel (§5.3), standaard uit.
 - Rechtsboven blijft alleen het geluid-icoon staan (sinds fase 9; het niveau stond daar eerst).
@@ -274,7 +274,7 @@ rechtsboven een knop extra.
 
    De vier sets zijn vrij te combineren; er moet er alleen minstens één aan blijven staan, welke
    maakt niet uit (alleen hoofdletters oefenen kan dus ook). Klikken op de laatst aangezette soort
-   doet niets. Anders dan de `+` bij Raketje is geen enkele letterset vergrendeld.
+   doet niets. Dezelfde regel geldt sinds fase 13 voor de operatoren bij Raketje.
 
    De letter komt uit de shuffle-bag over de 26 letters, de set uit een tweede shuffle-bag over de
    aangezette sets (`Letters.Kaartenzak`): alle letters én alle aangezette vormen komen even vaak.
@@ -283,7 +283,10 @@ rechtsboven een knop extra.
 
 **Raketje (sommen)**
 
-1. Actieve operatoren bepalen de kansverdeling: elke actieve operator even vaak.
+1. Actieve operatoren bepalen de kansverdeling: elke actieve operator even vaak. Alle vier zijn vrij
+   te combineren (sinds fase 13 ook de `+`); er staat altijd minstens één aan: de laatst aangezette
+   operator is niet uit te zetten (klik of toets doet dan niets). Bij het opstarten staat alleen `+` aan.
+   Gaat de operator van de som in beeld uit, dan komt er meteen een nieuwe som.
 2. Generatorregels per niveau:
 
    | Operator | Niveau klein | Niveau groot | Niveau super (fase 9) |
@@ -419,7 +422,7 @@ toont alle plaatjes per niveau ter beoordeling.
 | Vier pijltjes naar buiten | Volledig scherm | Hoofdmenu |
 | Toetsenbord (blauw, toetsenrijen en spatiebalk) | Toetsenbord op het scherm aan/uit (aanraakstand) | Hoofdmenu |
 | `+` `−` `×` `÷` in gekleurde cirkels | Operator aan/uit | Raketje |
-| Slotje op `+` | Plus staat altijd aan | Raketje |
+| Slotje | Vergrendelde schakelaar (stond t/m fase 12 op de `+`; sinds fase 13 nergens meer in gebruik, het icoon staat nog in `icons.js`) | – |
 | Klein / groot / superraketje (drie maten) | Niveau klein / groot / super | Raketje |
 | Banaan, bananentros | Sessieteller | Aapje |
 | Ster | Sessieteller | Raketje |
@@ -502,7 +505,7 @@ Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binne
 | **0. Opzet** (½ dag) ✅ **klaar 8 sept 2026** | Mappenstructuur, `index.html` met drie schermen, `base.css`, schermwisseling in `app.js`, terugknop en `Escape`. Menu: `A`/`1`, `R`/`2`, pijltjes + Enter, muisklik. Backspace en spatie afgevangen. | ✅ Menu → Aapje → menu → Raketje → menu werkt met muis en toetsen (geautomatiseerd gecontroleerd in Chrome vanaf `file://`; handmatige check in Edge en Firefox nog doen). |
 | **1. Font en letters** (½-1 dag) ✅ **klaar 8 sept 2026** | Fonts gedownload, proefpagina `test/fontproef.html` naast `letters.png`, keuze Lusletters + ss01, base64 in `fonts.css`, `letters.js` met klinker/medeklinker en shuffle-bag, tests in `test/test.html`. | ✅ Alle 26 letters in de goede vorm en kleur zichtbaar in de proefpagina; 13 tests voor `letters.js` slagen. |
 | **2. Aapje speelbaar** (1 dag) ✅ **klaar 8 sept 2026** | Letter tonen, toetsafhandeling, goed/fout, schudden, bananenteller, hint-toetsenbord na 2 fouten, placeholder-animatie (aapje springt, 1,3 s). | ✅ Spelloop werkt; Shift/hoofdletter geeft goed antwoord; cijfers tellen niet als poging; toetsen tijdens animatie genegeerd (geautomatiseerd gecontroleerd in Chrome). |
-| **3. Raketje speelbaar** (1 dag) ✅ **klaar 8 sept 2026** | `sommen.js` met 45 tests, operator-toggles (+ vergrendeld met slotje), niveau-schakelaar, automatisch controleren, sterrenteller, hint, placeholder-animatie (raket stijgt op, 1,3 s). | ✅ Alle generatorregels uit §5.2 aangetoond via `test/test.html` (10.000 sommen per operator en niveau); spelloop werkt, dubbelklik op toggle geeft geen dubbele actie. |
+| **3. Raketje speelbaar** (1 dag) ✅ **klaar 8 sept 2026** | `sommen.js` met 45 tests, operator-toggles (+ vergrendeld met slotje; slot eraf in fase 13), niveau-schakelaar, automatisch controleren, sterrenteller, hint, placeholder-animatie (raket stijgt op, 1,3 s). | ✅ Alle generatorregels uit §5.2 aangetoond via `test/test.html` (10.000 sommen per operator en niveau); spelloop werkt, dubbelklik op toggle geeft geen dubbele actie. |
 | **4. Iconen en visueel** (1-2 dagen) ✅ **klaar 8 sept 2026** | Alle 21 SVG-iconen getekend (§6.3), kleurenpalet en zachte stippenachtergrond, layout op 1024×768 t/m 2560×1440 en half scherm, idle-animaties (aapje knippert en wiegt met zijn staart, raket wiegt met flakkerende vlam, ook in het menu). | ✅ Geen tekst nodig (alleen cijfers in het sommetje); alle knoppen ≥ 96 px op alle geteste formaten, niets buiten beeld, figuur overlapt kaart/som niet. |
 | **5. Animaties en geluid** (1-2 dagen) ✅ **klaar 8 sept 2026** | Aapje: spring, liaan, salto, eet. Raket: lancering (met rook), looping, langs de maan. Banaan/ster vliegt naar de teller. Zeven Web Audio-geluiden, luidsprekerknop op elk scherm, fullscreen-knop in het menu. | ✅ Alle varianten 1,4 s; toetsen tijdens animatie worden genegeerd; nooit twee keer dezelfde variant achter elkaar (getest). |
 | **6. Testen met kind** (½ dag + iteratie) ✅ **klaar 8 sept 2026** | Sessie met het kind (6 jaar); geluiden en animaties beoordeeld. | ✅ Volgens de observatie van Peter: geluiden en animaties werken goed en het kind begrijpt de app. Geen aanpassingen nodig gebleken. |
@@ -513,6 +516,7 @@ Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binne
 | **11. GitHub-repo en naam** (¼ dag) ✅ **klaar 9 sept 2026, plan bijgewerkt 10 sept** | App onder de naam **Letter en Cijfer-app** (titel, manifest, README) in de openbare repo `psohl/letter-en-reken-app`; `LEESMIJ.md` hernoemd naar `README.md`; `letters.png` en de zip-opleveringen niet in de repo; GitHub Pages aan op `main`. | ✅ 27 bestanden in de repo, precies de structuur van §4.2; 121 tests groen vanaf `file://` in Chrome (10 sept 2026); `https://psohl.github.io/letter-en-reken-app/` antwoordt met de app; README en app.js-commentaar op 10 sept bijgewerkt (zie §13). |
 
 | **12. Vis: woorden lezen** (1 dag) ✅ **klaar 10 sept 2026** | Derde onderdeel naast Aapje en Raketje (§5.5): twee spelvormen (woord → plaatje, plaatje → woord), drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3, 56 woorden per niveau met onderbouwing in `woordenlijst-vis.md`, 168 eigen SVG-plaatjes in `js/plaatjes.js`, schrijf- of blokletters, klinkers blauw en medeklinkers rood, schelpenteller, drie visanimaties, negen nieuwe iconen, menu met drie knoppen. | ✅ 152 tests groen (31 nieuwe); 37 gedragschecks in Chrome; layout gemeten op 1024×768 en 1366×768 en op telefoon- en tabletformaten: niets buiten beeld, visje raakt de kaarten niet; alle 168 plaatjes visueel beoordeeld op contactbladen. |
+| **13. Plus vrij uit te zetten** (< ¼ dag) ✅ **klaar 10 sept 2026** | Bij Raketje is de `+` niet meer vergrendeld: alle vier de operatoren zijn los aan en uit te zetten, met als enige regel dat er minstens één aan blijft (zoals de lettersets bij Aapje sinds fase 9). Slotje weg uit `index.html`. | ✅ 154 tests groen (5 nieuwe, 3 oude vervangen); 22 gedragschecks in Chrome; screenshot met alleen `÷` aan: drie grijze schakelaars, geen slotje, deelsom in beeld. |
 
 Totaal ca. 7-9 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn onafhankelijk en kunnen parallel.
 
@@ -548,6 +552,7 @@ Totaal ca. 7-9 werkdagen doorlooptijd bij deeltijdinzet; de fases 2 en 3 zijn on
 - ✅ Gedragstest fase 8/9 (geautomatiseerd in Chrome, 27 checks): letterset-schakelaars via klik en toets `1`-`4`, basisset niet uit te zetten, dubbelklik geeft één actie, hoofdletter op de kaart wordt met de kleine letter goed beantwoord, kralen aan/uit via klik en `H`, kralen kloppen met plus/min/keer/deel-sommen en blijven staan na een bezoek aan het menu. Fase 9 erbij: de schrijfletter kan uit zolang er een andere soort aan staat, de laatste soort blijft altijd aan (klik en toets), de drie niveauknoppen werken via klik en `K`/`G`/`S`, supersommen blijven onder 100 en het niveau blijft staan na een bezoek aan het menu.
 - ✅ Gedragstest fase 10 (geautomatiseerd in Chrome, 36 checks): aanraakstand uit op een pc; aan via de menuknop en via `T`, dubbelklik geeft één actie; bij Aapje staat het toetsenbord meteen in beeld, een foute tik geeft nog geen hint, twee foute tikken laten de juiste toets pulseren, een goede tik telt een banaan, tikken tijdens de animatie worden genegeerd, na de animatie komt een nieuwe letter en blijft het toetsenbord staan; bij Raketje is de wistoets zichtbaar, een juist eerste cijfer blijft staan, de wistoets wist het, na twee fouten pulseert het eerste cijfer en springt de hint naar het tweede, het volledige antwoord geeft een ster; in de pc-stand doet een tik niets en is de wistoets weg.
 - ✅ Gedragstest fase 12 (geautomatiseerd in Chrome, 37 checks): `V` en `3` openen Vis, pijltjes in het menu lopen over drie knoppen; beginstand woord-vorm / kleine vis / schrijfletters; opgave toont het woord met gekleurde letters en drie plaatjeskaarten; foute klik vervaagt de kaart en schakelt hem uit, geen hint na één fout, tweede fout via cijfertoets laat de goede kaart pulseren; goed via toets telt een schelp, start een visanimatie, toetsen tijdens de animatie worden genegeerd, daarna nieuwe opgave met schone kaarten en opgeruimde effecten; pijltjes verplaatsen de focus; `P`/`W` en klikken schakelen de vormen (laatste blijft aan, dubbelklik één actie), `B`/`S` de lettersoort, `H`/`G`/`K` en klikken het niveau; Escape tijdens de animatie ruimt op, instellingen en schelpen blijven staan na een bezoek aan het menu.
+- ✅ Gedragstest fase 13 (geautomatiseerd in Chrome, 22 checks): beginstand alleen `+` aan, zonder slotje of `aria-disabled`; klik en toets `+` op de enige aanstaande soort doen niets; `−` erbij en dan `+` uit laat alleen `−` over en geeft meteen een minsom; klik en toets op de laatste soort doen niets en de som blijft staan; via `*` en `-` alleen `×` over, drie goed beantwoorde sommen zijn allemaal keersommen en geven drie sterren; dubbele toets `+` geeft één actie; alle vier aan en dan alle vier uit klikken laat de laatste (`÷`) aan met een deelsom; de stand blijft na een bezoek aan het menu.
 - Tijdens animatie tikken: geen dubbele beloning, geen overgeslagen opgave. ✅ Ook getikt (fase 10).
 - ✅ Geluid: beoordeeld tijdens de kindtest, werkt goed.
 - Schermformaten: 1366×768 laptop, 1920×1080, 2560×1440, venster half scherm. ✅ Fase 10 (headless, niets buiten beeld): 390×844 en 360×780 (telefoon rechtop), 844×390 (telefoon liggend), 768×1024 en 820×1180 (tablet rechtop), 1180×820 (tablet liggend).
@@ -1023,3 +1028,42 @@ een duidelijk plaatje per woord, instelbare lettersoort, klinker-/medeklinkerkle
 - De blokletter-woorden hangen, net als bij Aapje, af van het font op de pc (§6.4).
 - Op een echte iPad en iPhone proberen (open sinds fase 10); Edge handmatig (open sinds fase 7).
 - Niet gecommit: alle wijzigingen van fase 12 staan lokaal klaar; Peter commit en pusht zelf.
+
+### 10 september 2026 · Fase 13: plus bij Raketje vrij uit te zetten
+
+Wens van Peter: de `+` bij Raketje moet ook uit kunnen, met de vanzelfsprekende regel dat er altijd
+minstens één van de vier soorten (`+`, `−`, `×`, `÷`) aan blijft staan. Wie de laatst aangezette
+soort uit wil zetten, krijgt niets: geen geluid, geen wissel, de som blijft staan.
+
+**Gemaakt (§5.2, §6.3)**
+
+- `js/sommen.js`: `Generator.zetOperators` dwingt `plus` niet meer af, maar weigert een lege lijst
+  (of een lijst met alleen onbekende operatoren): de huidige stand blijft dan staan. Bij het
+  opstarten zonder operatoren valt hij terug op `plus`. Dezelfde constructie als
+  `Letters.Kaartenzak.zetSets` sinds fase 9.
+- `js/raketje.js`: `wisselOperator` heeft geen uitzondering voor `plus` meer; nieuw is de regel "de
+  laatste soort blijft aan" (klik of toets op de enige aanstaande operator doet niets, ook geen
+  geluid), net als `wisselSet` bij Aapje. De dubbelklik-bescherming en het meteen wisselen van de som
+  als zijn operator uitgaat blijven zoals ze waren.
+- `index.html`: de plusknop heeft geen `vergrendeld`-klasse, slotje en `aria-disabled` meer; het
+  `aria-label` is nu "Plussommen aan of uit". De CSS voor `.vergrendeld` en `.slotje` in `base.css`
+  en het slot-icoon in `icons.js` staan er nog (nergens meer in gebruik), voor het geval een schakelaar
+  later toch weer op slot moet.
+- `test/test.html`: de drie tests "plus staat altijd aan" zijn vervangen door vijf nieuwe (alleen
+  `maal` aan kan en geeft alleen keersommen; lege lijst en onbekende operatoren worden geweigerd;
+  starten zonder operatoren valt terug op `plus`). Totaal 154 tests.
+- `README.md`: hoofdstuk "Sommen" (plus kan uit, laatste blijft aan) en dit plan (§5.1, §5.2, §6.3,
+  §9, §10).
+
+**Gecontroleerd**
+
+- `test/test.html`: 154 goed, 0 fout in Chrome vanaf `file://`, geen consolemeldingen.
+- Gedragstest in de echte DOM (headless Chrome via het DevTools-protocol, 22 checks, alle groen; zie
+  §10): klikken én toetsen, laatste soort blijft aan, som wisselt meteen als zijn operator uitgaat,
+  dubbelklik geeft één actie, stand blijft staan na een bezoek aan het menu.
+- Screenshot op 1366×768 met alleen `÷` aan: `+`, `−` en `×` grijs, `÷` gekleurd, geen slotje,
+  som `25 ÷ 5`.
+
+**Nog te doen / aandachtspunten**
+
+- Niet gecommit; Peter commit en pusht zelf.

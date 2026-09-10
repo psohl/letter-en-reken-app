@@ -86,11 +86,12 @@ var Raketje = (function () {
   /* ---- Instellingen ---- */
 
   function wisselOperator(op) {
-    if (op === 'plus') return;                                 // vergrendeld
-    if (dubbelklik('op:' + op)) return;
-
+    if (Sommen.OPERATOREN.indexOf(op) < 0) return;
     var actief = generator.operators();
     var i = actief.indexOf(op);
+    if (i >= 0 && actief.length === 1) return;                 // de laatste soort blijft aan
+    if (dubbelklik('op:' + op)) return;
+
     if (i >= 0) actief.splice(i, 1); else actief.push(op);
     generator.zetOperators(actief);
     Geluid.speel(i >= 0 ? 'toggleUit' : 'toggleAan');

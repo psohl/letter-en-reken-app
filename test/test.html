@@ -339,7 +339,7 @@
     test('generator: een onbekend niveau wordt genegeerd', g.niveau() === 'super');
   })();
 
-  // Generator: even verdeling, nooit dezelfde som twee keer achter elkaar, plus altijd aan.
+  // Generator: even verdeling, nooit dezelfde som twee keer achter elkaar, minstens één operator aan.
   (function () {
     var g = new Sommen.Generator({ operators: ['plus', 'min', 'maal', 'deel'], niveau: 'groot' }, maakRandom(99));
     var tel = { plus: 0, min: 0, maal: 0, deel: 0 }, herh = 0, vorige = null, triviaal = 0;
@@ -356,12 +356,16 @@
     test('generator: triviale sommen (+0, :1) hoogstens af en toe (< 4 %)', triviaal < N * 0.04, triviaal);
 
     var g2 = new Sommen.Generator({ operators: ['maal'] }, maakRandom(3));
-    test('generator: plus staat altijd aan, ook als hij niet is meegegeven', g2.operators().indexOf('plus') >= 0 && g2.operators().indexOf('maal') >= 0);
+    test('generator: plus is niet vergrendeld, alleen maal aan kan', g2.operators().join() === 'maal');
+    var alleenMaal = true;
+    for (var k = 0; k < 500; k++) if (g2.volgende().op !== 'maal') alleenMaal = false;
+    test('generator: met alleen maal komen alleen keersommen', alleenMaal);
     g2.zetOperators([]);
-    test('generator: alles uitzetten laat plus aan', g2.operators().join() === 'plus');
-    var alleenPlus = true;
-    for (var k = 0; k < 500; k++) if (g2.volgende().op !== 'plus') alleenPlus = false;
-    test('generator: met alleen plus komen alleen plussommen', alleenPlus);
+    test('generator: alles uitzetten wordt geweigerd, de huidige stand blijft staan', g2.operators().join() === 'maal');
+    g2.zetOperators(['onzin']);
+    test('generator: alleen onbekende operatoren wordt ook geweigerd', g2.operators().join() === 'maal');
+    var g4 = new Sommen.Generator({ operators: [] }, maakRandom(5));
+    test('generator: starten zonder operatoren valt terug op plus', g4.operators().join() === 'plus');
 
     var g3 = new Sommen.Generator({ operators: ['plus'], niveau: 'klein' }, maakRandom(11));
     var herh3 = 0, v3 = null;

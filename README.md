@@ -91,7 +91,9 @@ die op dat moment in beeld staat, dan komt er meteen een nieuwe letter.
 - Goed: een ster erbij en de raket vliegt weg. Fout: het antwoord schudt en wordt gewist.
   Na twee fouten knippert het eerstvolgende cijfer onderin.
 - Bovenaan staan vier ronde knoppen: **plus**, **min**, **keer**, **delen**. Klik om een soort som
-  aan of uit te zetten (gekleurd = aan, grijs = uit). Plus staat altijd aan (slotje).
+  aan of uit te zetten (gekleurd = aan, grijs = uit). Bij het opstarten staat alleen plus aan, maar
+  ook plus kan uit, dus **alleen keersommen** oefenen kan ook. Er moet er wel altijd één aan blijven
+  staan: klik je de laatste uit, dan gebeurt er niets.
 - Achter een streepje, naast de raketjes, staat de knop met de **kralen**. Die zet het Montessori-hulpmiddel
   aan: onder de som verschijnt de som in kralenstaafjes, in de vertrouwde kleuren
   (1 rood, 2 groen, 3 roze, 4 geel, 5 lichtblauw, 6 paars, 7 wit, 8 bruin, 9 donkerblauw, 10 goud).

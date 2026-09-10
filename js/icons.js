@@ -169,7 +169,7 @@ var Icons = (function () {
     kralen: cirkel('#FFF1DC',
       kralenStaaf(1, 26, '#E63946') + kralenStaaf(2, 50, '#4CAF50') + kralenStaaf(3, 74, '#F2A0B4')),
 
-    /* Slotje: plus staat altijd aan */
+    /* Slotje (sinds fase 13 nergens meer in gebruik: geen enkele schakelaar is nog vergrendeld) */
     slot: svg('0 0 100 100',
       '<rect x="22" y="44" width="56" height="44" rx="10" fill="#7A5A00"/>' +
       '<path d="M34 44 V32 a16 16 0 0 1 32 0 V44" fill="none" stroke="#7A5A00" stroke-width="10"/>' +
