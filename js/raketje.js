@@ -47,7 +47,7 @@ var Raketje = (function () {
     hint = KeyboardHint.maak(document.getElementById('raketje-hint'), 'cijfers');
     teller = Teller.maak(els.tellerEl, 'ster', 'ster');
     kralen = Kralen.maak(document.getElementById('raketje-kralen'));
-    generator = new Sommen.Generator({ operators: ['plus'], niveau: 'klein' });
+    generator = new Sommen.Generator({ operators: ['plus'], niveaus: ['klein'] });
 
     els.toggles.forEach(function (knop) {
       knop.addEventListener('click', function () {
@@ -57,7 +57,7 @@ var Raketje = (function () {
     });
     els.niveaus.forEach(function (knop) {
       knop.addEventListener('click', function () {
-        zetNiveau(knop.getAttribute('data-niveau'));
+        wisselNiveau(knop.getAttribute('data-niveau'));
         knop.blur();
       });
     });
@@ -100,12 +100,21 @@ var Raketje = (function () {
     if (som && generator.operators().indexOf(som.op) < 0 && !bezig) volgendeSom();
   }
 
-  function zetNiveau(niveau) {
-    if (niveau === generator.niveau()) return;
-    generator.zetNiveau(niveau);
-    Geluid.speel('klik');
+  /* Niveaus zijn net als de operatoren los aan en uit te zetten; staan er meerdere aan, dan
+     komen de sommen door elkaar uit die niveaus. Het laatste aangezette niveau blijft staan. */
+  function wisselNiveau(niveau) {
+    if (Sommen.NIVEAUNAMEN.indexOf(niveau) < 0) return;
+    var actief = generator.niveaus();
+    var i = actief.indexOf(niveau);
+    if (i >= 0 && actief.length === 1) return;                 // het laatste niveau blijft aan
+    if (dubbelklik('niveau:' + niveau)) return;
+
+    if (i >= 0) actief.splice(i, 1); else actief.push(niveau);
+    generator.zetNiveaus(actief);
+    Geluid.speel(i >= 0 ? 'toggleUit' : 'toggleAan');
     toonToggles();
-    if (!bezig) volgendeSom();
+    // Staat het niveau van de huidige som nu uit? Dan meteen een nieuwe som.
+    if (som && generator.niveaus().indexOf(som.niveau) < 0 && !bezig) volgendeSom();
   }
 
   /* Montessori-kralen aan of uit. Het hulpmiddel laat de som in kralen zien;
@@ -131,8 +140,9 @@ var Raketje = (function () {
       knop.classList.toggle('aan', aan);
       knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
     });
+    var niveaus = generator.niveaus();
     els.niveaus.forEach(function (knop) {
-      var aan = knop.getAttribute('data-niveau') === generator.niveau();
+      var aan = niveaus.indexOf(knop.getAttribute('data-niveau')) >= 0;
       knop.classList.toggle('aan', aan);
       knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
     });
@@ -176,9 +186,9 @@ var Raketje = (function () {
     var op = Sommen.TOETS_NAAR_OPERATOR[k.toLowerCase()];
     if (op) { e.preventDefault(); wisselOperator(op); return; }
 
-    if (k.length === 1 && k.toLowerCase() === 'k') { e.preventDefault(); zetNiveau('klein'); return; }
-    if (k.length === 1 && k.toLowerCase() === 'g') { e.preventDefault(); zetNiveau('groot'); return; }
-    if (k.length === 1 && k.toLowerCase() === 's') { e.preventDefault(); zetNiveau('super'); return; }
+    if (k.length === 1 && k.toLowerCase() === 'k') { e.preventDefault(); wisselNiveau('klein'); return; }
+    if (k.length === 1 && k.toLowerCase() === 'g') { e.preventDefault(); wisselNiveau('groot'); return; }
+    if (k.length === 1 && k.toLowerCase() === 's') { e.preventDefault(); wisselNiveau('super'); return; }
     if (k.length === 1 && k.toLowerCase() === 'h') { e.preventDefault(); wisselKralen(); return; }   // hulpkralen
   }
 
@@ -234,6 +244,7 @@ var Raketje = (function () {
 
   return {
     huidigeSom: function () { return som; },
+    niveaus: function () { return generator ? generator.niveaus() : []; },
     invoer: function () { return invoer; },
     kralenAan: function () { return kralenAan; },
     isBezig: function () { return bezig; }

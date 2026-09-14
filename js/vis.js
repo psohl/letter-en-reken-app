@@ -1,7 +1,10 @@
 /* vis.js - spel Vis: woorden lezen (ontwikkelplan §5.1, §5.5).
    Twee spelvormen: woord in beeld → kies het juiste plaatje uit drie; plaatje in beeld →
-   kies het juiste woord uit drie. Drie niveaus (kleine vis, grote vis, haai), schrijf- of
-   blokletters, klinkers blauw en medeklinkers rood. Registreert zich bij App als scherm 'vis'. */
+   kies het juiste woord uit drie. Drie niveaus (kleine vis, grote vis, haai) en twee soorten
+   letters (schrijf- en blokletters); spelvormen, niveaus en lettersoorten zijn allemaal los aan
+   en uit te zetten, en staan er meerdere aan dan wisselen ze elkaar per opgave af. Van elk drietal
+   blijft altijd minstens één aan. Klinkers blauw en medeklinkers rood.
+   Registreert zich bij App als scherm 'vis'. */
 
 var Vis = (function () {
   'use strict';
@@ -12,7 +15,9 @@ var Vis = (function () {
   var els = {};
   var zak = null;
   var opgave = null;           // { woord, niveau, vorm, keuzes, antwoord }
-  var schrift = Woorden.BASISSCHRIFT;
+  var schriften = [Woorden.BASISSCHRIFT];   // aangezette lettersoorten
+  var schriftzak = null;       // wisselt ze af als er meer dan één aan staat
+  var schrift = Woorden.BASISSCHRIFT;       // de lettersoort die nu in beeld staat
   var fouten = 0;
   var bezig = false;           // beloningsanimatie loopt: klikken en toetsen worden genegeerd
   var timer = null;
@@ -41,16 +46,17 @@ var Vis = (function () {
     els.schriften = Array.prototype.slice.call(els.scherm.querySelectorAll('.schrift-knop'));
 
     teller = Teller.maak(els.tellerEl, 'schelp', 'schatkist');
-    zak = new Woorden.Opgavezak(Woorden.BASISNIVEAU, [Woorden.BASISVORM]);
+    zak = new Woorden.Opgavezak([Woorden.BASISNIVEAU], [Woorden.BASISVORM]);
+    schriftzak = new Letters.ShuffleBag(schriften);
 
     els.vormToggles.forEach(function (knop) {
       knop.addEventListener('click', function () { wisselVorm(knop.getAttribute('data-vorm')); knop.blur(); });
     });
     els.niveaus.forEach(function (knop) {
-      knop.addEventListener('click', function () { zetNiveau(knop.getAttribute('data-niveau')); knop.blur(); });
+      knop.addEventListener('click', function () { wisselNiveau(knop.getAttribute('data-niveau')); knop.blur(); });
     });
     els.schriften.forEach(function (knop) {
-      knop.addEventListener('click', function () { zetSchrift(knop.getAttribute('data-schrift')); knop.blur(); });
+      knop.addEventListener('click', function () { wisselSchrift(knop.getAttribute('data-schrift')); knop.blur(); });
     });
     els.knoppen.forEach(function (knop, i) {
       knop.addEventListener('click', function () { kies(i); });
@@ -87,36 +93,54 @@ var Vis = (function () {
     if (opgave && zak.vormen().indexOf(opgave.vorm) < 0 && !bezig) volgendeOpgave();
   }
 
-  function zetNiveau(niveau) {
-    if (!niveau || niveau === zak.niveau()) return;
-    zak.zetNiveau(niveau);
-    Geluid.speel('klik');
+  /* Niveaus zijn los aan en uit te zetten; het laatste aangezette niveau blijft staan. */
+  function wisselNiveau(niveau) {
+    if (Woorden.NIVEAUS.indexOf(niveau) < 0) return;
+    var actief = zak.niveaus();
+    var i = actief.indexOf(niveau);
+    if (i >= 0 && actief.length === 1) return;                 // het laatste niveau blijft aan
+    if (dubbelklik('niveau:' + niveau)) return;
+    if (i >= 0) actief.splice(i, 1); else actief.push(niveau);
+    zak.zetNiveaus(actief);
+    Geluid.speel(i >= 0 ? 'toggleUit' : 'toggleAan');
     toonToggles();
-    if (!bezig) volgendeOpgave();
+    // Staat het niveau van de opgave in beeld nu uit? Dan meteen een nieuwe opgave.
+    if (opgave && zak.niveaus().indexOf(opgave.niveau) < 0 && !bezig) volgendeOpgave();
   }
 
-  function zetSchrift(nieuw) {
-    if (!nieuw || nieuw === schrift || Woorden.SCHRIFTEN.indexOf(nieuw) < 0) return;
-    schrift = nieuw;
-    Geluid.speel('klik');
+  /* Schrijf- en blokletters zijn los aan en uit te zetten; staan ze allebei aan, dan wisselen ze
+     elkaar per opgave af. Een net aangezette soort komt meteen in beeld, zodat het kind ziet wat
+     de knop doet; gaat de soort in beeld uit, dan komt de andere ervoor in de plaats. */
+  function wisselSchrift(soort) {
+    if (Woorden.SCHRIFTEN.indexOf(soort) < 0) return;
+    var i = schriften.indexOf(soort);
+    if (i >= 0 && schriften.length === 1) return;              // de laatste soort letters blijft aan
+    if (dubbelklik('schrift:' + soort)) return;
+    if (i >= 0) schriften.splice(i, 1); else schriften.push(soort);
+    schriften = Woorden.SCHRIFTEN.filter(function (s) { return schriften.indexOf(s) >= 0; });
+    schriftzak = new Letters.ShuffleBag(schriften);
+    Geluid.speel(i >= 0 ? 'toggleUit' : 'toggleAan');
+    if (i < 0) schrift = soort;                                // net aangezet: meteen laten zien
+    else if (schriften.indexOf(schrift) < 0) schrift = schriften[0];
     toonToggles();
     toonSchrift();
   }
 
   function toonToggles() {
     var vormen = zak.vormen();
+    var niveaus = zak.niveaus();
     els.vormToggles.forEach(function (knop) {
       var aan = vormen.indexOf(knop.getAttribute('data-vorm')) >= 0;
       knop.classList.toggle('aan', aan);
       knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
     });
     els.niveaus.forEach(function (knop) {
-      var aan = knop.getAttribute('data-niveau') === zak.niveau();
+      var aan = niveaus.indexOf(knop.getAttribute('data-niveau')) >= 0;
       knop.classList.toggle('aan', aan);
       knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
     });
     els.schriften.forEach(function (knop) {
-      var aan = knop.getAttribute('data-schrift') === schrift;
+      var aan = schriften.indexOf(knop.getAttribute('data-schrift')) >= 0;
       knop.classList.toggle('aan', aan);
       knop.setAttribute('aria-pressed', aan ? 'true' : 'false');
     });
@@ -144,6 +168,7 @@ var Vis = (function () {
 
   function volgendeOpgave() {
     opgave = zak.volgende();
+    schrift = schriftzak.volgende();     // met één soort letters komt daar altijd dezelfde uit
     fouten = 0;
     var woordVorm = opgave.vorm === 'woord';           // woord in beeld, plaatjes kiezen
     els.veld.classList.toggle('vorm-woord', woordVorm);
@@ -216,11 +241,11 @@ var Vis = (function () {
     var l = k.toLowerCase();
     if (l === 'w') { e.preventDefault(); wisselVorm('woord'); return; }
     if (l === 'p') { e.preventDefault(); wisselVorm('plaatje'); return; }
-    if (l === 'k') { e.preventDefault(); zetNiveau('klein'); return; }
-    if (l === 'g') { e.preventDefault(); zetNiveau('groot'); return; }
-    if (l === 'h') { e.preventDefault(); zetNiveau('haai'); return; }
-    if (l === 's') { e.preventDefault(); zetSchrift('schrijf'); return; }
-    if (l === 'b') { e.preventDefault(); zetSchrift('blok'); return; }
+    if (l === 'k') { e.preventDefault(); wisselNiveau('klein'); return; }
+    if (l === 'g') { e.preventDefault(); wisselNiveau('groot'); return; }
+    if (l === 'h') { e.preventDefault(); wisselNiveau('haai'); return; }
+    if (l === 's') { e.preventDefault(); wisselSchrift('schrijf'); return; }
+    if (l === 'b') { e.preventDefault(); wisselSchrift('blok'); return; }
   }
 
   document.addEventListener('DOMContentLoaded', init);
@@ -230,7 +255,9 @@ var Vis = (function () {
     huidigeOpgave: function () { return opgave; },
     vormen: function () { return zak ? zak.vormen() : []; },
     niveau: function () { return zak ? zak.niveau() : null; },
+    niveaus: function () { return zak ? zak.niveaus() : []; },
     schrift: function () { return schrift; },
+    schriften: function () { return schriften.slice(); },
     isBezig: function () { return bezig; }
   };
 })();

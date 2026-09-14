@@ -4,7 +4,9 @@
    Operatoren: 'plus', 'min', 'maal', 'deel'.
    Niveaus:    'klein' (uitkomst t/m 10, tafels 1-5), 'groot' (uitkomst t/m 20, tafels 1-10),
                'super' (plus en min t/m 100; keer en delen blijven de tafels, want 10 x 10 = 100
-                        is daar al de bovengrens). */
+                        is daar al de bovengrens).
+   Net als de operatoren zijn de niveaus los aan en uit te zetten: staan er meerdere aan, dan
+   komen de sommen door elkaar uit die niveaus. Er staat er altijd minstens één aan. */
 
 var Sommen = (function () {
   'use strict';
@@ -20,6 +22,9 @@ var Sommen = (function () {
     groot: { maxTerm: 10,  maxUitkomst: 20,  maxAftrektal: 20,  maxTafel: 10 },
     'super': { maxTerm: 100, maxUitkomst: 100, maxAftrektal: 100, maxTafel: 10 }
   };
+
+  /* Vaste volgorde van de niveaus, van makkelijk naar moeilijk (voor knoppen en lijsten). */
+  var NIVEAUNAMEN = ['klein', 'groot', 'super'];
 
   /* Toetsen op het toetsenbord die een operator aan/uit zetten. */
   var TOETS_NAAR_OPERATOR = { '+': 'plus', '-': 'min', '*': 'maal', 'x': 'maal', '/': 'deel', ':': 'deel' };
@@ -65,6 +70,7 @@ var Sommen = (function () {
 
     return {
       op: op,
+      niveau: NIVEAUS[niveau] ? niveau : 'klein',
       a: a,
       b: b,
       antwoord: antwoord,
@@ -92,15 +98,17 @@ var Sommen = (function () {
   }
 
   /* Generator: actieve operatoren even vaak, nooit twee keer dezelfde som achter elkaar,
-     triviale sommen meestal overgeslagen. Er staat altijd minstens één operator aan:
-     een lege lijst wordt geweigerd (de huidige stand blijft dan staan). */
+     triviale sommen meestal overgeslagen. Er staat altijd minstens één operator én minstens
+     één niveau aan: een lege lijst wordt geweigerd (de huidige stand blijft dan staan).
+     `opties.niveaus` mag een lijst zijn, `opties.niveau` een losse naam. */
   function Generator(opties, random) {
     opties = opties || {};
     this._random = random || Math.random;
-    this._niveau = opties.niveau || 'klein';
     this._operators = [];
+    this._niveaus = [];
     this._vorige = null;
     this.zetOperators(opties.operators || ['plus']);
+    this.zetNiveaus(opties.niveaus || opties.niveau || ['klein']);
   }
 
   Generator.prototype.zetOperators = function (lijst) {
@@ -113,17 +121,32 @@ var Sommen = (function () {
 
   Generator.prototype.operators = function () { return this._operators.slice(); };
 
-  Generator.prototype.zetNiveau = function (niveau) {
-    if (NIVEAUS[niveau]) this._niveau = niveau;
+  /* Accepteert een lijst of één naam. Onbekende namen worden genegeerd; blijft er niets over,
+     dan verandert er niets (er moet altijd één niveau aan staan). */
+  Generator.prototype.zetNiveaus = function (lijst) {
+    if (typeof lijst === 'string') lijst = [lijst];
+    var set = {};
+    (lijst || []).forEach(function (n) { if (NIVEAUS[n]) set[n] = true; });
+    var nieuw = NIVEAUNAMEN.filter(function (n) { return set[n]; });
+    if (nieuw.length === 0) nieuw = this._niveaus.length ? this._niveaus : ['klein'];
+    this._niveaus = nieuw;
   };
 
-  Generator.prototype.niveau = function () { return this._niveau; };
+  Generator.prototype.niveaus = function () { return this._niveaus.slice(); };
+
+  /* Eén niveau tegelijk: handig voor tests en voor code die maar één stand kent. */
+  Generator.prototype.zetNiveau = function (niveau) { this.zetNiveaus([niveau]); };
+
+  Generator.prototype.niveau = function () { return this._niveaus[0]; };
 
   Generator.prototype.volgende = function () {
     var r = this._random, som;
     for (var poging = 0; poging < 100; poging++) {
       var op = this._operators[Math.floor(r() * this._operators.length)];
-      som = maak(op, this._niveau, r);
+      // Met één niveau geen toevalsgetal opmaken, zodat de reeks dan hetzelfde blijft.
+      var niveau = this._niveaus.length === 1 ? this._niveaus[0]
+                                              : this._niveaus[Math.floor(r() * this._niveaus.length)];
+      som = maak(op, niveau, r);
       if (this._vorige && som.sleutel === this._vorige.sleutel) continue;
       if (isTriviaal(som) && r() < 0.85) continue;
       break;
@@ -136,6 +159,7 @@ var Sommen = (function () {
     OPERATOREN: OPERATOREN,
     SYMBOOL: SYMBOOL,
     NIVEAUS: NIVEAUS,
+    NIVEAUNAMEN: NIVEAUNAMEN,
     TOETS_NAAR_OPERATOR: TOETS_NAAR_OPERATOR,
     maak: maak,
     isTriviaal: isTriviaal,

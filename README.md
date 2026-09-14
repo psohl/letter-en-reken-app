@@ -103,11 +103,17 @@ die op dat moment in beeld staat, dan komt er meteen een nieuwe letter.
   - **delen**: de kralen eerlijk verdeeld over evenveel staafjes als het deelgetal.
   Het kind telt en typt het antwoord nog steeds zelf. De knop staat standaard uit; zet hem aan
   zolang het helpt en later weer uit.
-- Rechts van de somknoppen kies je hoe moeilijk de sommen zijn:
+- Rechts van de somknoppen staan drie **raketjes**: die bepalen hoe moeilijk de sommen zijn.
   - **klein raketje**: uitkomsten tot en met 10, tafels van 1 tot 5;
   - **groot raketje**: uitkomsten tot en met 20, tafels van 1 tot 10;
   - **superraketje**: plussen en minnen tot en met 100 (bijvoorbeeld 63 + 37 en 100 − 37).
     Keer en delen blijven de tafels van 1 tot 10, want 10 × 10 = 100 is daar al het maximum.
+
+  De raketjes werken net als de somknoppen: ze gaan los aan en uit (rode ring = aan) en je mag er
+  **meerdere tegelijk** aanzetten. Staan het kleine en het grote raketje allebei aan, dan komen
+  makkelijke en moeilijkere sommen door elkaar — handig om te oefenen zonder dat het te zwaar wordt.
+  Er moet er wel altijd één aan blijven staan: klik je de laatste uit, dan gebeurt er niets. Zet je
+  het niveau van de som die net in beeld staat uit, dan komt er meteen een nieuwe som.
 - Er komen nooit negatieve uitkomsten en delingen komen altijd uit.
 
 ## Woorden
@@ -143,8 +149,15 @@ Elk niveau heeft 56 woorden, allemaal met een eigen tekening. De hele lijst met 
 `woordenlijst-vis.md`. Bij de grote vis en de haai lijken de twee andere woorden bewust op het
 goede woord (zelfde beginletter of lengte), zodat het kind het hele woord moet lezen.
 
-Helemaal rechts in de balk kies je de **lettersoort**: schrijfletters (zoals in de klas) of
-blokletters (zoals in een boek). Altijd kleine letters.
+Ook de vissen gaan los aan en uit (groene ring = aan) en je mag er **meerdere tegelijk** aanzetten:
+de woorden komen dan om de beurt uit de aangezette niveaus. De twee andere woorden komen altijd uit
+hetzelfde niveau als het goede woord, zodat de drie kaarten even moeilijk blijven. Er moet er
+altijd één aan blijven staan.
+
+Helemaal rechts in de balk staat de **lettersoort**: schrijfletters (zoals in de klas) en
+blokletters (zoals in een boek), altijd kleine letters. Ook deze twee gaan los aan en uit en mogen
+**allebei tegelijk** aan staan; de opgaven wisselen dan af tussen schrijf- en blokletters, zodat het
+kind leert dat het dezelfde woorden zijn. Zet je een soort aan, dan staat die meteen in beeld.
 
 ## Toetsen (voor wie liever niet klikt)
 
@@ -161,13 +174,13 @@ blokletters (zoals in een boek). Altijd kleine letters.
 | Raketje | `0`-`9` (ook op het numerieke blok) | antwoord typen |
 | Raketje | `Backspace` | laatste cijfer wissen |
 | Raketje | `+` `-` `*` `/` | soort som aan of uit |
-| Raketje | `K` / `G` / `S` | klein / groot / superraketje |
+| Raketje | `K` / `G` / `S` | klein / groot / superraketje aan of uit |
 | Raketje | `H` | kralen (hulpmiddel) aan of uit |
 | Vis | `1` `2` `3` | de linker, middelste of rechter kaart kiezen |
 | Vis | pijltjes + Enter | kaart kiezen |
 | Vis | `W` / `P` | spelvorm woord-bij-plaatje / plaatje-bij-woord aan of uit |
-| Vis | `K` / `G` / `H` | kleine vis / grote vis / haai |
-| Vis | `S` / `B` | schrijfletters / blokletters |
+| Vis | `K` / `G` / `H` | kleine vis / grote vis / haai aan of uit |
+| Vis | `S` / `B` | schrijfletters / blokletters aan of uit |
 
 Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
 

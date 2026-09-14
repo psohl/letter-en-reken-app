@@ -7,6 +7,8 @@
      klein  kleine vis  klankzuivere (m)k(m)-woorden met één klinker(teken): vis, boom, koe
      groot  grote vis   eenlettergrepig met tweetekenklank en/of medeklinkercluster: muis, trein, hond
      haai   haai        twee- en drielettergrepige woorden en samenstellingen: konijn, paraplu, vuurtoren
+   De niveaus zijn los aan en uit te zetten; staan er meerdere aan, dan komen de woorden om de
+   beurt uit die niveaus. Er staat er altijd minstens één aan.
    Elk woord heeft een eigen plaatje in js/plaatjes.js (Plaatjes.svg(woord)). */
 
 var Woorden = (function () {
@@ -59,7 +61,9 @@ var Woorden = (function () {
   var VORMEN = ['woord', 'plaatje'];
   var BASISVORM = 'woord';
 
-  /* ---- Schrift (lettersoort) voor de woorden: schrijfletters of blokletters, altijd kleine letters. */
+  /* ---- Schrift (lettersoort) voor de woorden: schrijfletters of blokletters, altijd kleine
+     letters. Beide zijn los aan en uit te zetten; staan ze allebei aan, dan wisselen ze elkaar
+     per opgave af. Er moet er altijd minstens één aan staan. */
   var SCHRIFTEN = ['schrijf', 'blok'];
   var BASISSCHRIFT = 'schrijf';
 
@@ -123,26 +127,46 @@ var Woorden = (function () {
 
   /* ---- Opgavezak ----
      Levert opgaven { woord, niveau, vorm, keuzes: [w, w, w], antwoord: index }.
-     Het woord komt uit een shuffle-bag over alle woorden van het niveau (elk woord even vaak,
-     nooit twee keer hetzelfde achter elkaar); de spelvorm uit een tweede shuffle-bag over de
-     aangezette vormen. De drie keuzes staan in willekeurige volgorde. */
-  function Opgavezak(niveau, vormen, random) {
+     Het niveau komt uit een shuffle-bag over de aangezette niveaus, het woord uit een eigen
+     shuffle-bag per niveau (elk woord even vaak, nooit twee keer hetzelfde achter elkaar); de
+     spelvorm uit een derde shuffle-bag over de aangezette vormen. De afleiders komen altijd uit
+     hetzelfde niveau als het woord, zodat de drie keuzes even moeilijk zijn. De drie keuzes
+     staan in willekeurige volgorde.
+     Het eerste argument mag een lijst niveaus zijn of één losse niveaunaam. */
+  function Opgavezak(niveaus, vormen, random) {
     this._random = random || Math.random;
-    this._niveau = null;
-    this._woorden = null;
+    this._niveaus = [];
+    this._woordzakken = {};      // per niveau een eigen shuffle-bag, blijft staan bij aan/uit zetten
+    this._niveauzak = null;
     this._vormen = [];
     this._vormzak = null;
-    this.zetNiveau(niveau || BASISNIVEAU);
+    this.zetNiveaus(niveaus || [BASISNIVEAU]);
     this.zetVormen(vormen || [BASISVORM]);
   }
 
-  Opgavezak.prototype.zetNiveau = function (niveau) {
-    if (!LIJST[niveau] || niveau === this._niveau) return;
-    this._niveau = niveau;
-    this._woorden = new Letters.ShuffleBag(LIJST[niveau], this._random);
+  /* Accepteert een lijst of één naam. Onbekende namen worden genegeerd; een lege lijst verandert
+     niets (minstens één niveau aan). */
+  Opgavezak.prototype.zetNiveaus = function (lijst) {
+    if (typeof lijst === 'string') lijst = [lijst];
+    var aan = {};
+    (lijst || []).forEach(function (n) { if (LIJST[n]) aan[n] = true; });
+    var nieuw = NIVEAUS.filter(function (n) { return aan[n]; });
+    if (nieuw.length === 0) nieuw = this._niveaus.length ? this._niveaus.slice() : [BASISNIVEAU];
+    if (nieuw.join(',') === this._niveaus.join(',')) return;
+    var zakken = this._woordzakken, random = this._random;
+    nieuw.forEach(function (n) {
+      if (!zakken[n]) zakken[n] = new Letters.ShuffleBag(LIJST[n], random);
+    });
+    this._niveaus = nieuw;
+    this._niveauzak = new Letters.ShuffleBag(nieuw, random);
   };
 
-  Opgavezak.prototype.niveau = function () { return this._niveau; };
+  Opgavezak.prototype.niveaus = function () { return this._niveaus.slice(); };
+
+  /* Eén niveau tegelijk: handig voor tests en voor code die maar één stand kent. */
+  Opgavezak.prototype.zetNiveau = function (niveau) { this.zetNiveaus([niveau]); };
+
+  Opgavezak.prototype.niveau = function () { return this._niveaus[0]; };
 
   /* Onbekende namen worden genegeerd; een lege lijst verandert niets (minstens één vorm aan). */
   Opgavezak.prototype.zetVormen = function (lijst) {
@@ -158,10 +182,11 @@ var Woorden = (function () {
   Opgavezak.prototype.vormen = function () { return this._vormen.slice(); };
 
   Opgavezak.prototype.volgende = function () {
-    var woord = this._woorden.volgende();
+    var niveau = this._niveauzak.volgende();
+    var woord = this._woordzakken[niveau].volgende();
     var vorm = this._vormzak.volgende();
-    var keuzes = Letters.schud([woord].concat(afleiders(woord, this._niveau, this._random)), this._random);
-    return { woord: woord, niveau: this._niveau, vorm: vorm, keuzes: keuzes, antwoord: keuzes.indexOf(woord) };
+    var keuzes = Letters.schud([woord].concat(afleiders(woord, niveau, this._random)), this._random);
+    return { woord: woord, niveau: niveau, vorm: vorm, keuzes: keuzes, antwoord: keuzes.indexOf(woord) };
   };
 
   return {

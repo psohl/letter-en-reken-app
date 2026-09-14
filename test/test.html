@@ -180,6 +180,30 @@
     zak.zetNiveau('onzin');
     test('onbekend niveau wordt genegeerd', zak.niveau() === 'haai');
 
+    /* Meerdere niveaus tegelijk: de woorden komen om de beurt uit de aangezette niveaus */
+    zak.zetNiveaus(['haai', 'klein']);
+    test('zetNiveaus: allebei aan, altijd in de vaste volgorde klein-groot-haai', zak.niveaus().join() === 'klein,haai');
+    var perNiveau = { klein: 0, groot: 0, haai: 0 }, afleiderOk = true, mengHerhaling = 0, vorigMeng = null;
+    for (var p = 0; p < 600; p++) {
+      var om = zak.volgende();
+      perNiveau[om.niveau]++;
+      if (!om.keuzes.every(function (w) { return Woorden.LIJST[om.niveau].indexOf(w) >= 0; })) afleiderOk = false;
+      if (om.woord === vorigMeng) mengHerhaling++;
+      vorigMeng = om.woord;
+    }
+    test('twee niveaus aan: ze wisselen elkaar af, elk 300 van 600',
+         perNiveau.klein === 300 && perNiveau.haai === 300 && perNiveau.groot === 0, JSON.stringify(perNiveau));
+    test('twee niveaus aan: de afleiders komen uit hetzelfde niveau als het woord', afleiderOk);
+    test('twee niveaus aan: nooit twee keer hetzelfde woord achter elkaar', mengHerhaling === 0, mengHerhaling);
+    zak.zetNiveaus([]);
+    test('lege niveaulijst wordt genegeerd (minstens één niveau blijft aan)', zak.niveaus().join() === 'klein,haai');
+    zak.zetNiveaus(['onzin']);
+    test('alleen onbekende niveaunamen wordt ook genegeerd', zak.niveaus().join() === 'klein,haai');
+    zak.zetNiveau('groot');
+    test('zetNiveau zet er precies één aan', zak.niveaus().join() === 'groot');
+    test('een losse niveaunaam in de constructor werkt ook',
+         new Woorden.Opgavezak('haai', ['woord']).niveaus().join() === 'haai');
+
     /* Afleiders: bij grote vis en haai lijken ze op het woord */
     var r = maakRandom(9), lijkt = 0, totaal = 0;
     Woorden.LIJST.haai.forEach(function (w) {
@@ -337,6 +361,28 @@
          (function () { for (var i = 0; i < 500; i++) { if (g.volgende().antwoord > 100) return false; } return true; })());
     g.zetNiveau('onzin');
     test('generator: een onbekend niveau wordt genegeerd', g.niveau() === 'super');
+
+    /* Meerdere niveaus tegelijk: elke som hoort bij één niveau en blijft binnen dát bereik */
+    var gm = new Sommen.Generator({ operators: ['plus', 'min'], niveaus: ['klein', 'super'] }, maakRandom(6));
+    var nTel = { klein: 0, groot: 0, 'super': 0 }, buitenBereik = 0;
+    for (var t = 0; t < 2000; t++) {
+      var sm = gm.volgende();
+      nTel[sm.niveau]++;
+      if (sm.antwoord > Sommen.NIVEAUS[sm.niveau].maxUitkomst) buitenBereik++;
+    }
+    test('generator: twee niveaus tegelijk, allebei ongeveer even vaak en geen derde',
+         nTel.klein > 800 && nTel['super'] > 800 && nTel.groot === 0, JSON.stringify(nTel));
+    test('generator: elke som blijft binnen het bereik van zijn eigen niveau', buitenBereik === 0, buitenBereik);
+    gm.zetNiveaus([]);
+    test('generator: alle niveaus uitzetten wordt geweigerd, de huidige stand blijft staan',
+         gm.niveaus().join() === 'klein,super');
+    gm.zetNiveaus(['onzin']);
+    test('generator: alleen onbekende niveaunamen wordt ook geweigerd', gm.niveaus().join() === 'klein,super');
+    gm.zetNiveaus(['super', 'klein', 'groot']);
+    test('generator: niveaus staan altijd in de vaste volgorde klein-groot-super',
+         gm.niveaus().join() === 'klein,groot,super' && Sommen.NIVEAUNAMEN.join() === 'klein,groot,super');
+    gm.zetNiveau('groot');
+    test('generator: zetNiveau zet er precies één aan', gm.niveaus().join() === 'groot');
   })();
 
   // Generator: even verdeling, nooit dezelfde som twee keer achter elkaar, minstens één operator aan.
