@@ -1,4 +1,5 @@
-/* woorden.js - woordenlijst, letterkleuren en opgavezak voor het spel Vis (ontwikkelplan §5.5).
+/* woorden.js - woordenlijst, letterkleuren, klanken en woordzakken voor de spellen Vis
+   (woorden lezen, §5.5) en Mier (woorden bouwen, §5.6).
    Pure functies zonder DOM, zodat test/test.html ze kan doorlopen.
    Gebruikt Letters.ShuffleBag en Letters.schud uit letters.js (dus na letters.js laden).
    Geen ES-module: alles hangt aan het globale object `Woorden`.
@@ -100,6 +101,45 @@ var Woorden = (function () {
     }).join('');
   }
 
+  /* ---- Klanken (fase 14, Mier) ----
+     Het bewegend alfabet legt een woord in *klanken*, niet in losse letters: maan is m + aa + n,
+     drie kaartjes. `klanken(woord)` splitst een woord zo: een greedy match van links naar rechts
+     op KLANKEN, dat van lang naar kort staat, zodat 'eeuw' vóór 'ee' en 'ee' vóór 'e' komt.
+     Wat niet in de lijst staat, wordt één losse letter. 'sch' staat er bewust niet in: dat is
+     s + ch, twee klanken.
+     SPLITSINGEN is de uitweg voor woorden waar de greedy match het verkeerde antwoord geeft:
+     daar staat de splitsing met de hand. Van de 168 woorden is dat er één (pannen|koek: de n en
+     de k horen bij verschillende delen van het woord en zijn samen geen "nk"-klank).
+     test/klankproef.html toont alle splitsingen ter beoordeling. */
+  var KLANKEN = ['eeuw', 'ieuw', 'aai', 'ooi', 'oei', 'ouw', 'auw',
+                 'aa', 'ee', 'oo', 'uu', 'oe', 'ie', 'ui', 'ij', 'ei', 'eu', 'ou', 'au',
+                 'ch', 'ng', 'nk'];
+  var SPLITSINGEN = {          // woord -> ['k', 'l', 'a', 'n', 'k'], alleen waar nodig
+    pannenkoek: ['p', 'a', 'n', 'n', 'e', 'n', 'k', 'oe', 'k']
+  };
+
+  function klanken(woord) {
+    var w = String(woord).toLowerCase();
+    if (SPLITSINGEN[w]) return SPLITSINGEN[w].slice();
+    var uit = [];
+    for (var i = 0; i < w.length; ) {
+      var deel = w[i];
+      for (var k = 0; k < KLANKEN.length; k++) {
+        if (w.substr(i, KLANKEN[k].length) === KLANKEN[k]) { deel = KLANKEN[k]; break; }
+      }
+      uit.push(deel);
+      i += deel.length;
+    }
+    return uit;
+  }
+
+  /* Kleur van een klankvakje: een klank die met een klinker begint is blauw (ook aa, oe, eeuw),
+     de ij is dat ook; ch, ng en nk zijn medeklinkers en dus rood. Eén klank = één kleur. */
+  function klankKlasse(klank) {
+    var k = String(klank).toLowerCase();
+    return (Letters.isKlinker(k[0]) || k === 'ij') ? 'klinker' : 'medeklinker';
+  }
+
   /* ---- Afleiders ----
      Kleine vis: twee willekeurige andere woorden van hetzelfde niveau.
      Grote vis en haai: woorden die op het doelwoord lijken (zelfde beginletter, lengte of
@@ -125,6 +165,49 @@ var Woorden = (function () {
     return [eerste, tweede];
   }
 
+  /* ---- Niveaus aan en uit ----
+     Gedeeld door de Opgavezak van Vis en de Woordzak van Mier: beide houden per niveau een eigen
+     woordzak bij (die blijft staan als een niveau tussendoor uit en weer aan gaat) en loten het
+     niveau uit een shuffle-bag over de aangezette niveaus. Onbekende namen worden genegeerd;
+     blijft er niets over, dan verandert er niets (er staat altijd minstens één niveau aan).
+     De lijst staat altijd in de vaste volgorde klein-groot-haai. */
+  function zetNiveausOp(zak, lijst) {
+    if (typeof lijst === 'string') lijst = [lijst];
+    var aan = {};
+    (lijst || []).forEach(function (n) { if (LIJST[n]) aan[n] = true; });
+    var nieuw = NIVEAUS.filter(function (n) { return aan[n]; });
+    if (nieuw.length === 0) nieuw = zak._niveaus.length ? zak._niveaus.slice() : [BASISNIVEAU];
+    if (nieuw.join(',') === zak._niveaus.join(',')) return;
+    nieuw.forEach(function (n) {
+      if (!zak._woordzakken[n]) zak._woordzakken[n] = new Letters.ShuffleBag(LIJST[n], zak._random);
+    });
+    zak._niveaus = nieuw;
+    zak._niveauzak = new Letters.ShuffleBag(nieuw, zak._random);
+  }
+
+  /* ---- Woordzak (fase 14, Mier) ----
+     Levert woorden { woord, niveau, klanken } uit de aangezette niveaus: dezelfde aanpak als de
+     Opgavezak van Vis, maar zonder afleiders en zonder spelvorm — bij Mier tikt het kind het
+     woord zelf in. */
+  function Woordzak(niveaus, random) {
+    this._random = random || Math.random;
+    this._niveaus = [];
+    this._woordzakken = {};
+    this._niveauzak = null;
+    this.zetNiveaus(niveaus || [BASISNIVEAU]);
+  }
+
+  Woordzak.prototype.zetNiveaus = function (lijst) { zetNiveausOp(this, lijst); };
+  Woordzak.prototype.zetNiveau = function (niveau) { zetNiveausOp(this, [niveau]); };
+  Woordzak.prototype.niveaus = function () { return this._niveaus.slice(); };
+  Woordzak.prototype.niveau = function () { return this._niveaus[0]; };
+
+  Woordzak.prototype.volgende = function () {
+    var niveau = this._niveauzak.volgende();
+    var woord = this._woordzakken[niveau].volgende();
+    return { woord: woord, niveau: niveau, klanken: klanken(woord) };
+  };
+
   /* ---- Opgavezak ----
      Levert opgaven { woord, niveau, vorm, keuzes: [w, w, w], antwoord: index }.
      Het niveau komt uit een shuffle-bag over de aangezette niveaus, het woord uit een eigen
@@ -146,25 +229,12 @@ var Woorden = (function () {
 
   /* Accepteert een lijst of één naam. Onbekende namen worden genegeerd; een lege lijst verandert
      niets (minstens één niveau aan). */
-  Opgavezak.prototype.zetNiveaus = function (lijst) {
-    if (typeof lijst === 'string') lijst = [lijst];
-    var aan = {};
-    (lijst || []).forEach(function (n) { if (LIJST[n]) aan[n] = true; });
-    var nieuw = NIVEAUS.filter(function (n) { return aan[n]; });
-    if (nieuw.length === 0) nieuw = this._niveaus.length ? this._niveaus.slice() : [BASISNIVEAU];
-    if (nieuw.join(',') === this._niveaus.join(',')) return;
-    var zakken = this._woordzakken, random = this._random;
-    nieuw.forEach(function (n) {
-      if (!zakken[n]) zakken[n] = new Letters.ShuffleBag(LIJST[n], random);
-    });
-    this._niveaus = nieuw;
-    this._niveauzak = new Letters.ShuffleBag(nieuw, random);
-  };
+  Opgavezak.prototype.zetNiveaus = function (lijst) { zetNiveausOp(this, lijst); };
 
   Opgavezak.prototype.niveaus = function () { return this._niveaus.slice(); };
 
   /* Eén niveau tegelijk: handig voor tests en voor code die maar één stand kent. */
-  Opgavezak.prototype.zetNiveau = function (niveau) { this.zetNiveaus([niveau]); };
+  Opgavezak.prototype.zetNiveau = function (niveau) { zetNiveausOp(this, [niveau]); };
 
   Opgavezak.prototype.niveau = function () { return this._niveaus[0]; };
 
@@ -197,13 +267,18 @@ var Woorden = (function () {
     BASISVORM: BASISVORM,
     SCHRIFTEN: SCHRIFTEN,
     BASISSCHRIFT: BASISSCHRIFT,
+    KLANKEN: KLANKEN,
+    SPLITSINGEN: SPLITSINGEN,
     schriftKlasse: schriftKlasse,
     lijst: lijst,
     alle: alle,
     letters: letters,
     html: html,
+    klanken: klanken,
+    klankKlasse: klankKlasse,
     gelijkenis: gelijkenis,
     afleiders: afleiders,
-    Opgavezak: Opgavezak
+    Opgavezak: Opgavezak,
+    Woordzak: Woordzak
   };
 })();

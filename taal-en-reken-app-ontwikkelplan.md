@@ -1,25 +1,26 @@
 # Ontwikkelplan: Letter en Cijfer-app
 
-Versie 1.7 · 14 september 2026
+Versie 1.8 · 14 september 2026
 
 > **Status (10 sept 2026):** **Alle fases 0 t/m 12 zijn afgerond** ✅. De app heet **Letter en Cijfer-app** (zo staat het in `index.html`, `manifest.webmanifest` en `README.md`) en staat als Git-repository op GitHub: **github.com/psohl/letter-en-reken-app** (openbaar). Lokaal is dat de map `letter-en-reken-app/`; start met dubbelklik op `index.html`. Online draait dezelfde app via GitHub Pages op **psohl.github.io/letter-en-reken-app/** (voor tablet en telefoon). Fontkeuze: **Lusletters (standaardhelling) met stylistic set ss01**. Fase 12 (10 sept) voegt een derde onderdeel toe: **Vis**, woorden lezen (§5.5, `woordenlijst-vis.md`). Zie §9 en het voortgangslog in §13.
 >
-> **Status (14 sept 2026):** er is een vierde onderdeel **ontworpen** maar nog **niet gebouwd**: **Mier**, woorden bouwen met het bewegend alfabet (§5.6, fase 14 in §9). Alles wat in dit plan over Mier staat, is ontwerp; de app zelf heeft nog drie onderdelen.
+> **Status (14 sept 2026):** **fase 14 is gebouwd** ✅. De app heeft nu **vier onderdelen**: het vierde is **Mier**, woorden bouwen met het bewegend alfabet (§5.6). Het kind ziet een plaatje en typt het woord in klankvakjes — één vakje per klank, dus *maan* is m + aa + n. Het menu heeft daarmee vier knoppen in een 2×2-raster. Zie §9 en het voortgangslog in §13.
 >
-> *Aapje*, *Raketje* en *Vis* zijn in dit plan de namen van de drie gebouwde onderdelen (letters, sommen en woorden), *Mier* van het ontworpen vierde; Aapje en Raketje zijn overgenomen van de klasprogramma's, Vis en Mier zijn eigen namen. Het zijn geen namen van de app.
+> *Aapje*, *Raketje*, *Vis* en *Mier* zijn in dit plan de namen van de vier onderdelen (letters, sommen, woorden lezen en woorden bouwen); Aapje en Raketje zijn overgenomen van de klasprogramma's, Vis en Mier zijn eigen namen. Het zijn geen namen van de app.
 
 ---
 
 ## 1. Doel en doelgroep
 
 Een vrolijke, kleurrijke oefen-app voor kinderen van 6-7 jaar op een Montessori-basisschool: de **Letter en Cijfer-app**.
-De app bestaat uit drie onderdelen; de eerste twee sluiten aan bij de programma's die in de klas worden gebruikt, het derde (fase 12) bouwt op Aapje voort:
+De app bestaat uit vier onderdelen; de eerste twee sluiten aan bij de programma's die in de klas worden gebruikt, het derde (fase 12) en het vierde (fase 14) bouwen op Aapje voort:
 
 | Onderdeel | Klasprogramma | Wat het kind oefent |
 |-----------|---------------|---------------------|
 | **Aapje** | Taal | Letter herkennen (schrijfletter, eventueel hoofdletter of blokletter) en intoetsen op het toetsenbord |
 | **Raketje** | Rekenen | Sommen met kleine getallen (+, −, ×, ÷) intoetsen |
 | **Vis** | Taal (vervolg op Aapje) | Woorden lezen: bij een woord het juiste plaatje kiezen, of bij een plaatje het juiste woord (§5.5) |
+| **Mier** | Taal (bewegend alfabet) | Woorden bouwen: bij een plaatje het woord intoetsen in klankvakjes, één vakje per klank (§5.6) |
 
 Randvoorwaarden:
 
@@ -45,6 +46,7 @@ Randvoorwaarden:
 | Letterset | 26 letters in vier soorten: kleine/hoofd schrijfletter en kleine/hoofd blokletter | Vier vrij te combineren schakelaars in de balk (§5.2); minstens één soort staat aan, welke maakt niet uit. Later optioneel: tweetekenklanken (ee, oe, ui, ij, ...). |
 | Visueel hulpmiddel bij rekenen | Montessori-kralen, met schakelaar, standaard uit (fase 8) | De som in kralenstaafjes onder de som; het kind telt en typt zelf (§5.3). |
 | Tablet en telefoon | Dezelfde app, met een aanraakstand: toetsenbord op het scherm (fase 10) | Staat vanzelf aan op een tablet of telefoon, op de pc verandert niets. Voor gebruik op een telefoon moet de map online staan (§4.5). |
+| Woorden bouwen (Mier, fase 14) | Eén vakje per **klank**, niet per letter | Bij een plaatje typt het kind het woord in klankvakjes; een tweetekenklank (aa, ui, eeuw) is één vakje waarin twee of drie toetsen gaan. Drie niveaus met de woordenlijsten van Vis, schrijf- of blokletters, en het **voorbeeldwoord** als hulpmiddel (standaard uit). Fout wist niet wat al goed staat. Omdat alle letters antwoord zijn, staan de schakelaars op de cijfers `1`-`6` (§5.6). |
 | Woorden lezen (Vis, fase 12) | Kiezen uit drie, niet typen | Woord → plaatje en plaatje → woord als twee spelvormen (beide aan/uit, minstens één aan). Drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3; 56 woorden per niveau, elk met een eigen SVG-tekening. Schrijf- en blokletters (alleen kleine letters), klinkers blauw en medeklinkers rood. Niveaus en lettersoorten zijn sinds 14 sept 2026 net als de spelvormen vrij te combineren (meerdere tegelijk aan, minstens één aan). Zie §5.5 en `woordenlijst-vis.md`. |
 
 ---
@@ -79,42 +81,45 @@ Bronnen staan in §12.
 
 ```
 letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app)
-├── index.html                 startpunt, bevat de vier schermen (menu, Aapje, Raketje, Vis); titel "Letter en Cijfer-app"
-├── README.md                  uitleg voor ouders/leerkracht (heette t/m fase 10 LEESMIJ.md) ✅ fase 7 (tablet/telefoon fase 10, hernoemd fase 11, Vis fase 12)
+├── index.html                 startpunt, bevat de vijf schermen (menu, Aapje, Raketje, Vis, Mier); titel "Letter en Cijfer-app"
+├── README.md                  uitleg voor ouders/leerkracht (heette t/m fase 10 LEESMIJ.md) ✅ fase 7 (tablet/telefoon fase 10, hernoemd fase 11, Vis fase 12, Mier fase 14)
 ├── manifest.webmanifest       web-app-manifest: naam, iconen, standalone (beginscherm) ✅ fase 10
 ├── taal-en-reken-app-ontwikkelplan.md   dit plan
 ├── woordenlijst-vis.md        de 168 woorden van Vis per niveau, met onderbouwing en bronnen ✅ fase 12
 ├── letters.png                referentie-afbeelding van de schrijfletters uit de klas (voor test/fontproef.html)
 ├── css/
 │   ├── base.css               reset, kleuren, typografie, grote knoppen           ✅ fase 0
-│   ├── menu.css               hoofdmenu met drie grote knoppen                    ✅ fase 0 (drie knoppen fase 12)
+│   ├── menu.css               hoofdmenu met vier grote knoppen in een 2×2-raster  ✅ fase 0 (drie knoppen fase 12, vier fase 14)
 │   ├── aapje.css              letterkaart, aapje-figuur, spring-animatie          ✅ fase 2
 │   ├── raketje.css            som, invulvak, niveau, kralen, raket-animatie        ✅ fase 3 (kralen fase 8)
 │   ├── vis.css                woordkaart, plaatjes- en woordkeuzes, visje, vis-animaties ✅ fase 12
+│   ├── mier.css               plaatjeskaart, klankvakjes, voorbeeldwoord, mier-animaties ✅ fase 14
 │   ├── fonts.css              @font-face base64 + .schrijfletter en .blokletter   ✅ fase 1 (blok fase 8)
-│   └── mobiel.css             aanraakstand (body.aanraak) en media queries voor smalle/lage schermen ✅ fase 10 (Vis fase 12)
+│   └── mobiel.css             aanraakstand (body.aanraak) en media queries voor smalle/lage schermen ✅ fase 10 (Vis fase 12, Mier fase 14)
 ├── js/
 │   ├── app.js                 schermwisseling, globale toetsafhandeling, geluid aan/uit, aanraakstand ✅ fase 0 (geluid fase 5, aanraak fase 10)
 │   ├── audio.js               Web Audio geluidseffecten (globaal object `Geluid`)  ✅ fase 5 (blub fase 12)
-│   ├── icons.js               SVG-iconen als strings: Icons.svg('huisje'), Icons.vul() ✅ fase 4 (37 iconen)
+│   ├── icons.js               SVG-iconen als strings: Icons.svg('huisje'), Icons.vul() ✅ fase 4 (45 iconen)
 │   ├── plaatjes.js            de 168 woordplaatjes van Vis als SVG-strings: Plaatjes.svg('kat') ✅ fase 12
 │   ├── keyboardHint.js        hint-toetsenbord; in de aanraakstand tikbaar (tik = keydown) ✅ fase 2 (tikbaar fase 10)
 │   ├── teller.js              sessieteller (bananen/sterren/schelpen, tros + getal > 10) ✅ fase 2
 │   ├── letters.js             letters, klinker/medeklinker, shuffle-bag, lettersets ✅ fase 1 (sets fase 8)
-│   ├── woorden.js             woordenlijst (3 niveaus), letterkleuren, afleiders, opgavezak (pure functies) ✅ fase 12
+│   ├── woorden.js             woordenlijst (3 niveaus), letterkleuren, afleiders, opgavezak (pure functies) ✅ fase 12; klanken + woordzak ✅ fase 14
 │   ├── aapje.js               spel Aapje                                          ✅ fase 2
 │   ├── sommen.js              somgenerator (3 niveaus), auto-controle (pure functies) ✅ fase 3 (super fase 9)
 │   ├── kralen.js              Montessori-kralen: model + weergave (pure functies)  ✅ fase 8
 │   ├── raketje.js             spel Raketje                                        ✅ fase 3
 │   ├── vis.js                 spel Vis                                            ✅ fase 12
-│   └── animaties.js           beloningsanimaties: 4 aapje-, 3 raket- en 3 visvarianten, effectenlaag ✅ fase 5 (vis fase 12)
+│   ├── mier.js                spel Mier                                           ✅ fase 14
+│   └── animaties.js           beloningsanimaties: 4 aapje-, 3 raket-, 3 vis- en 3 miervarianten, effectenlaag ✅ fase 5 (vis fase 12, mier fase 14)
 ├── assets/
 │   ├── font/                  lusletters.ttf + LICENTIE-Lusletters-OFL.txt       ✅ fase 1
 │   └── icoon/                 icoon-180/192/512.png voor beginscherm en tabblad   ✅ fase 10
 └── test/
-    ├── test.html              152 tests: letters.js, woorden.js, plaatjes.js, sommen.js, kralen.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10, 12
+    ├── test.html              196 tests: letters.js, woorden.js, plaatjes.js, sommen.js, kralen.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10, 12, 14, 15
     ├── fontproef.html         alle letters per letterset naast letters.png        ✅ fase 1 (sets fase 8)
-    └── plaatjesproef.html     alle 168 woordplaatjes per niveau, met het woord in schrijf- en blokletters ✅ fase 12
+    ├── plaatjesproef.html     alle 168 woordplaatjes per niveau, met het woord in schrijf- en blokletters ✅ fase 12
+    └── klankproef.html        alle 168 woorden in klankvakjes, zoals Mier ze toont ✅ fase 14
 ```
 
 Het ontwikkelplan staat sinds fase 11 **in** de repo, in de hoofdmap, net als `letters.png` (beide staan in `git ls-files`; de eerdere tekst in dit plan dat ze buiten de repo zouden blijven is op 10 september gecorrigeerd). `test/fontproef.html` verwijst naar `../letters.png`. De map `assets/svg/` uit het oorspronkelijke plan is weggelaten: alle iconen en woordplaatjes zijn rechtstreeks in `js/icons.js` en `js/plaatjes.js` getekend, er zijn geen losse werkbestanden.
@@ -218,10 +223,10 @@ rechtsboven een knop extra.
 
 **Hoofdmenu**
 
-- Drie zeer grote knoppen naast elkaar: **Aapje** (aapje met letter-blokje), **Raketje** (raket met cijfers) en **Vis** (visje met het woordje *vis* in schrijfletters, fase 12). Op een smal scherm staan ze onder elkaar.
+- Vier zeer grote knoppen in een **2×2-raster** (sinds fase 14; vier naast elkaar past op geen enkel pc-scherm, want 4 × 26vw is breder dan het venster): **Aapje** (aapje met letter-blokje), **Raketje** (raket met cijfers), **Vis** (visje met het woordje *vis* in schrijfletters, fase 12) en **Mier** (mier met een blaadje, en drie kleine klankvakjes met *m-ie-r*). Op een smal scherm (telefoon rechtop) staan ze onder elkaar.
 - Kleine knoppen rechtsboven: toetsenbord op het scherm aan/uit (aanraakstand, §4.5; toets `T`, fase 10), geluid aan/uit (luidspreker-icoon), volledig scherm (pijltjes-icoon).
-- Toetsenbord: `A` of `1` → Aapje, `R` of `2` → Raketje, `V` of `3` → Vis; pijltjes links/rechts + Enter werkt ook.
-- Kleine animaties in rust ("idle"): aapje knippert met de ogen, raketje wiegt, visje zwaait met zijn staart.
+- Toetsenbord: `A` of `1` → Aapje, `R` of `2` → Raketje, `V` of `3` → Vis, `M` of `4` → Mier; pijltjes links/rechts lopen één knop op, omhoog/omlaag een rij (2×2), Enter kiest.
+- Kleine animaties in rust ("idle"): aapje knippert met de ogen, raketje wiegt, visje zwaait met zijn staart, de mier trippelt en beweegt zijn voelsprieten.
 
 **Aapje**
 
@@ -254,6 +259,17 @@ rechtsboven een knop extra.
 - Linksboven terugknop, rechtsboven geluid. Onderin: schelpen als sessieteller; boven tien schelpen een schatkist met getal. Geen hint-toetsenbord.
 - Het visje zit rechtsonder en wiegt; bij een goed antwoord springt het, zwemt het naar de goede kaart of blaast het bubbels (§7.4).
 - Toetsen: `1`, `2`, `3` kiezen de linker, middelste of rechter kaart; pijltjes links/rechts verplaatsen de focus over de kaarten en Enter of spatie kiest; `Escape` = terug.
+
+**Mier** (fase 14, zie §5.6)
+
+- Midden, boven: het **plaatje** op een vierkante kaart met grasgroene rand. Daaronder (als het hulpmiddel aan staat) het **voorbeeldwoord** klein, en daaronder de rij **klankvakjes**: één vakje per klank, met een grasgroene rand om het vakje waar het kind nu in typt.
+- Linksboven terugknop, rechtsboven geluid. Onderin: blaadjes als sessieteller (boven tien een mierenhoop met een getal) en het hint-toetsenbord met letters.
+- Bovenaan in de middenbalk drie groepen met een scheidingslijntje:
+  1. drie niveau-toggles: kleine mier, grote mier, puike mier (drie mieren in drie maten), met de woordenlijsten van Vis; vrij te combineren, aan = grasgroene ring, minstens één aan. Toetsen `1`, `2`, `3`.
+  2. twee lettersoort-toggles: schrijfletters en blokletters, dezelfde iconen als bij Aapje en Vis; allebei tegelijk mag, minstens één aan. Toetsen `4` en `5`.
+  3. schakelaar voor het **voorbeeldwoord** als hulpmiddel (§5.6), standaard uit. Toets `6`.
+- Toetsen: alle **letters** zijn antwoord (het kind typt het woord), `Backspace` legt de laatste klank terug, `Escape` = terug. De schakelaars staan daarom op de **cijfers** `1` t/m `6`, net zoals de lettersets bij Aapje op `1` t/m `4` staan. Dit is de bij de bouw gemaakte keuze in plaats van het voorstel `K`/`G`/`P` en `S`/`B` uit §5.6: die letters zijn hier gewoon antwoord (*kip*, *geit*, *pop*, *sok*, *bus*).
+- De mier zit rechtsonder en trippelt; bij een afgemaakt woord draagt hij het weg, loopt hij met een blaadje over het scherm of klimt hij op de laatste klank (§7.5).
 
 ### 5.2 Spelregels
 
@@ -405,7 +421,7 @@ zodat er honderden op één pagina kunnen staan). Woorden binnen één niveau di
 verschillen; synoniemen (*kat*/*poes*) zitten niet samen in één niveau. `test/plaatjesproef.html`
 toont alle plaatjes per niveau ter beoordeling.
 
-### 5.6 Mier: woorden bouwen (fase 14 — ontwerp, nog niet gebouwd)
+### 5.6 Mier: woorden bouwen (fase 14) ✅
 
 **Waarom dit onderdeel.** De Montessori-taallijn loopt van de schuurpapieren letters via het
 **bewegend alfabet** (de letterdoos) naar de leeskaartjes. Aapje is de eerste stap en Vis de derde;
@@ -426,52 +442,68 @@ krijgt één vakje waarin het kind twee (of drie) toetsen na elkaar typt. Hierme
 openstaande wens uit §9.1 ingevuld. `sch` blijft `s` + `ch`, twee vakjes.
 
 Dit vraagt de enige echt nieuwe logica van deze fase: `Woorden.klanken(woord)` splitst een woord in
-klankdelen met een greedy match van links naar rechts op een geordende tekenlijst. Dat werkt voor
-verreweg de meeste van de 168 woorden, maar niet vanzelf voor alle; daarom krijgt de lijst in
-`js/woorden.js` de mogelijkheid om per woord een handmatige splitsing op te geven, en toont een
-proefpagina alle 168 splitsingen ter beoordeling (zoals `test/plaatjesproef.html` dat voor de
-plaatjes doet). Valt dat tegen, dan is de terugvaloptie één vakje per letter; het spel werkt dan nog
-steeds, alleen minder zuiver.
+klankdelen met een greedy match van links naar rechts op de geordende tekenlijst `Woorden.KLANKEN`
+(van lang naar kort: `eeuw ieuw aai ooi oei ouw auw`, dan `aa ee oo uu oe ie ui ij ei eu ou au ch
+ng nk`). Wat niet in de lijst staat, is één losse letter; `sch` staat er bewust niet in, dat blijft
+s + ch.
+
+**Uitkomst bij de bouw:** van de 168 woorden gaat er precies **één** mis met de greedy match,
+*pannenkoek*: de n en de k staan daar toevallig naast elkaar zonder samen de klank *nk* te zijn
+(pannen-koek). Daarvoor is `Woorden.SPLITSINGEN` gemaakt, waarin per woord een handmatige splitsing
+staat; voor dit woord is dat `p-a-n-n-e-n-k-oe-k`. De terugvaloptie "één vakje per letter" was dus
+niet nodig. `test/klankproef.html` toont alle 168 splitsingen ter beoordeling (zoals
+`test/plaatjesproef.html` dat voor de plaatjes doet), met een groene rand om de handmatige
+splitsing. Het langste woord is *tandenborstel* met 13 vakjes, het kortste *ui* en *ei* met één.
 
 **Spelregels**
 
-1. Het woord komt uit een shuffle-bag over het niveau: elk woord even vaak, nooit twee keer achter
-   elkaar (dezelfde `Woorden.Opgavezak`-aanpak als Vis, maar zonder afleiders).
-2. Goede letter → hij verschijnt in het vakje met een zachte pop; is het vakje vol, dan springt de
-   invoer naar het volgende. Het kind hoeft niets te bevestigen.
+1. Het woord komt uit `Woorden.Woordzak`: een shuffle-bag per niveau (elk woord even vaak, nooit twee
+   keer achter elkaar) en een shuffle-bag over de aangezette niveaus — dezelfde aanpak als de
+   `Opgavezak` van Vis, maar zonder afleiders en zonder spelvorm. Beide zakken delen sinds fase 14 de
+   niveau-afhandeling in `js/woorden.js`.
+2. Goede letter → hij verschijnt in het vakje met een zachte pop en een klikje; is het vakje vol, dan
+   springt de invoer naar het volgende. Het kind hoeft niets te bevestigen.
 3. Foute letter → het vakje schudt, zacht fout-geluidje, de letter verschijnt **niet**. Wat al goed
    staat blijft staan: het materiaal blijft liggen. (Bewust anders dan Raketje, waar één fout cijfer
    de hele invoer wist — bij een woord van acht klanken zou dat ontmoedigen.)
-4. `Backspace` wist de laatste ingevulde klank, zodat het kind zelf kan terugleggen.
+4. `Backspace` wist de laatste ingevulde klank, zodat het kind zelf kan terugleggen: staat er een
+   halve klank in het vakje (de eerste `a` van `aa`), dan gaat die er eerst uit, en anders komt het
+   vorige vakje weer leeg.
 5. Na 2 foute pogingen op hetzelfde vakje pulseert de juiste toets op het hint-toetsenbord
    (hetzelfde mechanisme als Aapje en Raketje; in de aanraakstand staat dat toetsenbord al in beeld).
-6. Woord af → goed-geluid, blaadje erbij, mier-animatie (1,4 s, invoer geblokkeerd), nieuw woord.
+6. Woord af → goed-geluid plus *trippel*, blaadje erbij, alle vakjes groen, mier-animatie
+   (1,4 s, invoer geblokkeerd), nieuw woord.
 7. Geen aftrek, geen kruis, geen tijd.
 
 **Schermindeling**
 
 - Midden boven: het plaatje op een vierkante kaart met grasgroene rand (dezelfde kaart als de
   plaatje-opgave van Vis).
-- Daaronder: de klankvakjes, breedte afgeleid van het aantal vakjes zoals de woordkaart van Vis dat
-  van `--letters` afleidt, zodat ook *tandenborstel* past.
+- Daaronder: het voorbeeldwoord (als het aan staat) en de klankvakjes. De vakgrootte volgt uit het
+  aantal vakjes (`--vakjes`), zoals de woordkaart van Vis dat van `--letters` afleidt, zodat ook
+  *tandenborstel* met 13 vakjes op één rij past; de klank in het vakje schaalt op zijn beurt mee met
+  het aantal tekens, zodat *eeuw* er net zo goed in staat als *m*.
 - Linksboven terugknop, rechtsboven geluid. Onderin: blaadjes als sessieteller (boven tien een
   mierenhoop met getal) en het hint-toetsenbord met letters.
 - Bovenbalk, drie groepen met een scheidingslijntje, zoals Raketje en Vis:
 
   | Groep | Knoppen | Toetsen |
   |-------|---------|---------|
-  | Niveau | kleine mier / grote mier / supermier — drie mieren in drie maten, met de woordenlijsten van Vis (§5.5) | `K` `G` `S` |
-  | Lettersoort | schrijfletters en blokletters; dezelfde iconen als Aapje en Vis | `S`… zie hieronder |
-  | Hulpmiddel | **voorbeeldwoord** aan/uit, standaard uit | `H` |
+  | Niveau | kleine mier / grote mier / puike mier — drie mieren in drie maten, met de woordenlijsten van Vis (§5.5) | `1` `2` `3` |
+  | Lettersoort | schrijfletters en blokletters; dezelfde iconen als Aapje en Vis | `4` `5` |
+  | Hulpmiddel | **voorbeeldwoord** aan/uit, standaard uit | `6` |
 
   Niveaus en lettersoorten zijn hier net als bij Vis losse schakelaars die vrij te combineren zijn
   (meerdere tegelijk aan, minstens één aan; sinds fase 15, §5.5). Bij Mier hoort daar één keuze bij
   die Vis niet heeft: als beide lettersoorten aan staan, bepaalt de soort alleen hoe het getypte
   woord in de vakjes wordt getoond — het kind typt sowieso gewone lettertoetsen.
 
-  Let op de toetsbotsing: Vis gebruikt `S`/`B` voor de lettersoort en Raketje `S` voor supermier.
-  Voorstel: in Mier `K` `G` `P` voor de niveaus (kleine, grote, **p**uike mier) en `S`/`B` voor de
-  lettersoort, zodat `S` overal de schrijfletter is. Bij de bouw vastleggen in §5.1.
+  **Toetsen: opgelost met cijfers.** Het ontwerp stelde `K`/`G`/`P` voor de niveaus en `S`/`B` voor de
+  lettersoort voor, zodat `S` in elk taalonderdeel de schrijfletter zou zijn. Bij de bouw bleek dat
+  niet te kunnen: bij Mier zijn **alle 26 letters antwoord**, dus een druk op `k` moet de letter `k`
+  in het vakje zetten en niet het niveau omzetten (denk aan *kip*, *geit*, *pop*, *sok*, *bus*).
+  Daarom staan de schakelaars op de cijfers `1` t/m `6` — precies de oplossing die Aapje al gebruikt
+  voor zijn vier lettersets, en om dezelfde reden. Cijfers zijn bij Mier nooit antwoord.
 
 - **Voorbeeldwoord** is het hulpmiddel van Mier, wat de kralen zijn voor Raketje (§5.3): staat het
   aan, dan staat het woord klein boven de vakjes en schrijft het kind het over. Standaard uit; aan te
@@ -482,14 +514,16 @@ steeds, alleen minder zuiver.
 begint en wanneer het klaar is, net zoals de letterdoos met zijn vakjes een overzichtelijk kader
 geeft. Wie het strenger wil, kan later een schakelaar toevoegen die de vakjes weglaat.
 
-**Wat er nieuw bij komt.** `js/mier.js` (spelloop), `css/mier.css`, een vijfde scherm in
-`index.html`, `Woorden.klanken` en een woordzak in `js/woorden.js`, drie mier-animaties in
-`js/animaties.js`, en zeven iconen: mier klein/groot/puik, blaadje, mierenhoop, voorbeeldwoord, en
-de mier als speelfiguur. Hergebruikt worden de 168 plaatjes, de drie woordenlijsten, het
-hint-toetsenbord, de teller, de letterkleuren en beide lettersoorten. Het menu krijgt een vierde
-knop en daarmee een 2×2-raster (§11).
+**Wat er nieuw bij kwam.** `js/mier.js` (spelloop), `css/mier.css`, een vijfde scherm in
+`index.html`, `Woorden.klanken`, `Woorden.klankKlasse` en `Woorden.Woordzak` in `js/woorden.js`,
+drie mier-animaties in `js/animaties.js`, het geluid *trippel* in `js/audio.js`, en acht iconen:
+mier klein/groot/puik, blaadje, mierenhoop, voorbeeldwoord, de mier als speelfiguur en de mier met
+blaadje voor het menu (het ontwerp telde er zeven; het menu-icoon kwam erbij, net als bij Vis, dat
+naast `visFiguur` een eigen menu-icoon met bubbels heeft). Hergebruikt zijn de 168 plaatjes, de drie
+woordenlijsten, het hint-toetsenbord, de teller, de letterkleuren en beide lettersoorten. Het menu
+kreeg een vierde knop en daarmee een 2×2-raster (§11).
 
-**Animaties** (~1,4 s, drie varianten zoals de andere onderdelen)
+**Animaties** (1,4 s, drie varianten zoals de andere onderdelen)
 
 1. De mier tilt het afgemaakte woord op, draagt het naar rechts weg en een blaadje vliegt naar de teller.
 2. De mier loopt met een blaadje boven zijn kop over het scherm.
@@ -521,8 +555,10 @@ Rust-animatie: de voelsprieten bewegen, de mier trippelt op zijn plaats (ook in 
 | Accent (sterren, bananen) | Zonnig geel | `#FFD23F` |
 | Vis (rand opgavekaart, niveau-ring, spelvorm-iconen) | Zeegroen / licht zeegroen | `#2A9D8F` / `#D9F2EA` |
 | Visje | Oranje / donkeroranje | `#FF9F1C` / `#B85C00` |
+| Mier (rand plaatjeskaart, actief klankvakje, niveau-ring, blaadje) | Grasgroen / licht grasgroen | `#6AA84F` / `#E4F1DA` (donker `#3F7A2E`) |
+| De mier zelf | Roodbruin / donkerbruin | `#A0522D` / `#5A2D12` |
 
-### 6.3 Iconenlijst (alle als eigen SVG) ✅ allemaal getekend in `js/icons.js` (fase 4; toetsenbord fase 10; Vis fase 12)
+### 6.3 Iconenlijst (alle als eigen SVG) ✅ allemaal getekend in `js/icons.js` (fase 4; toetsenbord fase 10; Vis fase 12; Mier fase 14 — 45 iconen)
 
 | Icoon | Betekenis | Waar |
 |-------|-----------|------|
@@ -546,6 +582,11 @@ Rust-animatie: de voelsprieten bewegen, de mier trippelt op zijn plaats (ook in 
 | `a` in schrijfletters, `a` in blokletters | Lettersoort (dezelfde iconen als bij Aapje) | Vis |
 | Schelp, schatkist | Sessieteller | Vis |
 | Visje met staart en vin (klassen voor animatie) | Speelfiguur | Vis |
+| Mier met blaadje | Start woorden-bouwen | Hoofdmenu |
+| Mier klein / groot / puik (drie maten) | Niveau kleine / grote / puike mier | Mier |
+| Blaadje, mierenhoop | Sessieteller | Mier |
+| Kaartje met woordlijn boven drie lege vakjes (grasgroene cirkel) | Voorbeeldwoord aan/uit | Mier |
+| Mier met voelsprieten en poten (klassen voor animatie) | Speelfiguur | Mier |
 
 Daarnaast bevat `js/plaatjes.js` de 168 woordplaatjes van Vis (§5.5), in dezelfde stijl maar los van de iconenlijst.
 
@@ -584,14 +625,22 @@ Rust-animaties: knipperen, staart wiegt.
 
 Rust-animatie: wiegt zachtjes, staart zwaait heen en weer (ook in het menu).
 
-### 7.3 Geluid (Web Audio, gesynthetiseerd) ✅ fase 5: zeven geluiden in `js/audio.js`; fase 12: *blub* erbij
+### 7.5 Mier-animaties (1,4 s) ✅ fase 14: alle drie gebouwd
+
+1. De mier tilt het afgemaakte woord op en draagt het naar rechts het beeld uit; blaadje vliegt naar de teller.
+2. De mier loopt met een blaadje boven zijn kop naar de vakjes en weer terug.
+3. De mier klimt op de laatste klank en zwaait met zijn voelsprieten.
+
+Rust-animatie: trippelt op zijn plaats, voelsprieten bewegen (ook in het menu).
+
+### 7.3 Geluid (Web Audio, gesynthetiseerd) ✅ fase 5: zeven geluiden in `js/audio.js`; fase 12: *blub* erbij; fase 14: *trippel* erbij
 
 | Moment | Geluid |
 |--------|--------|
 | Goed | Korte vrolijke drieklank omhoog (do-mi-sol) |
 | Fout | Zacht, laag "boing", nooit hard of schril |
-| Animatie | Korte "whoosh" (raket), aapje-"oe-oe" (synthetische toon met vibrato) of "blub" (vis: twee korte bubbeltoontjes omhoog) |
-| Knop klikken | Zachte klik/pop |
+| Animatie | Korte "whoosh" (raket), aapje-"oe-oe" (synthetische toon met vibrato), "blub" (vis: twee korte bubbeltoontjes omhoog) of "trippel" (mier: drie heel korte tikjes, als pootjes) |
+| Knop klikken, en bij Mier elke goede letter in een vakje | Zachte klik/pop |
 | Toggle aan/uit | Toon omhoog / omlaag |
 
 Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binnen de sessie (geen opslag, conform keuze).
@@ -627,19 +676,19 @@ Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binne
 | **11. GitHub-repo en naam** (¼ dag) ✅ **klaar 9 sept 2026, plan bijgewerkt 10 sept** | App onder de naam **Letter en Cijfer-app** (titel, manifest, README) in de openbare repo `psohl/letter-en-reken-app`; `LEESMIJ.md` hernoemd naar `README.md`; `letters.png` en de zip-opleveringen niet in de repo; GitHub Pages aan op `main`. | ✅ 27 bestanden in de repo, precies de structuur van §4.2; 121 tests groen vanaf `file://` in Chrome (10 sept 2026); `https://psohl.github.io/letter-en-reken-app/` antwoordt met de app; README en app.js-commentaar op 10 sept bijgewerkt (zie §13). |
 | **12. Vis: woorden lezen** (1 dag) ✅ **klaar 10 sept 2026** | Derde onderdeel naast Aapje en Raketje (§5.5): twee spelvormen (woord → plaatje, plaatje → woord), drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3, 56 woorden per niveau met onderbouwing in `woordenlijst-vis.md`, 168 eigen SVG-plaatjes in `js/plaatjes.js`, schrijf- of blokletters, klinkers blauw en medeklinkers rood, schelpenteller, drie visanimaties, negen nieuwe iconen, menu met drie knoppen. | ✅ 152 tests groen (31 nieuwe); 37 gedragschecks in Chrome; layout gemeten op 1024×768 en 1366×768 en op telefoon- en tabletformaten: niets buiten beeld, visje raakt de kaarten niet; alle 168 plaatjes visueel beoordeeld op contactbladen. |
 | **13. Plus vrij uit te zetten** (< ¼ dag) ✅ **klaar 10 sept 2026** | Bij Raketje is de `+` niet meer vergrendeld: alle vier de operatoren zijn los aan en uit te zetten, met als enige regel dat er minstens één aan blijft (zoals de lettersets bij Aapje sinds fase 9). Slotje weg uit `index.html`. | ✅ 154 tests groen (5 nieuwe, 3 oude vervangen); 22 gedragschecks in Chrome; screenshot met alleen `÷` aan: drie grijze schakelaars, geen slotje, deelsom in beeld. |
-| **14. Mier: woorden bouwen** (1 dag) 📋 **ontworpen 14 sept 2026, nog niet gebouwd** | Vierde onderdeel (§5.6): het bewegend alfabet. Plaatje in beeld, kind typt het woord in klankvakjes (één vakje per klank, tweetekenklanken bij elkaar); drie niveaus met de woordenlijsten van Vis; voorbeeldwoord als hulpmiddel, standaard uit; blaadjesteller, drie mier-animaties, zeven nieuwe iconen, menu met vier knoppen in een 2×2-raster. Nieuw in de code: `Woorden.klanken` en een proefpagina met alle 168 splitsingen. | Te halen: alle bestaande tests groen plus nieuwe tests voor `Woorden.klanken` (alle 168 woorden splitsen, elk klankdeel uit de tekenlijst, samenvoegen geeft het woord terug) en voor de woordzak; gedragschecks in Chrome zoals fase 12; layout gemeten op 1024×768 en op telefoon- en tabletformaten met het langste woord (*tandenborstel*) en de hint in beeld. |
+| **14. Mier: woorden bouwen** (1 dag) ✅ **klaar 14 sept 2026** | Vierde onderdeel (§5.6): het bewegend alfabet. Plaatje in beeld, kind typt het woord in klankvakjes (één vakje per klank, tweetekenklanken bij elkaar); drie niveaus met de woordenlijsten van Vis; voorbeeldwoord als hulpmiddel, standaard uit; blaadjesteller, drie mier-animaties, acht nieuwe iconen, geluid *trippel*, menu met vier knoppen in een 2×2-raster. Nieuw in de code: `Woorden.klanken`, `Woorden.SPLITSINGEN`, `Woorden.Woordzak` en de proefpagina `test/klankproef.html`. Schakelaars op de cijfers `1`-`6`, want alle letters zijn antwoord. | ✅ 196 tests groen (28 nieuwe); 64 gedragschecks in Chrome; alle 168 woorden gesplitst met één handmatige uitzondering (*pannenkoek*), beoordeeld op `test/klankproef.html`; layout gemeten op 1024×768, 1366×768 en 1920×1080 en op telefoon- en tabletformaten (390×844, 360×780, 844×390, 768×1024, 820×1180, 1180×820) met *tandenborstel* (13 vakjes), het voorbeeldwoord en de hint in beeld: niets buiten beeld, de rij vakjes raakt de mier en de teller niet; menu met vier knoppen op alle formaten in beeld. |
 | **15. Niveaus en lettersoorten vrij te combineren** (< ¼ dag) ✅ **klaar 14 sept 2026** | Bij Raketje zijn de drie raketjes en bij Vis de drie vissen niet langer één keuze maar losse schakelaars: **meerdere niveaus tegelijk** aan mag, met als enige regel dat er minstens één aan blijft (zoals de operatoren sinds fase 13). Bij Vis geldt hetzelfde voor schrijf- en blokletters: allebei tegelijk aan kan, de opgaven wisselen dan af. | ✅ 168 tests groen (14 nieuwe); 21 gedragschecks in Chrome; screenshots met drie raketjes aan, drie vissen aan en allebei de lettersoorten aan. |
 
-Totaal ca. 7-9 werkdagen doorlooptijd bij deeltijdinzet voor de fases 0 t/m 13 en 15; de fases 2 en 3
-zijn onafhankelijk en kunnen parallel. Fase 14 is ontworpen maar nog niet ingepland; fase 15 is een
-kleine uitbreiding die daar niet op hoefde te wachten.
+Totaal ca. 8-10 werkdagen doorlooptijd bij deeltijdinzet voor alle fases; de fases 2 en 3
+zijn onafhankelijk en kunnen parallel. Fase 15 is een kleine uitbreiding die niet op fase 14 hoefde
+te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
 
 ### 9.1 Latere uitbreidingen (buiten fase 1)
 
-- Tweetekenklanken (ee, oo, oe, eu, ui, ij, au, ou, ei, ie, ng, ch) met aan/uit-icoon; kind typt twee toetsen. 📋 *Opgenomen in het ontwerp van fase 14*: in Mier is een tweetekenklank één klankvakje waarin het kind twee toetsen typt (§5.6).
+- Tweetekenklanken (ee, oo, oe, eu, ui, ij, au, ou, ei, ie, ng, ch) met aan/uit-icoon; kind typt twee toetsen. ✅ *Gedaan in fase 14*: in Mier is een tweetekenklank één klankvakje waarin het kind twee (of drie) toetsen typt (§5.6). Een aan/uit-icoon was niet nodig: de klanken volgen uit het woord.
 - ✅ *Gedaan in fase 8:* hoofdletters en blokletters als alternatieve lettersets (§5.2).
 - Voortgang opslaan in `localStorage` met avatar-keuze voor meerdere kinderen.
-- Woordjes typen (klankzuivere mkm-woorden: b-oo-m) als tweede taalspel. ✅ *Deels gedaan in fase 12*, maar anders: Vis laat het kind woorden **lezen** en kiezen uit drie (§5.5), niet typen. 📋 *Woorden typen is uitgewerkt als fase 14, Mier* (§5.6): bij een plaatje het woord intoetsen in klankvakjes, met de woordenlijst van Vis.
+- Woordjes typen (klankzuivere mkm-woorden: b-oo-m) als tweede taalspel. ✅ *Gedaan in fase 12 en 14*: Vis laat het kind woorden **lezen** en kiezen uit drie (§5.5), Mier laat het kind bij een plaatje het woord **intoetsen** in klankvakjes, met dezelfde woordenlijsten (§5.6).
 - 📋 *Overwogen als vierde onderdeel, niet gekozen (14 sept 2026):* een rekenspel met het **gouden materiaal** (losse kraal = 1, staafje = 10, plaat = 100, kubus = 1000): hoeveelheid omzetten in een getal en omgekeerd. Dat vult het andere gat in de app — Raketje oefent bewerkingen, geen getalbegrip en plaatswaarde — en zou de app op twee taal- en twee rekenonderdelen brengen. De kraalweergave uit `js/kralen.js` en de cijferinvoer met auto-controle uit Raketje zijn herbruikbaar; nieuw zijn de gouden vormen als SVG en een generator. Blijft de sterkste kandidaat voor een vijfde onderdeel.
 - Vis: eigen klankopnames of voorgelezen woorden; een vierde niveau met niet-klankzuivere woorden (groep 4); de woordenlijst uitbreiden of per kind aanpassen.
 - ✅ *Gedaan in fase 8:* Montessori-kralen als visueel hulpmiddel bij de sommen (§5.3). Een getallenlijn is niet gemaakt.
@@ -658,6 +707,7 @@ kleine uitbreiding die daar niet op hoefde te wachten.
 - ✅ Kralen (fase 8/9): over 30.000 gegenereerde sommen (4 operatoren × 3 niveaus) klopt het kralenmodel altijd met de som (wat blijft staan is het antwoord; bij delen `a` kralen in `b` staafjes), nooit een staafje langer dan tien kralen, hoogstens 10 rijen en 22 kolommen.
 - ✅ keyboardHint.js (fase 10): 26 lettertoetsen in drie rijen, 10 cijfertoetsen in de groepjes 1-5 en 6-0 plus wistoets; in de pc-stand stuurt een klik niets; in de aanraakstand komt een tik aan als `keydown` met de juiste `key` (letter, cijfer, `Backspace`), een tik naast de toetsen doet niets, en `zetTikbaar(false)` maakt het weer een stille hint.
 - ✅ woorden.js en plaatjes.js (fase 12): drie niveaus met minstens 50 woorden, geen dubbele, alleen a-z; kleine vis voldoet aan het (m)k(m)-patroon met één klinkerteken, grote vis heeft een tweetekenklank of cluster en één lettergreep, haai minstens twee lettergrepen; elk woord heeft een plaatje en geen plaatje bevat tekst, `id`, `<use>` of externe verwijzingen; letterkleuren (ij als klinker); opgavezak over 1120 opgaven: drie verschillende keuzes uit het niveau met het woord op de plek van `antwoord`, elk woord even vaak, nooit hetzelfde woord twee keer achter elkaar, goede antwoord op alle drie de plekken; beide vormen aan → om en om; lege of onbekende vormen en niveaus genegeerd; afleiders bij haai lijken altijd op het woord.
+- ✅ Klanken en woordzak (fase 14, Mier): `Woorden.klanken` splitst alle 168 woorden zo dat samenvoegen het woord teruggeeft en elk deel één letter is of in de tekenlijst `KLANKEN` staat; de bekende gevallen zijn los getest (*maan* = m-aa-n, *sneeuwpop* met eeuw, *touw* met ouw, *konijn* met ij, *papegaai* met aai, *bank*/*ring* met nk en ng, *schaap* als s + ch, en *pannenkoek* uit `SPLITSINGEN`); elke handmatige splitsing hoort bij een woord uit de lijst en levert dat woord op; het langste woord heeft 13 vakjes; `klankKlasse` geeft klinkers (ook aa, oe, eeuw, ij) blauw en ch/ng/nk rood. De `Woordzak` geeft elk woord even vaak, nooit twee keer hetzelfde achter elkaar, altijd met de klanken van dat woord; met twee niveaus aan wisselen die om en om (300/300 over 600), een lege of alleen-onbekende niveaulijst wordt geweigerd en `zetNiveau` zet er precies één aan.
 - ✅ Meerdere niveaus tegelijk (fase 15): bij `Sommen.Generator` met klein én super aan komen beide niveaus ongeveer even vaak voorbij, nooit een derde, en elke som blijft binnen het maximum van *zijn eigen* niveau; bij `Woorden.Opgavezak` met klein én haai aan wisselen de niveaus elkaar om en om af (300/300 over 600 opgaven), komen de afleiders altijd uit het niveau van het woord en komt nooit twee keer hetzelfde woord achter elkaar. Bij allebei: een lege of alleen-onbekende niveaulijst wordt geweigerd (de stand blijft staan), de lijst staat altijd in de vaste volgorde klein-groot-super/haai, en `zetNiveau(naam)` zet er precies één aan.
 
 **Handmatig (checklist)**
@@ -669,6 +719,7 @@ kleine uitbreiding die daar niet op hoefde te wachten.
 - ✅ Gedragstest fase 10 (geautomatiseerd in Chrome, 36 checks): aanraakstand uit op een pc; aan via de menuknop en via `T`, dubbelklik geeft één actie; bij Aapje staat het toetsenbord meteen in beeld, een foute tik geeft nog geen hint, twee foute tikken laten de juiste toets pulseren, een goede tik telt een banaan, tikken tijdens de animatie worden genegeerd, na de animatie komt een nieuwe letter en blijft het toetsenbord staan; bij Raketje is de wistoets zichtbaar, een juist eerste cijfer blijft staan, de wistoets wist het, na twee fouten pulseert het eerste cijfer en springt de hint naar het tweede, het volledige antwoord geeft een ster; in de pc-stand doet een tik niets en is de wistoets weg.
 - ✅ Gedragstest fase 12 (geautomatiseerd in Chrome, 37 checks): `V` en `3` openen Vis, pijltjes in het menu lopen over drie knoppen; beginstand woord-vorm / kleine vis / schrijfletters; opgave toont het woord met gekleurde letters en drie plaatjeskaarten; foute klik vervaagt de kaart en schakelt hem uit, geen hint na één fout, tweede fout via cijfertoets laat de goede kaart pulseren; goed via toets telt een schelp, start een visanimatie, toetsen tijdens de animatie worden genegeerd, daarna nieuwe opgave met schone kaarten en opgeruimde effecten; pijltjes verplaatsen de focus; `P`/`W` en klikken schakelen de vormen (laatste blijft aan, dubbelklik één actie), `B`/`S` de lettersoort, `H`/`G`/`K` en klikken het niveau; Escape tijdens de animatie ruimt op, instellingen en schelpen blijven staan na een bezoek aan het menu.
 - ✅ Gedragstest fase 13 (geautomatiseerd in Chrome, 22 checks): beginstand alleen `+` aan, zonder slotje of `aria-disabled`; klik en toets `+` op de enige aanstaande soort doen niets; `−` erbij en dan `+` uit laat alleen `−` over en geeft meteen een minsom; klik en toets op de laatste soort doen niets en de som blijft staan; via `*` en `-` alleen `×` over, drie goed beantwoorde sommen zijn allemaal keersommen en geven drie sterren; dubbele toets `+` geeft één actie; alle vier aan en dan alle vier uit klikken laat de laatste (`÷`) aan met een deelsom; de stand blijft na een bezoek aan het menu.
+- ✅ Gedragstest fase 14 (geautomatiseerd in Chrome, 64 checks): het menu heeft vier knoppen in een 2×2-raster, `M` en `4` openen Mier, pijltje rechts loopt over alle vier en omhoog gaat een rij terug; beginstand kleine mier / schrijfletters / voorbeeldwoord uit; de opgave toont een plaatje met één leeg vakje per klank en het eerste vakje is actief; een goede letter verschijnt en de invoer springt door, een foute letter laat het vakje schudden zonder te verschijnen en wist niet wat al goed staat, na één fout nog geen hint en na twee fouten pulseert de juiste toets; een tweetekenklank neemt twee toetsen in één vakje en houdt één kleur; Backspace haalt eerst de halve klank weg en daarna het vorige vakje; een afgemaakt woord geeft een blaadje, groene vakjes en een mier-animatie waarin toetsen genegeerd worden, daarna een nieuw woord met lege vakjes en opgeruimde effecten; de letters `k`, `g`, `s`, `b` en `h` schakelen niets (ze zijn antwoord), de cijfers `1`-`6` wel; het laatste niveau en de laatste lettersoort zijn niet uit te zetten, een dubbelklik telt één keer, het niveau van het woord in beeld uitzetten geeft meteen een nieuw woord, met beide lettersoorten aan wisselen de woorden af, het voorbeeldwoord komt boven de vakjes; Escape tijdens de animatie ruimt op en instellingen en blaadjes blijven staan; boven tien blaadjes komt de mierenhoop met een getal; layout op negen formaten met *tandenborstel* in beeld.
 - ✅ Gedragstest fase 15 (geautomatiseerd in Chrome, 21 checks): Raketje begint met alleen het kleine raketje aan, groot en super erbij geven drie rode ringen en `aria-pressed="true"` op alle drie, de generator kent alle drie, de som in beeld hoort altijd bij een aangezet niveau, klein er weer uit laat groot en super staan en de laatste is niet uit te zetten; Vis begint met alleen de kleine vis, haai en grote vis erbij geven drie groene ringen en de opgavezak kent alle drie, de laatste vis blijft aan; de blokletterknop erbij zet allebei de lettersoorten aan en zet het woord in beeld meteen in blokletters (geen `schrijfletter`-klasse meer over), hem weer uit zetten brengt de schrijfletters terug, de laatste soort is niet uit te zetten, en met allebei aan wisselen zes opeenvolgende opgaven netjes af (blok, schrijf, blok, ...).
 - Tijdens animatie tikken: geen dubbele beloning, geen overgeslagen opgave. ✅ Ook getikt (fase 10).
 - ✅ Geluid: beoordeeld tijdens de kindtest, werkt goed.
@@ -704,11 +755,12 @@ kleine uitbreiding die daar niet op hoefde te wachten.
 | Twee woorden in één niveau passen bij hetzelfde plaatje | Synoniemen (*kat*/*poes*) zijn uit één niveau gehouden; lookalikes (*kip*/*haan*, *boom*/*bos*) zijn verschillend getekend. De afleiders komen alleen uit het eigen niveau. |
 | De haai is te moeilijk of te makkelijk | Het niveau is een keuze van de ouder/leerkracht; de drie niveaus volgen de leerlijn van groep 3 (`woordenlijst-vis.md`) en zijn zo in de code (`Woorden.LIJST`) aan te passen. |
 | Zeven schakelaars in de balk van Vis passen niet op 1024 px | Gemeten: past (kleinste knop 77 px), net als de acht van Raketje. |
-| Kindtest voor Vis ontbreekt nog | Zoals bij fase 8-10 nog niet gedaan; zie §13. |
-| **Fase 14:** een woord automatisch in klanken splitsen lukt niet voor alle 168 woorden | Greedy match van links naar rechts op een geordende tekenlijst dekt de meeste; per woord is een handmatige splitsing op te geven in `js/woorden.js`, en een proefpagina toont alle 168 splitsingen ter beoordeling. Lukt het alsnog niet, dan is de terugvaloptie één vakje per letter. Let vooral op *touw* (ouw), *sneeuw* (eeuw), *schaap* (s + ch), *konijn* (ij), en op woorden waar twee letters toevallig naast elkaar staan zonder één klank te zijn. |
-| **Fase 14:** het plaatje is niet eenduidig te benoemen, en anders dan bij Vis bepalen de keuzes het woord niet | Het hulpmiddel **voorbeeldwoord** (§5.6) zet het woord in beeld en is daarmee ook de uitweg bij een onduidelijk plaatje; daarnaast pulseert na twee fouten de juiste toets. Bij de kindtest noteren welke plaatjes twijfel geven. |
-| **Fase 14:** vier menuknoppen passen niet naast elkaar op 1024 px | Menu wordt een 2×2-raster vanaf het punt waar vier knoppen niet meer passen, en blijft één kolom op een smalle telefoon. Te meten zoals in fase 10 en 12. |
-| **Fase 14:** toetsbotsing tussen de onderdelen | `S` is bij Raketje het superraketje en bij Vis de schrijfletter. Voorstel in §5.6: in Mier `K`/`G`/`P` voor de niveaus en `S`/`B` voor de lettersoort, zodat `S` in elk taalonderdeel hetzelfde betekent. Bij de bouw vastleggen in §5.1 en in de README-toetsentabel. |
+| Kindtest voor Vis en Mier ontbreekt nog | Zoals bij fase 8-10 nog niet gedaan; zie §13. Bij Mier vooral letten op de tweetekenklank in één vakje. |
+| **Fase 14:** een woord automatisch in klanken splitsen lukt niet voor alle 168 woorden | ✅ Opgelost: de greedy match op de geordende tekenlijst dekt 167 van de 168 woorden. Alleen *pannenkoek* ging mis (pannen-koek werd p-a-n-n-e-**nk**-oe-k) en staat nu met de hand in `Woorden.SPLITSINGEN`. *touw* (ouw), *sneeuwpop* (eeuw), *schaap* (s + ch), *konijn* (ij), *papegaai* (aai), *bank* (nk) en *ring* (ng) gaan vanzelf goed. Alle splitsingen staan op `test/klankproef.html` en in de tests; de terugvaloptie (één vakje per letter) was niet nodig. |
+| **Fase 14:** het plaatje is niet eenduidig te benoemen, en anders dan bij Vis bepalen de keuzes het woord niet | Het hulpmiddel **voorbeeldwoord** (§5.6) zet het woord in beeld en is daarmee ook de uitweg bij een onduidelijk plaatje; daarnaast pulseert na twee fouten de juiste toets. Bij de kindtest noteren welke plaatjes twijfel geven (nog te doen, zie §13). |
+| **Fase 14:** vier menuknoppen passen niet naast elkaar op 1024 px | ✅ Opgelost: het menu is altijd een 2×2-raster (vier naast elkaar past op geen enkel pc-scherm) en blijft één kolom op een telefoon rechtop (≤ 700 px). Knopmaat `min(30vw, 30vh, 380px)`, zodat ook twee rijen in de hoogte passen; op een telefoon liggend is de minimummaat 110 px. Gemeten op negen formaten: niets buiten beeld. |
+| **Fase 14:** toetsbotsing tussen de onderdelen | ✅ Opgelost, maar anders dan voorgesteld: bij Mier zijn *alle* letters antwoord, dus `K`/`G`/`P` en `S`/`B` konden niet. De schakelaars staan op de cijfers `1` t/m `6` (§5.1, §5.6), net als de lettersets van Aapje; cijfers zijn bij Mier nooit antwoord. Vastgelegd in §5.1 en in de README-toetsentabel. |
+| **Fase 14:** het langste woord (*tandenborstel*, 13 vakjes) past niet op een klein scherm | ✅ Opgelost: de vakgrootte volgt uit `--vakjes` en de schermbreedte, de klank in het vakje schaalt mee met het aantal tekens. Gemeten met 13 vakjes: 67 px per vakje op 1024×768, 26 px op een telefoon rechtop; de rij raakt de mier noch de teller. Op een telefoon liggend (844×390) zijn kaart, vakjes en de mier daarvoor een slag kleiner (`css/mobiel.css`). |
 
 ---
 
@@ -1242,4 +1294,73 @@ moeilijkere opgaven komen dan door elkaar.
 - De dubbelklik-bescherming van 300 ms geldt nu ook voor de niveau- en lettersoortknoppen. Wie snel
   twee keer op dezelfde knop klikt, krijgt één actie; dat is gewenst, maar het maakt "even aan en
   meteen weer uit" wel traag. Bij de kindtest kijken of dat stoort.
+- Niet gecommit; Peter commit en pusht zelf.
+
+### 14 september 2026 · Fase 14: Mier, woorden bouwen
+
+Het vierde onderdeel uit §5.6 is gebouwd: het **bewegend alfabet**. Er staat een plaatje in beeld en
+het kind typt het woord in een rij klankvakjes — één vakje per *klank*, dus *maan* is m + aa + n. Dit
+is het eerste onderdeel waarin het kind zelf iets produceert in plaats van herkent en kiest. De app
+heeft daarmee vier onderdelen en het menu een 2×2-raster.
+
+**Gemaakt (§5.1, §5.6, §6.2, §6.3, §7.5)**
+
+- `js/woorden.js`: `Woorden.KLANKEN` (geordende tekenlijst van lang naar kort), `Woorden.klanken(woord)`
+  (greedy match van links naar rechts), `Woorden.SPLITSINGEN` (handmatige splitsing per woord),
+  `Woorden.klankKlasse` (één kleur per klank; een klank die met een klinker begint is blauw, en de ij
+  ook) en `Woorden.Woordzak` (woorden uit de aangezette niveaus, met hun klanken, zonder afleiders).
+  De niveau-afhandeling die `Opgavezak` en `Woordzak` delen staat nu één keer in `zetNiveausOp`.
+- `js/mier.js`: de spelloop. Per vakje wordt de eerstvolgende letter van de klank verwacht; goed →
+  de letter verschijnt met een pop en een klikje, vakje vol → door naar het volgende, fout → het
+  vakje schudt en wat goed staat blijft staan, `Backspace` → eerst de halve klank, anders het vorige
+  vakje. Na twee fouten op hetzelfde vakje pulseert de juiste toets op het hint-toetsenbord. Woord af
+  → blaadje, groene vakjes, mier-animatie van 1,4 s met geblokkeerde invoer, nieuw woord.
+- `css/mier.css` en een vijfde scherm in `index.html`: plaatjeskaart met grasgroene rand, het
+  voorbeeldwoord, de rij klankvakjes (vakgrootte uit `--vakjes`, letters uit het aantal tekens), de
+  drie mier-animaties en de rust-animatie.
+- `js/icons.js`: acht iconen erbij (mier voor het menu, mier als speelfiguur, mier klein/groot/puik,
+  blaadje, mierenhoop, voorbeeldwoord); `js/animaties.js`: drie mier-varianten (dragen, lopen,
+  klimmen); `js/audio.js`: het geluid *trippel*.
+- `css/menu.css`: het menu is een 2×2-raster geworden met knoppen van `min(30vw, 30vh, 380px)`; de
+  blokjes in de hoek zijn met de knop meegekrompen. `js/app.js`: `M` en `4` openen Mier, en de
+  pijltjes omhoog/omlaag springen een rij in het raster.
+- `css/mobiel.css`: Mier op telefoon en tablet, en het menu als één kolom op een telefoon rechtop.
+- `test/test.html`: 28 nieuwe tests (§10), totaal 196. `test/klankproef.html`: alle 168 woorden in
+  klankvakjes, ter beoordeling zoals `plaatjesproef.html` dat voor de plaatjes doet.
+- `README.md`: hoofdstuk "Woorden bouwen", de toetsentabel en de stukjes over het menu en de tablet.
+
+**Twee keuzes die tijdens de bouw anders zijn gelopen dan in het ontwerp**
+
+- **Toetsen op cijfers, niet op letters.** §5.6 stelde `K`/`G`/`P` voor de niveaus en `S`/`B` voor de
+  lettersoort voor. Dat kan hier niet: bij Mier zijn alle 26 letters antwoord, dus `k` moet gewoon
+  een `k` in het vakje zetten (*kip*, *geit*, *pop*, *sok*, *bus*). De schakelaars staan daarom op
+  `1` t/m `6`, dezelfde oplossing die Aapje al gebruikt voor zijn vier lettersets.
+- **Eén handmatige splitsing.** De greedy match doet 167 van de 168 woorden goed. Alleen
+  *pannenkoek* ging mis: daar staan een n en een k naast elkaar zonder samen *nk* te zijn. Dat woord
+  staat nu in `SPLITSINGEN`. De terugvaloptie (één vakje per letter) was niet nodig.
+
+**Gecontroleerd**
+
+- `test/test.html`: 196 goed, 0 fout in headless Chrome vanaf `file://`.
+- Gedragstest in de echte DOM (headless Chrome via het DevTools-protocol, 64 checks, alle groen; zie
+  §10), inclusief de layout met *tandenborstel* (13 vakjes), het voorbeeldwoord en de hint in beeld
+  op 1024×768, 1366×768, 1920×1080, 390×844, 360×780, 844×390, 768×1024, 820×1180 en 1180×820, en het
+  menu met vier knoppen op diezelfde formaten. Telefoon- en tabletformaten zijn in de aanraakstand
+  gemeten, pc-formaten in de pc-stand.
+- Korte regressietest van Aapje, Raketje en Vis (7 checks): spelloop, tellers, animaties, toetsen en
+  schakelaars werken onveranderd; geen consolefouten.
+- `test/klankproef.html` bekeken: alle 168 splitsingen kloppen, *pannenkoek* staat er groen omrand in
+  als handmatige splitsing.
+- Screenshots op 1366×768 (menu met vier knoppen; *maan* half ingetypt met het voorbeeldwoord aan;
+  *tandenborstel* met alle 13 vakjes), op 390×844 en op 844×390.
+
+**Nog te doen / aandachtspunten**
+
+- Kindtest voor Mier: let vooral op of het kind begrijpt dat een tweetekenklank in één vakje hoort
+  (typt het `aa` in twee vakjes of in één?), en welke plaatjes twijfel geven — het voorbeeldwoord is
+  daarvoor de uitweg.
+- Op een telefoon liggend (844×390) is Mier krap: kaart, vakjes en de mier zijn daar een slag
+  kleiner. Rechtop of op een tablet is het ruimer.
+- De lege vakjes verraden het aantal klanken. Dat is een bewuste keuze (§5.6); een schakelaar die de
+  vakjes weglaat, is een mogelijke latere uitbreiding.
 - Niet gecommit; Peter commit en pusht zelf.

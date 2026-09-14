@@ -1,22 +1,26 @@
-/* menu.css - hoofdmenu met drie zeer grote knoppen (ontwikkelplan §5.1) */
+/* menu.css - hoofdmenu met vier zeer grote knoppen in een 2x2-raster (ontwikkelplan §5.1) */
 
 #scherm-menu .menu-keuzes {
   flex: 1;
   min-height: 0;
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  align-content: center;
   justify-content: center;
-  gap: clamp(20px, 4vw, 90px);
-  padding: 2vh 3vw 6vh;
+  gap: clamp(12px, 2.5vw, 48px);
+  padding: 2vh 3vw 3vh;
 }
 
-/* Drie knoppen naast elkaar: 3 x 26vw + 2 x 4vw past op elk pc-scherm vanaf 1024 px. */
+/* Sinds fase 14 zijn er vier onderdelen. Vier knoppen naast elkaar passen op geen enkel
+   pc-scherm (4 x 26vw is breder dan het venster), dus staan ze in een 2x2-raster; de maat
+   telt daarom ook de hoogte van twee rijen mee. Op een smalle telefoon zet mobiel.css ze
+   onder elkaar. */
 .menu-knop {
   position: relative;
-  width: min(26vw, 58vh, 460px);
-  height: min(26vw, 58vh, 460px);
-  min-width: 200px;
-  min-height: 200px;
+  width: min(30vw, 30vh, 380px);
+  height: min(30vw, 30vh, 380px);
+  min-width: 150px;
+  min-height: 150px;
   border-radius: var(--radius);
   background: #fff;
   box-shadow: var(--schaduw);
@@ -31,6 +35,7 @@
 .menu-knop-aapje   { background: #FBEBD3; }
 .menu-knop-raketje { background: #E4ECF7; }
 .menu-knop-vis     { background: var(--kleur-vis-licht); }
+.menu-knop-mier    { background: var(--kleur-gras-licht); }
 
 .icoon-groot { display: block; width: 68%; height: 68%; }
 .icoon-groot svg { width: 100%; height: 100%; overflow: visible; }
@@ -41,6 +46,9 @@
 .menu-knop-raketje .vlam { animation: flakker 0.35s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 0; }
 .menu-knop-vis .icoon-groot { animation: vis-wieg 3.4s ease-in-out infinite; transform-origin: 50% 50%; }
 .menu-knop-vis .staart { animation: staart-zwaai 0.9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 0% 50%; }
+.menu-knop-mier .icoon-groot { animation: mier-trippel 0.9s ease-in-out infinite; }
+.menu-knop-mier .voelspriet-1 { animation: voelspriet 1.6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 100% 100%; }
+.menu-knop-mier .voelspriet-2 { animation: voelspriet 1.6s ease-in-out 0.3s infinite alternate-reverse; transform-box: fill-box; transform-origin: 100% 100%; }
 
 /* Blokje in de hoek dat laat zien wat je gaat oefenen: een schrijfletter of een sommetje */
 .blokje {
@@ -56,14 +64,28 @@
   align-items: center;
   justify-content: center;
 }
-.blokje-letter .schrijfletter { font-size: min(9vw, 17vh, 150px); transform: translateY(-6%); }
-.blokje-woord .schrijfletter  { font-size: min(4.6vw, 8.5vh, 76px); transform: translateY(-6%); white-space: nowrap; }
+/* De maten volgen de knopmaat min(30vw, 30vh, 380px): het blokje is daar 30 % van. */
+.blokje-letter .schrijfletter { font-size: min(10.4vw, 10.4vh, 131px); transform: translateY(-6%); }
+.blokje-woord .schrijfletter  { font-size: min(5.3vw, 5.3vh, 67px); transform: translateY(-6%); white-space: nowrap; }
 .blokje-cijfers {
-  font-size: min(4.2vw, 8vh, 70px);
+  font-size: min(4.4vw, 4.4vh, 55px);
   font-weight: 700;
   color: var(--kleur-raket);
   letter-spacing: 0.02em;
 }
+/* Mier: drie kleine klankvakjes met m-ie-r, zoals in het spel zelf */
+.blokje-klanken { gap: 5%; }
+.vakje-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28%;
+  height: 56%;
+  border-radius: 22%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.14);
+}
+.vakje-mini .schrijfletter { font-size: min(2.6vw, 2.6vh, 32px); transform: translateY(-8%); }
 
 @keyframes knipper {
   0%, 92%, 100% { transform: scaleY(1); }

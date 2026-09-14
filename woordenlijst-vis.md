@@ -1,10 +1,15 @@
 # Woordenlijst voor het spel Vis
 
-Versie 1.0 · 10 september 2026 · hoort bij `taal-en-reken-app-ontwikkelplan.md` §5.5
+Versie 1.1 · 14 september 2026 · hoort bij `taal-en-reken-app-ontwikkelplan.md` §5.5 en §5.6
 
 Het spel **Vis** laat het kind woorden lezen: bij een woord het juiste plaatje kiezen, of bij een
 plaatje het juiste woord. De woorden staan in `js/woorden.js`, de bijbehorende tekeningen in
 `js/plaatjes.js`. Dit document legt vast **welke woorden** in welk niveau zitten en **waarom**.
+
+Sinds fase 14 (14 sept 2026) gebruikt ook het spel **Mier** deze drie lijsten, maar dan om woorden te
+*bouwen*: bij het plaatje typt het kind het woord in klankvakjes (§5.6). De niveaus heten daar kleine
+mier, grote mier en puike mier en bevatten precies dezelfde woorden. Voor Mier wordt elk woord met
+`Woorden.klanken()` in klanken gesplitst; `test/klankproef.html` toont die splitsingen.
 
 ## 1. Wat kinderen van 6-7 jaar leren lezen (onderzoek)
 

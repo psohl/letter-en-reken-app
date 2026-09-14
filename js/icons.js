@@ -11,6 +11,7 @@ var Icons = (function () {
   var ROOD = '#E63946', DONKERROOD = '#7A1F28', GRIJS = '#B8C0CC', VLAM = '#FF9F1C', GEEL = '#FFD23F';
   var OKER = '#9A7B00';
   var VIS = '#FF9F1C', VISDONKER = '#B85C00', VISBUIK = '#FFD98A', ZEE = '#2A9D8F', ZEEDONKER = '#1B6F66';
+  var MIER = '#A0522D', MIERDONKER = '#5A2D12', GRAS = '#6AA84F', GRASDONKER = '#3F7A2E';
 
   function svg(vb, binnen) {
     return '<svg viewBox="' + vb + '" aria-hidden="true">' + binnen + '</svg>';
@@ -82,6 +83,34 @@ var Icons = (function () {
       '<circle cx="24.5" cy="42" r="2" fill="#fff"/>' +
       '<path d="M13 54 Q17 59 22 55" fill="none" stroke="' + VISDONKER + '" stroke-width="3.5" ' + W + '/>' +
       '</g>';
+  }
+
+  /* Mier voor het spel Mier: kijkt naar links (naar de klankvakjes), drie lijfdelen.
+     De voelsprieten en de poten hebben klassen zodat CSS ze kan animeren (trippelen en
+     zwaaien). `s` schaalt de mier binnen 100 x 100 (niveau-iconen). */
+  function mierLijf(s) {
+    var sc = s || 1, t = (1 - sc) * 50;
+    return '<g transform="translate(' + t + ' ' + t + ') scale(' + sc + ')">' +
+      '<path class="poot poot-1" d="M44 58 C36 70 30 74 22 79" fill="none" stroke="' + MIERDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path class="poot poot-2" d="M50 60 C48 72 46 78 44 86" fill="none" stroke="' + MIERDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path class="poot poot-3" d="M56 58 C60 70 64 76 72 82" fill="none" stroke="' + MIERDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path class="voelspriet voelspriet-1" d="M24 38 C18 30 12 26 6 22" fill="none" stroke="' + MIERDONKER + '" stroke-width="4.5" ' + W + '/>' +
+      '<path class="voelspriet voelspriet-2" d="M33 33 C31 25 27 19 22 14" fill="none" stroke="' + MIERDONKER + '" stroke-width="4.5" ' + W + '/>' +
+      '<ellipse cx="75" cy="50" rx="20" ry="16" fill="' + MIER + '" stroke="' + MIERDONKER + '" stroke-width="5"/>' +
+      '<ellipse cx="50" cy="52" rx="12" ry="11" fill="' + MIER + '" stroke="' + MIERDONKER + '" stroke-width="5"/>' +
+      '<circle cx="29" cy="47" r="14" fill="' + MIER + '" stroke="' + MIERDONKER + '" stroke-width="5"/>' +
+      '<path d="M64 44 Q70 50 64 57" fill="none" stroke="' + MIERDONKER + '" stroke-width="3.5" ' + W + '/>' +
+      '<circle class="oog" cx="24" cy="44" r="4.5" fill="#fff"/>' +
+      '<circle cx="23" cy="44.5" r="2.4" fill="' + DONKER + '"/>' +
+      '<path d="M19 54 Q24 58 29 55" fill="none" stroke="' + MIERDONKER + '" stroke-width="3" ' + W + '/>' +
+      '</g>';
+  }
+
+  /* Blaadje: de beloning van Mier (sessieteller), ook los als icoon te gebruiken. */
+  function bladVorm() {
+    return '<path d="M16 84 C10 46 34 14 86 12 C88 56 58 86 16 84 Z" fill="' + GRAS + '" stroke="' + GRASDONKER + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M18 82 C40 62 62 38 84 16" fill="none" stroke="' + GRASDONKER + '" stroke-width="4" ' + W + '/>' +
+      '<path d="M34 68 L34 50 M50 54 L52 34 M62 42 L68 26" fill="none" stroke="' + GRASDONKER + '" stroke-width="3" ' + W + '/>';
   }
 
   /* Eén kralenstaafje voor het kralen-icoon: n kralen aan een draadje. */
@@ -249,7 +278,36 @@ var Icons = (function () {
       '<rect x="41" y="52" width="18" height="18" rx="4" fill="' + GEEL + '" stroke="' + DONKER + '" stroke-width="4"/>' +
       '<circle cx="50" cy="60" r="3" fill="' + DONKER + '"/>' +
       '<circle cx="28" cy="24" r="6" fill="' + GEEL + '" stroke="' + OKER + '" stroke-width="3"/>' +
-      '<circle cx="72" cy="22" r="6" fill="' + GEEL + '" stroke="' + OKER + '" stroke-width="3"/>')
+      '<circle cx="72" cy="22" r="6" fill="' + GEEL + '" stroke="' + OKER + '" stroke-width="3"/>'),
+
+    /* ---- Mier (woorden bouwen) ---- */
+
+    /* Hoofdmenu: de mier met een blaadje erboven; speelfiguur: de mier alleen */
+    mier: svg('0 0 100 100', '<g transform="translate(6 14) scale(0.86)">' + mierLijf(1) + '</g>' +
+      '<g transform="translate(58 0) scale(0.34)">' + bladVorm() + '</g>'),
+    mierFiguur: svg('0 0 100 100', mierLijf(1)),
+
+    /* Niveau: kleine mier, grote mier en puike mier (drie maten, zoals de raketjes en de vissen) */
+    mierKlein: svg('0 0 100 100', mierLijf(0.55)),
+    mierGroot: svg('0 0 100 100', mierLijf(0.8)),
+    mierPuik:  svg('0 0 100 100', mierLijf(1)),
+
+    /* Sessieteller bij Mier: blaadje, en een mierenhoop als het er meer dan tien zijn */
+    blaadje: svg('0 0 100 100', bladVorm()),
+    mierenhoop: svg('0 0 100 100',
+      '<path d="M6 86 C16 46 36 18 50 12 C64 18 84 46 94 86 Z" fill="' + LICHTBRUIN + '" stroke="' + BRUIN + '" stroke-width="5" ' + W + '/>' +
+      '<path d="M22 74 L44 56 M34 84 L58 58 M54 84 L74 62 M40 44 L58 40 M50 28 L62 34" fill="none" stroke="' + BRUIN + '" stroke-width="4" ' + W + '/>' +
+      '<ellipse cx="66" cy="78" rx="7" ry="5.5" fill="' + MIERDONKER + '"/>' +
+      '<circle cx="56" cy="78" r="4.5" fill="' + MIERDONKER + '"/>' +
+      '<circle cx="48" cy="76" r="4" fill="' + MIERDONKER + '"/>'),
+
+    /* Hulpmiddel: het voorbeeldwoord klein boven de lege klankvakjes */
+    voorbeeldwoord: cirkel(GRAS,
+      '<rect x="24" y="22" width="52" height="18" rx="7" fill="#fff"/>' +
+      '<path d="M31 31 q4 -5 8 0 t8 0 t8 0 t8 0" fill="none" stroke="' + GRASDONKER + '" stroke-width="3.5" ' + W + '/>' +
+      '<rect x="22" y="54" width="17" height="20" rx="5" fill="none" stroke="#fff" stroke-width="4"/>' +
+      '<rect x="41.5" y="54" width="17" height="20" rx="5" fill="none" stroke="#fff" stroke-width="4"/>' +
+      '<rect x="61" y="54" width="17" height="20" rx="5" fill="none" stroke="#fff" stroke-width="4"/>')
   };
 
   function get(naam) {

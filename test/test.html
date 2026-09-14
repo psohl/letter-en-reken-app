@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>Tests: letters.js, woorden.js, sommen.js, kralen.js, keyboardHint.js</title>
+<title>Tests: letters.js, woorden.js, sommen.js, kralen.js, animaties.js, keyboardHint.js</title>
 <style>
   body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; max-width: 960px; }
   .ok { color: #2e7d32; } .fout { color: #c62828; font-weight: bold; }
@@ -14,6 +14,7 @@
 <p>Open dit bestand in de browser (dubbelklik). Alle regels moeten groen zijn.</p>
 <h2>letters.js</h2><ul id="uit-letters"></ul>
 <h2>woorden.js en plaatjes.js (Vis)</h2><ul id="uit-woorden"></ul>
+<h2>woorden.js: klanken en woordzak (Mier)</h2><ul id="uit-mier"></ul>
 <h2>sommen.js</h2><ul id="uit-sommen"></ul>
 <h2>kralen.js</h2><ul id="uit-kralen"></ul>
 <h2>animaties.js</h2><ul id="uit-animaties"></ul>
@@ -219,6 +220,85 @@
     test('kleine vis: twee afleiders, niet het woord zelf', afKlein.length === 2 && afKlein[0] !== afKlein[1] && afKlein.indexOf('vis') < 0);
     test('gelijkenis: beginletter 2, lengte 1, eindletter 1',
          Woorden.gelijkenis('kat', 'kip') === 3 && Woorden.gelijkenis('kat', 'pot') === 2 && Woorden.gelijkenis('kat', 'boom') === 0);
+  })();
+
+  /* ================= woorden.js: klanken en woordzak (Mier, fase 14) ================= */
+  test = maakTester('uit-mier');
+  (function () {
+    /* ---- Woorden.klanken: één vakje per klank, niet per letter ---- */
+    test('klanken("maan") = m + aa + n (het bewegend alfabet legt klanken, geen letters)',
+         Woorden.klanken('maan').join('-') === 'm-aa-n', Woorden.klanken('maan').join('-'));
+    test('klanken("vis") = v + i + s', Woorden.klanken('vis').join('-') === 'v-i-s');
+    test('klanken("sneeuwpop"): eeuw is één klank', Woorden.klanken('sneeuwpop').join('-') === 's-n-eeuw-p-o-p', Woorden.klanken('sneeuwpop').join('-'));
+    test('klanken("touw"): ouw is één klank', Woorden.klanken('touw').join('-') === 't-ouw', Woorden.klanken('touw').join('-'));
+    test('klanken("konijn"): ij is één klank', Woorden.klanken('konijn').join('-') === 'k-o-n-ij-n', Woorden.klanken('konijn').join('-'));
+    test('klanken("papegaai"): aai is één klank', Woorden.klanken('papegaai').join('-') === 'p-a-p-e-g-aai', Woorden.klanken('papegaai').join('-'));
+    test('klanken("schaap"): sch blijft s + ch, twee vakjes', Woorden.klanken('schaap').join('-') === 's-ch-aa-p', Woorden.klanken('schaap').join('-'));
+    test('klanken("bank") en klanken("ring"): nk en ng zijn één klank',
+         Woorden.klanken('bank').join('-') === 'b-a-nk' && Woorden.klanken('ring').join('-') === 'r-i-ng');
+    test('klanken("pannenkoek"): handmatige splitsing, de n en de k zijn hier geen nk-klank',
+         Woorden.klanken('pannenkoek').join('-') === 'p-a-n-n-e-n-k-oe-k', Woorden.klanken('pannenkoek').join('-'));
+    test('handmatige splitsingen staan in SPLITSINGEN en horen bij de woordenlijst',
+         Object.keys(Woorden.SPLITSINGEN).every(function (w) {
+           return Woorden.alle().indexOf(w) >= 0 && Woorden.SPLITSINGEN[w].join('') === w;
+         }), Object.keys(Woorden.SPLITSINGEN).join());
+
+    /* Alle 168 woorden: samenvoegen geeft het woord terug en elk deel is een bekende klank
+       of één losse letter. */
+    var alleW = Woorden.alle(), nietTerug = [], onbekend = [], meeste = 0, meesteW = '';
+    alleW.forEach(function (w) {
+      var k = Woorden.klanken(w);
+      if (k.join('') !== w) nietTerug.push(w);
+      k.forEach(function (d) {
+        if (d.length > 1 && Woorden.KLANKEN.indexOf(d) < 0 && !Woorden.SPLITSINGEN[w]) onbekend.push(w + ':' + d);
+      });
+      if (k.length > meeste) { meeste = k.length; meesteW = w; }
+    });
+    test('alle ' + alleW.length + ' woorden: de klanken samengevoegd geven het woord terug', nietTerug.length === 0, nietTerug.join());
+    test('elk klankdeel is één letter of staat in de tekenlijst KLANKEN', onbekend.length === 0, onbekend.join());
+    test('het langste woord heeft ' + meeste + ' klankvakjes (' + meesteW + ')', meeste <= 13, meesteW);
+    test('elk woord heeft minstens één vakje', alleW.every(function (w) { return Woorden.klanken(w).length >= 1; }));
+
+    /* ---- Kleur van een klankvakje: één kleur per klank ---- */
+    test('klankKlasse: aa, oe, eeuw en ij zijn klinkers (blauw)',
+         ['aa', 'oe', 'eeuw', 'ij', 'a'].every(function (k) { return Woorden.klankKlasse(k) === 'klinker'; }));
+    test('klankKlasse: ch, ng, nk en losse medeklinkers zijn rood',
+         ['ch', 'ng', 'nk', 'b', 'j'].every(function (k) { return Woorden.klankKlasse(k) === 'medeklinker'; }));
+
+    /* ---- Woordzak: woorden zonder afleiders, met hun klanken ---- */
+    var wz = new Woorden.Woordzak('klein', maakRandom(31));
+    var nk = Woorden.LIJST.klein.length, telling = {}, herh = 0, vorig = null, mis = 0;
+    for (var i = 0; i < nk * 10; i++) {
+      var b = wz.volgende();
+      telling[b.woord] = (telling[b.woord] || 0) + 1;
+      if (b.woord === vorig) herh++;
+      vorig = b.woord;
+      if (b.niveau !== 'klein' || Woorden.LIJST.klein.indexOf(b.woord) < 0 ||
+          b.klanken.join('') !== b.woord || b.klanken.join('-') !== Woorden.klanken(b.woord).join('-')) mis++;
+    }
+    test('woordzak: elk woord even vaak (10 x per ' + nk + ' woorden)',
+         Object.keys(telling).length === nk && Object.keys(telling).every(function (w) { return telling[w] === 10; }));
+    test('woordzak: nooit twee keer hetzelfde woord achter elkaar', herh === 0, herh);
+    test('woordzak: elk woord komt uit het niveau en draagt zijn klanken mee', mis === 0, mis);
+
+    wz.zetNiveaus(['haai', 'klein']);
+    test('woordzak: twee niveaus aan, altijd in de vaste volgorde klein-groot-haai', wz.niveaus().join() === 'klein,haai');
+    var per = { klein: 0, groot: 0, haai: 0 }, herh2 = 0, vorig2 = null;
+    for (var j = 0; j < 600; j++) {
+      var b2 = wz.volgende();
+      per[b2.niveau]++;
+      if (b2.woord === vorig2) herh2++;
+      vorig2 = b2.woord;
+    }
+    test('woordzak: twee niveaus wisselen elkaar af, elk 300 van 600',
+         per.klein === 300 && per.haai === 300 && per.groot === 0, JSON.stringify(per));
+    test('woordzak: ook door elkaar nooit twee keer hetzelfde woord achter elkaar', herh2 === 0, herh2);
+    wz.zetNiveaus([]);
+    test('woordzak: lege niveaulijst wordt genegeerd (minstens één niveau blijft aan)', wz.niveaus().join() === 'klein,haai');
+    wz.zetNiveaus(['onzin']);
+    test('woordzak: alleen onbekende niveaunamen wordt ook genegeerd', wz.niveaus().join() === 'klein,haai');
+    wz.zetNiveau('groot');
+    test('woordzak: zetNiveau zet er precies één aan', wz.niveaus().join() === 'groot' && wz.niveau() === 'groot');
   })();
 
 
@@ -529,6 +609,7 @@
   test('aapje heeft minstens 3 varianten (' + Animaties.VARIANTEN.aapje.join(', ') + ')', Animaties.VARIANTEN.aapje.length >= 3);
   test('raket heeft minstens 3 varianten (' + Animaties.VARIANTEN.raket.join(', ') + ')', Animaties.VARIANTEN.raket.length >= 3);
   test('vis heeft minstens 3 varianten (' + Animaties.VARIANTEN.vis.join(', ') + ')', Animaties.VARIANTEN.vis.length >= 3);
+  test('mier heeft minstens 3 varianten (' + Animaties.VARIANTEN.mier.join(', ') + ')', Animaties.VARIANTEN.mier.length >= 3);
   test('duur van een beloningsanimatie is hoogstens 1,5 s (' + Animaties.DUUR + ' ms)', Animaties.DUUR <= 1500);
   (function () {
     var r = maakRandom(21), herh = 0, gezien = {}, v = null;
@@ -542,10 +623,17 @@
     for (var q = 0; q < 2000; q++) { var k3 = Animaties.kies('vis', r3); if (k3 === v3) herh3++; v3 = k3; gezien3[k3] = true; }
     test('kies: nooit twee keer dezelfde vis-variant achter elkaar, alle varianten komen voor',
          herh3 === 0 && Object.keys(gezien3).length === Animaties.VARIANTEN.vis.length, herh3);
+    var r4 = maakRandom(24), herh4 = 0, v4 = null, gezien4 = {};
+    for (var p = 0; p < 2000; p++) { var k4 = Animaties.kies('mier', r4); if (k4 === v4) herh4++; v4 = k4; gezien4[k4] = true; }
+    test('kies: nooit twee keer dezelfde mier-variant achter elkaar, alle varianten komen voor',
+         herh4 === 0 && Object.keys(gezien4).length === Animaties.VARIANTEN.mier.length, herh4);
   })();
   test('alle iconen uit §6.3 bestaan', ['aapje','raket','huisje','luidspreker','luidsprekerUit','fullscreen','fullscreenUit','plus','min','maal','deel','slot','raketKlein','raketGroot','raketSuper','banaan','bananentros','ster','maan','liaan','aapjeFiguur','raketFiguur','letterSchrijfKlein','letterSchrijfHoofd','letterBlokKlein','letterBlokHoofd','kralen','toetsenbord',
-    'vis','visFiguur','visKlein','visGroot','haai','vormWoord','vormPlaatje','schelp','schatkist'].every(function (n) { return Icons.svg(n).indexOf('<svg') === 0; }));
+    'vis','visFiguur','visKlein','visGroot','haai','vormWoord','vormPlaatje','schelp','schatkist',
+    'mier','mierFiguur','mierKlein','mierGroot','mierPuik','blaadje','mierenhoop','voorbeeldwoord'].every(function (n) { return Icons.svg(n).indexOf('<svg') === 0; }));
   test('het visje heeft een staart die CSS kan laten zwaaien', Icons.svg('visFiguur').indexOf('class="staart"') > 0 && Icons.svg('vis').indexOf('class="staart"') > 0);
+  test('de mier heeft voelsprieten die CSS kan laten bewegen',
+       Icons.svg('mierFiguur').indexOf('class="voelspriet voelspriet-1"') > 0 && Icons.svg('mier').indexOf('class="voelspriet voelspriet-2"') > 0);
 
   /* ================= keyboardHint.js (fase 10: tikbaar toetsenbord) ================= */
   test = maakTester('uit-hint');

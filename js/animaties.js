@@ -1,4 +1,4 @@
-/* animaties.js - beloningsanimaties voor aapje en raket (ontwikkelplan §7.1, §7.2).
+/* animaties.js - beloningsanimaties voor aapje, raket, vis en mier (ontwikkelplan §7.1, §7.2, §7.4, §7.5).
    Alle varianten duren DUUR ms (<= 1,5 s). De spellen negeren toetsen tot de animatie klaar is.
 
    Gebruik:
@@ -7,7 +7,7 @@
        laag:   element voor tijdelijke effecten (liaan, maan, rook, vliegend icoon)
        van:    element waar het beloningsicoon vertrekt (letterkaart / invulvak)
        naar:   element waar het naartoe vliegt (teller)
-       icoon:  naam van het icoon dat vliegt ('banaan' / 'ster')
+       icoon:  naam van het icoon dat vliegt ('banaan' / 'ster' / 'schelp' / 'blaadje')
    Variant wordt willekeurig gekozen, nooit twee keer dezelfde achter elkaar. */
 
 var Animaties = (function () {
@@ -18,7 +18,8 @@ var Animaties = (function () {
   var VARIANTEN = {
     aapje: ['spring', 'liaan', 'salto', 'eet'],
     raket: ['lancering', 'looping', 'maan'],
-    vis: ['sprong', 'zwem', 'bubbels']
+    vis: ['sprong', 'zwem', 'bubbels'],
+    mier: ['draag', 'loop', 'klim']
   };
 
   var vorige = {};
@@ -147,6 +148,31 @@ var Animaties = (function () {
           bubbel.style.setProperty('--bx', ((b % 2 ? -1 : 1) * (10 + b * 6)) + 'px');
           effecten.push(bubbel);
         }
+        effecten.push(vliegIcoon(o));
+        break;
+
+      /* ---- Mier ---- */
+      case 'draag':
+        // Tilt het afgemaakte woord op en draagt het naar rechts het beeld uit; blaadje naar de teller.
+        figuur.style.setProperty('--lx', (veld.width - f.x + f.w) + 'px');
+        effecten.push(vliegIcoon(o));
+        break;
+      case 'loop':
+        // Loopt met een blaadje boven zijn kop naar links over het scherm en weer terug.
+        var loopX = -(f.x - Math.min(doel.x, veld.width * 0.2));
+        figuur.style.setProperty('--lx', loopX + 'px');
+        var bladMaat = Math.max(28, f.w * 0.55);
+        var blad = maakEffect(laag, 'draagblad', Icons.svg('blaadje'), {
+          left: (f.x - bladMaat / 2) + 'px', top: (f.top - bladMaat * 0.55) + 'px',
+          width: bladMaat + 'px', height: bladMaat + 'px'
+        });
+        blad.style.setProperty('--lx', loopX + 'px');
+        effecten.push(blad);
+        effecten.push(vliegIcoon(o));
+        break;
+      case 'klim':
+        // Klimt op de laatste klank (rechterkant van de rij vakjes) en zwaait met zijn voelsprieten.
+        figuur.style.setProperty('--dx', (doel.x + doel.w / 2 - f.w * 0.6 - f.x) + 'px');
         effecten.push(vliegIcoon(o));
         break;
     }

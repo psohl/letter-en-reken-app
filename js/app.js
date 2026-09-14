@@ -2,7 +2,7 @@
    en de aanraakstand (toetsenbord op het scherm voor tablet/telefoon)
    (ontwikkelplan §4.4, §4.5, §5.1, §7.3).
    Schermen registreren zich met App.registreer(naam, { binnen, buiten, toets }).
-   Laadvolgorde: app.js vóór aapje.js, raketje.js en vis.js; alle init gebeurt op DOMContentLoaded
+   Laadvolgorde: app.js vóór aapje.js, raketje.js, vis.js en mier.js; alle init gebeurt op DOMContentLoaded
    in scriptvolgorde, dus App.start draait eerst. */
 
 var App = (function () {
@@ -169,13 +169,17 @@ var App = (function () {
     if (k === 'a' || k === '1') { e.preventDefault(); Geluid.speel('klik'); toon('aapje'); return; }
     if (k === 'r' || k === '2') { e.preventDefault(); Geluid.speel('klik'); toon('raketje'); return; }
     if (k === 'v' || k === '3') { e.preventDefault(); Geluid.speel('klik'); toon('vis'); return; }
+    if (k === 'm' || k === '4') { e.preventDefault(); Geluid.speel('klik'); toon('mier'); return; }
     if (k === 't') { e.preventDefault(); wisselAanraak(); return; }     // toetsenbord op het scherm
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+    // Pijltjes lopen over de knoppen: links/rechts één verder, omhoog/omlaag een rij
+    // (het menu is sinds fase 14 een 2x2-raster).
+    var stap = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 2, ArrowUp: -2 }[e.key];
+    if (stap) {
       e.preventDefault();
       var knoppen = Array.prototype.slice.call(schermen.menu.el.querySelectorAll('.menu-knop'));
       var i = knoppen.indexOf(document.activeElement);
       var n = knoppen.length;
-      var volgende = i < 0 ? 0 : (i + (e.key === 'ArrowRight' ? 1 : n - 1)) % n;
+      var volgende = i < 0 ? 0 : (i + stap + n) % n;
       knoppen[volgende].focus();
     }
     // Enter en Space activeren de gefocuste knop via het standaard gedrag van <button>.

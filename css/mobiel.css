@@ -1,7 +1,8 @@
 /* mobiel.css - aanraakstand en kleine schermen (ontwikkelplan §4.5, fase 10).
    Alles hier geldt alleen in de aanraakstand (body.aanraak, gezet door app.js) of
    via media queries voor smalle en lage schermen. Op een pc vanaf 1024 px breed
-   verandert er niets aan de opmaak uit base.css, menu.css, aapje.css en raketje.css. */
+   verandert er niets aan de opmaak uit base.css, menu.css, aapje.css, raketje.css,
+   vis.css en mier.css. */
 
 /* ---- Aanraakdetails (overal actief, op een pc onzichtbaar) ---- */
 html, body {
@@ -76,12 +77,20 @@ body.aanraak .hint-wis {
   .spel .balk-midden { grid-area: midden; flex-wrap: wrap; justify-content: center; row-gap: clamp(4px, 1vh, 10px); }
   .knopgroep + .knopgroep { padding-left: clamp(5px, 1.5vw, 12px); }
 
-  /* Menu: de drie grote knoppen onder elkaar */
-  #scherm-menu .menu-keuzes { flex-direction: column; gap: clamp(10px, 2.5vh, 30px); padding: 1vh 4vw 3vh; }
-  .menu-knop { width: min(60vw, 24vh); height: min(60vw, 24vh); min-width: 130px; min-height: 130px; }
-  .blokje-letter .schrijfletter { font-size: min(17vw, 7vh); }
-  .blokje-cijfers { font-size: min(8vw, 3.4vh); }
-  .blokje-woord .schrijfletter { font-size: min(8vw, 3.4vh); }
+  /* Menu: de vier grote knoppen onder elkaar (rechtop is er breedte over, geen hoogte) */
+  #scherm-menu .menu-keuzes { grid-template-columns: auto; gap: clamp(8px, 2vh, 24px); padding: 1vh 4vw 2vh; }
+  .menu-knop { width: min(52vw, 17vh); height: min(52vw, 17vh); min-width: 110px; min-height: 110px; }
+  .blokje-letter .schrijfletter { font-size: min(15vw, 5vh); }
+  .blokje-cijfers { font-size: min(7vw, 2.4vh); }
+  .blokje-woord .schrijfletter { font-size: min(7vw, 2.4vh); }
+  .vakje-mini .schrijfletter { font-size: min(3.2vw, 1.5vh); }
+
+  /* Mier: kleinere kaart en vakjes; het langste woord (13 vakjes) moet op de breedte passen */
+  .speelveld-mier { justify-content: flex-start; padding-top: 1vh; padding-bottom: clamp(52px, 12vh, 100px); gap: clamp(6px, 1.5vh, 18px); }
+  .mier-kaart { width: min(32vw, 18vh); height: min(32vw, 18vh); min-width: 96px; min-height: 96px; box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-gras); }
+  .klankvakjes { --vakgrootte: min(9vh, 60px, calc((94vw - var(--vakjes, 5) * 6px) / var(--vakjes, 5))); gap: 4px; }
+  .voorbeeldwoord { min-height: clamp(16px, 4.5vh, 44px); }
+  .voorbeeldwoord .woord { font-size: min(4.5vh, calc(80vw / (var(--letters, 5) * var(--letterbreedte, 0.6)))); }
 
   /* Vis: woordkaarten onder elkaar, plaatjes naast elkaar; het visje klein rechtsonder */
   .speelveld-vis { justify-content: flex-start; padding-top: 1vh; padding-bottom: clamp(56px, 13vh, 110px); gap: clamp(8px, 1.8vh, 20px); }
@@ -140,7 +149,9 @@ body.aanraak .hint-wis {
   .hint-cijfers { min-height: var(--hint-toets); }
   .letterkaart { min-width: 110px; min-height: 110px; box-shadow: var(--schaduw), inset 0 0 0 7px currentColor; }
   .figuur { width: clamp(56px, 16vh, 220px); }
-  .menu-knop { min-width: 140px; min-height: 140px; }
+  /* Twee rijen menuknoppen moeten in de hoogte passen (telefoon liggend) */
+  #scherm-menu .menu-keuzes { gap: clamp(8px, 2vh, 24px); padding: 1vh 3vw 1vh; }
+  .menu-knop { min-width: 110px; min-height: 110px; }
   .speelveld.met-kralen .som-kolom { gap: 6px; }
   /* Vis liggend op een telefoon: kleinere kaarten in de hoogte */
   .speelveld-vis { gap: clamp(6px, 1.5vh, 14px); }
@@ -149,4 +160,12 @@ body.aanraak .hint-wis {
   .keuze-plaatje { width: min(30vh, 17vw); height: min(30vh, 17vw); }
   .keuze-woord { height: min(24vh, 190px); min-height: 50px; }
   .kralen { --kraal: min(46px, calc(28vh / (var(--rijen, 1) * 1.5)), calc(58vw / (var(--kolommen, 1) * 1.35))); }
+  /* Mier liggend op een telefoon: alles een slag kleiner in de hoogte (kaart, vakjes en de
+     mier zelf), zodat de rij vakjes noch de mier noch de teller raakt */
+  .speelveld-mier { gap: clamp(3px, 1vh, 12px); padding-bottom: clamp(46px, 12.5vh, 100px); }
+  .mier-woordkolom { gap: 3px; }
+  .figuur-mier { width: clamp(40px, 11vh, 120px); }
+  .mier-kaart { width: min(15vh, 22vw); height: min(15vh, 22vw); min-width: 56px; min-height: 56px; }
+  .klankvakjes { --vakgrootte: min(11vh, 60px, calc((92vw - var(--vakjes, 5) * 8px) / var(--vakjes, 5))); }
+  .voorbeeldwoord { min-height: clamp(12px, 3.5vh, 40px); }
 }

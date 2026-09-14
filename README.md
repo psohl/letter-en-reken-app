@@ -1,9 +1,9 @@
 # Letter en Cijfer-app
 
 Een vrolijke oefen-app voor kinderen van 6-7 jaar: **letters herkennen en intoetsen**,
-**sommetjes maken** en **woorden lezen**. Gemaakt voor thuis en in de klas, aansluitend bij de
-Montessori-schrijfletters (klinkers blauw, medeklinkers roze). Werkt op de computer, en ook op een
-tablet of telefoon (zie verderop).
+**sommetjes maken**, **woorden lezen** en **woorden bouwen**. Gemaakt voor thuis en in de klas,
+aansluitend bij de Montessori-schrijfletters (klinkers blauw, medeklinkers roze). Werkt op de
+computer, en ook op een tablet of telefoon (zie verderop).
 
 ## Starten
 
@@ -15,8 +15,8 @@ Liever zonder internet? Dan zo:
 1. Download de app van GitHub (**github.com/psohl/letter-en-reken-app** → groene knop **Code** →
    **Download ZIP**) en pak de map uit op een plek op de computer, bijvoorbeeld het bureaublad.
 2. Dubbelklik op **`index.html`**. De app opent in de browser (Edge, Chrome of Firefox).
-3. Klik op het **aapje** voor letters, op de **raket** voor sommen of op de **vis** voor woorden.
-   Meer uitleg heeft het kind niet nodig.
+3. Klik op het **aapje** voor letters, op de **raket** voor sommen, op de **vis** voor woorden lezen
+   of op de **mier** voor woorden bouwen. Meer uitleg heeft het kind niet nodig.
 
 Er is **geen internet** nodig, er wordt **niets geïnstalleerd** en er wordt **niets opgeslagen**:
 elke keer dat de app start, begint de teller weer op nul.
@@ -29,8 +29,8 @@ Dan zijn er geen browserknoppen die afleiden. `Escape` (of nog een keer op het i
 De app werkt ook in de browser van een iPad, iPhone of Android-toestel (Safari of Chrome). Er
 verschijnt dan vanzelf een **toetsenbord onderin het scherm**: het kind tikt daar de letter of het
 cijfer aan. Bij de sommen staat achter de cijfers een wistoets (⌫) voor het laatste cijfer. Bij de
-woorden is geen toetsenbord nodig: het kind tikt gewoon op het plaatje of het woord. Verder is
-alles hetzelfde als op de computer.
+vis is geen toetsenbord nodig: het kind tikt gewoon op het plaatje of het woord. Bij de mier tikt
+het kind het woord op het schermtoetsenbord. Verder is alles hetzelfde als op de computer.
 
 Een telefoon of tablet kan geen bestand van de computer openen; de app moet daarvoor **op internet**
 staan. Dat is al geregeld: open op de tablet of telefoon **https://psohl.github.io/letter-en-reken-app/**.
@@ -116,7 +116,7 @@ die op dat moment in beeld staat, dan komt er meteen een nieuwe letter.
   het niveau van de som die net in beeld staat uit, dan komt er meteen een nieuwe som.
 - Er komen nooit negatieve uitkomsten en delingen komen altijd uit.
 
-## Woorden
+## Woorden lezen
 
 Bij de **vis** oefent het kind lezen: letters samen tot een woord. Er zijn twee spelvormen, die
 met de eerste twee knoppen bovenaan aan en uit gaan (net als de somknoppen; er blijft er altijd
@@ -159,6 +159,38 @@ blokletters (zoals in een boek), altijd kleine letters. Ook deze twee gaan los a
 **allebei tegelijk** aan staan; de opgaven wisselen dan af tussen schrijf- en blokletters, zodat het
 kind leert dat het dezelfde woorden zijn. Zet je een soort aan, dan staat die meteen in beeld.
 
+## Woorden bouwen
+
+Bij de **mier** doet het kind wat het in de klas met de letterdoos (het *bewegend alfabet*) doet: het
+hoort de klanken in een woord en legt ze neer. Er staat een plaatje in beeld en daaronder een rij
+lege vakjes; het kind typt het woord van links naar rechts.
+
+**Eén vakje per klank, niet per letter.** *maan* is drie vakjes: `m`, `aa`, `n`. In het vakje van de
+`aa` typt het kind twee keer de `a`; pas dan springt het door naar het volgende vakje. Zo leert het
+kind een woord in klanken te horen in plaats van in losse letters. Ook `ui`, `ij`, `oe`, `eu`, `ch`,
+`ng` en zelfs `eeuw` (van *sneeuwpop*) zijn samen één vakje. Bij *schaap* is de `sch` wel twee
+vakjes: `s` en `ch`. Aan het aantal vakjes ziet het kind meteen hoe lang het woord is.
+
+- Goed: de letter verschijnt in het vakje. Is het woord af, dan komt er een blaadje bij en draagt de
+  mier het woord weg, loopt hij met een blaadje over het scherm of klimt hij op de laatste klank.
+  Na tien blaadjes komt er een mierenhoop met een getal.
+- Fout: het vakje schudt even en de letter verschijnt niet. **Wat al goed staat blijft staan** — het
+  kind hoeft niet opnieuw te beginnen. Na twee foute pogingen op hetzelfde vakje knippert de juiste
+  toets groen op het toetsenbord onderin.
+- `Backspace` legt de laatste klank terug, zodat het kind zelf kan verbeteren.
+- Klinkers zijn blauw en medeklinkers roze, net als bij het aapje en de vis; een klank heeft altijd
+  één kleur (`aa` is dus helemaal blauw).
+
+Bovenaan staan drie **mieren** in drie maten: dat zijn dezelfde drie niveaus en dezelfde woorden als
+bij de vis (kleine mier = *vis, boom, koe*; grote mier = *muis, hond, schaap*; puike mier =
+*konijn, paraplu, tandenborstel*). Ze gaan los aan en uit (groene ring = aan) en mogen **meerdere
+tegelijk** aan staan; er blijft er altijd één aan. Daarnaast staat de **lettersoort**
+(schrijfletters of blokletters, allebei tegelijk mag ook).
+
+Achter een streepje staat het **voorbeeldwoord**: zet je dat aan, dan staat het woord klein boven de
+vakjes en schrijft het kind het over. Standaard staat het uit. Zet het aan voor een kind dat nog niet
+zelf spelt, en later weer uit. Het helpt ook als een plaatje niet meteen duidelijk is.
+
 ## Toetsen (voor wie liever niet klikt)
 
 | Waar | Toets | Doet |
@@ -166,8 +198,9 @@ kind leert dat het dezelfde woorden zijn. Zet je een soort aan, dan staat die me
 | Menu | `A` of `1` | Aapje starten |
 | Menu | `R` of `2` | Raketje starten |
 | Menu | `V` of `3` | Vis starten |
+| Menu | `M` of `4` | Mier starten |
 | Menu | `T` | toetsenbord op het scherm aan of uit |
-| Menu | pijltjes + Enter | knop kiezen |
+| Menu | pijltjes + Enter | knop kiezen (links/rechts één knop, omhoog/omlaag een rij) |
 | Overal | `Escape` | terug naar het menu |
 | Aapje | letters | de letter op de kaart intoetsen |
 | Aapje | `1` `2` `3` `4` | soort letter aan of uit (in de volgorde van de knoppen) |
@@ -181,6 +214,15 @@ kind leert dat het dezelfde woorden zijn. Zet je een soort aan, dan staat die me
 | Vis | `W` / `P` | spelvorm woord-bij-plaatje / plaatje-bij-woord aan of uit |
 | Vis | `K` / `G` / `H` | kleine vis / grote vis / haai aan of uit |
 | Vis | `S` / `B` | schrijfletters / blokletters aan of uit |
+| Mier | letters | het woord bij het plaatje intoetsen |
+| Mier | `Backspace` | de laatste klank terugleggen |
+| Mier | `1` `2` `3` | kleine / grote / puike mier aan of uit |
+| Mier | `4` / `5` | schrijfletters / blokletters aan of uit |
+| Mier | `6` | voorbeeldwoord (hulpmiddel) aan of uit |
+
+Bij de mier zijn **alle letters antwoord** — het kind typt er immers woorden mee. Daarom staan de
+knoppen daar op de cijfers, net als bij het aapje. Bij de vis, waar niets getypt wordt, kunnen het
+gewoon letters zijn.
 
 Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
 
@@ -201,10 +243,15 @@ Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
   (of druk op `T` als er wel een toetsenbord aan hangt).
 - **Een plaatje is niet duidelijk?** Alle tekeningen staan in `js/plaatjes.js`, één per woord; de
   woorden zelf staan in `js/woorden.js`. Een woord weghalen of vervangen kan daar, zolang elk woord
-  een plaatje met dezelfde naam heeft (`test/test.html` controleert dat).
+  een plaatje met dezelfde naam heeft (`test/test.html` controleert dat). Bij de mier helpt ook het
+  voorbeeldwoord: dan staat het woord erbij.
+- **Klopt een woord niet in klanken?** De app splitst een woord automatisch (*maan* → m, aa, n). Gaat
+  dat bij een woord mis, dan kan de splitsing met de hand gezet worden in `Woorden.SPLITSINGEN` in
+  `js/woorden.js`; dat is nu voor één woord nodig (*pannenkoek*, want de n en de k horen daar niet
+  bij elkaar). `test/klankproef.html` laat alle woorden in hun vakjes zien.
 - **Controle voor de techneut:** open `test/test.html`; alle regels moeten groen zijn.
-  `test/fontproef.html` toont alle letters naast de referentie uit de klas en `test/plaatjesproef.html`
-  alle woordplaatjes per niveau.
+  `test/fontproef.html` toont alle letters naast de referentie uit de klas, `test/plaatjesproef.html`
+  alle woordplaatjes per niveau en `test/klankproef.html` alle woorden in klankvakjes.
 
 ## Over de app
 
@@ -213,10 +260,13 @@ Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
   gebruiken onder de SIL Open Font License 1.1. Zie `assets/font/LICENTIE-Lusletters-OFL.txt`.
 - De blokletters komen uit een font dat al op de computer staat (bij voorkeur Century Gothic).
 - Alle iconen, animaties en geluiden zijn zelf gemaakt en zitten in de code. Dat geldt ook voor de
-  168 woordplaatjes van Vis: eigen tekeningen, geen materiaal van derden.
+  168 woordplaatjes van Vis en Mier: eigen tekeningen, geen materiaal van derden.
 - De woorden van Vis volgen de leerlijn lezen van groep 3 (klankzuivere mkm-woorden, dan
   tweetekenklanken en medeklinkerclusters, dan meerlettergrepige woorden); de onderbouwing en de
-  volledige lijst staan in `woordenlijst-vis.md`.
+  volledige lijst staan in `woordenlijst-vis.md`. Mier gebruikt dezelfde drie lijsten, maar dan om
+  te bouwen in plaats van te lezen.
+- Mier volgt het Montessori-**bewegend alfabet**: het kind legt de klanken die het hoort, en
+  schrijft daarmee eerder dan het leest. Daarom is een tweetekenklank (aa, ui, eeuw) één vakje.
 - `manifest.webmanifest` en de iconen in `assets/icoon/` zorgen dat de app op een tablet of telefoon
   op het beginscherm gezet kan worden. Op de computer doen ze niets.
 - De broncode staat op **github.com/psohl/letter-en-reken-app**; de app zelf draait via GitHub Pages

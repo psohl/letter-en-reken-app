@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Klankproef: alle woorden van Mier in klankvakjes</title>
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/fonts.css">
+<style>
+  html, body { overflow: auto; height: auto; }
+  body { padding: 24px; font-family: Segoe UI, Arial, sans-serif; }
+  h1 { font-size: 20px; } h2 { font-size: 16px; margin: 24px 0 8px; color: #555; }
+  p.uitleg { max-width: 900px; color: #444; }
+  .rij { display: flex; flex-wrap: wrap; gap: 10px; }
+  .kaart { display: flex; flex-direction: column; align-items: center; gap: 6px;
+           padding: 8px 10px; background: #FFFDF7; border-radius: 16px; box-shadow: 0 4px 0 rgba(0,0,0,.1); }
+  .kaart.hand { outline: 3px solid #2e7d32; }      /* handmatige splitsing */
+  .kaart.veel { outline: 3px dashed #ef6c00; }     /* meer dan tien vakjes */
+  .vakjes { display: flex; gap: 4px; }
+  .vakje { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+           background: #fff; border-radius: 8px; box-shadow: inset 0 0 0 3px rgba(0,0,0,.1); }
+  .vakje .schrijfletter { font-size: 26px; line-height: 1; transform: translateY(-8%); }
+  .vakje.lang .schrijfletter { font-size: 15px; }
+  .naam { font-size: 13px; color: #555; }
+  .samenvatting { font-weight: bold; }
+  .ok { color: #2e7d32; } .fout { color: #c62828; }
+</style>
+</head>
+<body>
+<h1>Klankproef: de woorden van Mier in klankvakjes</h1>
+<p class="uitleg">Alle woorden uit <code>js/woorden.js</code> gesplitst door <code>Woorden.klanken()</code>, per niveau,
+zoals ze in het spel in de vakjes komen: één vakje per klank, klinkers blauw en medeklinkers rood
+(een tweetekenklank als <em>aa</em>, <em>ui</em> of <em>eeuw</em> is samen één vakje, <em>sch</em> is s + ch).
+Een <span class="ok">groene rand</span> betekent dat de splitsing met de hand in <code>Woorden.SPLITSINGEN</code> staat,
+een oranje stippelrand dat het woord meer dan tien vakjes heeft.
+Beoordeel: zou een kind van 6-7 het woord zo in klanken uitspreken?</p>
+<p id="samenvatting" class="samenvatting"></p>
+<div id="uit"></div>
+
+<script src="../js/letters.js"></script>
+<script src="../js/woorden.js"></script>
+<script>
+  var NAMEN = { klein: 'Niveau 1 · kleine mier', groot: 'Niveau 2 · grote mier', haai: 'Niveau 3 · puike mier' };
+  var uit = document.getElementById('uit'), fouten = [], totaal = 0, meeste = 0, meesteW = '';
+
+  Woorden.NIVEAUS.forEach(function (niveau) {
+    var lijst = Woorden.LIJST[niveau];
+    var h = document.createElement('h2');
+    h.textContent = NAMEN[niveau] + ' (' + lijst.length + ' woorden)';
+    uit.appendChild(h);
+    var rij = document.createElement('div');
+    rij.className = 'rij';
+    lijst.forEach(function (w) {
+      totaal++;
+      var klanken = Woorden.klanken(w);
+      if (klanken.join('') !== w) fouten.push(w);
+      if (klanken.length > meeste) { meeste = klanken.length; meesteW = w; }
+      var k = document.createElement('div');
+      k.className = 'kaart' + (Woorden.SPLITSINGEN[w] ? ' hand' : '') + (klanken.length > 10 ? ' veel' : '');
+      k.innerHTML = '<div class="vakjes">' + klanken.map(function (kl) {
+        return '<span class="vakje' + (kl.length > 2 ? ' lang' : '') + '"><span class="schrijfletter ' +
+               Woorden.klankKlasse(kl) + '">' + kl + '</span></span>';
+      }).join('') + '</div><span class="naam">' + w + ' (' + klanken.length + ')</span>';
+      rij.appendChild(k);
+    });
+    uit.appendChild(rij);
+  });
+
+  var s = document.getElementById('samenvatting');
+  s.textContent = fouten.length
+    ? 'Samenvoegen geeft niet het woord terug bij: ' + fouten.join(', ')
+    : 'Alle ' + totaal + ' woorden gesplitst; samenvoegen geeft steeds het woord terug. Meeste vakjes: ' +
+      meesteW + ' (' + meeste + '). Met de hand gesplitst: ' + (Object.keys(Woorden.SPLITSINGEN).join(', ') || 'geen') + '.';
+  s.className = 'samenvatting ' + (fouten.length ? 'fout' : 'ok');
+</script>
+</body>
+</html>

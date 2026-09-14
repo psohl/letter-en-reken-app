@@ -1,0 +1,144 @@
+/* mier.css - woorden bouwen met het bewegend alfabet (ontwikkelplan §5.1, §5.6, §7.5) */
+
+:root {
+  --kleur-mier:        #A0522D;
+  --kleur-gras:        #6AA84F;   /* rand van de plaatjeskaart en de ring om een aangezet niveau */
+  --kleur-gras-licht:  #E4F1DA;
+}
+
+.speelveld-mier {
+  flex-direction: column;
+  gap: clamp(8px, 2.5vh, 32px);
+  /* Onderaan ruimte voor de mier (17vh hoog), zodat de rij vakjes hem niet raakt. */
+  padding-bottom: clamp(70px, 18vh, 230px);
+}
+
+/* ---- Het plaatje op een vierkante kaart met grasgroene rand ---- */
+.mier-kaart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(26vh, 22vw, 300px);
+  height: min(26vh, 22vw, 300px);
+  min-width: 120px;
+  min-height: 120px;
+  border-radius: var(--radius);
+  background: #FFFDF7;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1.2px);
+  background-size: 7px 7px;
+  box-shadow: var(--schaduw), inset 0 0 0 8px var(--kleur-gras);
+}
+
+/* ---- Klankvakjes: één vakje per klank, zoals de kaartjes van de letterdoos ----
+   De vakgrootte volgt uit het aantal vakjes (--vakjes, gezet door mier.js), zodat ook
+   "tandenborstel" (13 vakjes) op één rij past. */
+.mier-woordkolom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(4px, 1.2vh, 14px);
+}
+.klankvakjes {
+  --vakgrootte: min(13vh, 11vw, 120px, calc((88vw - var(--vakjes, 5) * 10px) / var(--vakjes, 5)));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(4px, 0.8vw, 12px);
+}
+.klankvak {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--vakgrootte);
+  height: var(--vakgrootte);
+  border-radius: clamp(8px, 1.5vh, 16px);
+  background: #FFFDF7;
+  box-shadow: var(--schaduw), inset 0 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+/* Het vakje waar het kind nu in typt: grasgroene rand */
+.klankvak.actief { box-shadow: var(--schaduw), inset 0 0 0 5px var(--kleur-gras); }
+.klankvak.gevuld { background: #fff; }
+.klankvak.pop .woord { animation: pop-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+/* Woord af: alle vakjes krijgen de goed-kleur */
+.klankvakjes.goed .klankvak {
+  box-shadow: var(--schaduw), inset 0 0 0 5px var(--kleur-goed);
+  animation: goed-pop 0.5s ease both;
+}
+
+/* De klank in het vakje: één kleur per klank (klinker blauw, medeklinker rood).
+   De lettergrootte volgt uit de vakgrootte en het aantal tekens (--letters), zodat
+   ook "eeuw" in één vakje past; --letterbreedte komt uit vis.css. */
+.klankvak .woord {
+  font-size: min(calc(var(--vakgrootte) * 0.62),
+                 calc(var(--vakgrootte) * 0.82 / (var(--letters, 1) * var(--letterbreedte, 0.6))));
+}
+.klankvak .woord.schrijfletter { transform: translateY(-8%); }
+
+/* ---- Hulpmiddel: het voorbeeldwoord klein boven de vakjes ---- */
+.voorbeeldwoord {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(20px, 7vh, 72px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.voorbeeldwoord.aan { opacity: 1; }
+.voorbeeldwoord .woord {
+  font-size: min(7vh, 72px, calc(64vw / (var(--letters, 5) * var(--letterbreedte, 0.6))));
+  opacity: 0.8;
+}
+
+/* Niveau-ring in grasgroen (raketje.css zet hem in raketrood, vis.css in zeegroen) */
+.mier-niveau.aan { box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-gras); }
+
+/* ---- Mier in de hoek: rust (trippelt op zijn plaats, voelsprieten bewegen) ---- */
+.figuur-mier { animation: mier-trippel 0.9s ease-in-out infinite; }
+.figuur-mier .voelspriet-1 { animation: voelspriet 1.6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 100% 100%; }
+.figuur-mier .voelspriet-2 { animation: voelspriet 1.6s ease-in-out 0.3s infinite alternate-reverse; transform-box: fill-box; transform-origin: 100% 100%; }
+@keyframes mier-trippel {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50%      { transform: translateY(-3%) rotate(1.5deg); }
+}
+@keyframes voelspriet {
+  from { transform: rotate(-10deg); }
+  to   { transform: rotate(12deg); }
+}
+
+/* ---- Beloningsanimaties (Animaties.speel('mier')), alle 1,4 s ----
+   --dx/--dy = afstand van de mier naar de rij vakjes, --lx = hoe ver hij wegloopt. */
+
+/* 1. Tilt het woord op en draagt het naar rechts het beeld uit */
+.figuur-mier.anim-draag { animation: mier-draag 1.4s ease-in-out both; }
+@keyframes mier-draag {
+  0%   { transform: translate(0, 0) rotate(0); }
+  15%  { transform: translate(0, -8%) rotate(-6deg); }
+  100% { transform: translate(var(--lx, 200px), -4%) rotate(0); }
+}
+
+/* 2. Loopt met een blaadje boven zijn kop over het scherm en weer terug */
+.figuur-mier.anim-loop { animation: mier-loop 1.4s ease-in-out both; }
+@keyframes mier-loop {
+  0%   { transform: translateX(0); }
+  45%  { transform: translateX(var(--lx, -200px)); }
+  55%  { transform: translateX(var(--lx, -200px)); }
+  100% { transform: translateX(0); }
+}
+.effect.draagblad { animation: mier-loop 1.4s ease-in-out both, blad-wieg 0.5s ease-in-out infinite alternate; }
+@keyframes blad-wieg {
+  from { rotate: -8deg; }
+  to   { rotate: 8deg; }
+}
+
+/* 3. Klimt op de laatste klank en zwaait met zijn voelsprieten */
+.figuur-mier.anim-klim { animation: mier-klim 1.4s cubic-bezier(0.4, 0.1, 0.4, 1) both; }
+@keyframes mier-klim {
+  0%   { transform: translate(0, 0) rotate(0); }
+  35%  { transform: translate(calc(var(--dx) * 0.6), calc(var(--dy) * 0.4)) rotate(-12deg); }
+  60%  { transform: translate(var(--dx), var(--dy)) rotate(0); }
+  75%  { transform: translate(var(--dx), var(--dy)) rotate(0) scale(1.05); }
+  100% { transform: translate(var(--dx), var(--dy)) rotate(0); }
+}
+.figuur-mier.anim-klim .voelspriet-1,
+.figuur-mier.anim-klim .voelspriet-2 { animation: voelspriet 0.25s ease-in-out 6 alternate; }

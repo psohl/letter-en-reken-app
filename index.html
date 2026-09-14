@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="css/aapje.css">
   <link rel="stylesheet" href="css/raketje.css">
   <link rel="stylesheet" href="css/vis.css">
+  <link rel="stylesheet" href="css/mier.css">
   <link rel="stylesheet" href="css/mobiel.css">
 </head>
 <body>
@@ -58,6 +59,17 @@
               data-ga-naar="vis" aria-label="Vis: woorden lezen">
         <span class="icoon-groot" data-icoon="vis"></span>
         <span class="blokje blokje-woord" aria-hidden="true"><span class="schrijfletter woord"><span class="medeklinker">v</span><span class="klinker">i</span><span class="medeklinker">s</span></span></span>
+      </button>
+
+      <button id="knop-mier" class="menu-knop menu-knop-mier" type="button"
+              data-ga-naar="mier" aria-label="Mier: woorden bouwen">
+        <span class="icoon-groot" data-icoon="mier"></span>
+        <!-- Drie klankvakjes met m-ie-r: zo is meteen te zien dat het kind hier zelf typt -->
+        <span class="blokje blokje-klanken" aria-hidden="true">
+          <span class="vakje-mini"><span class="schrijfletter medeklinker">m</span></span>
+          <span class="vakje-mini"><span class="schrijfletter klinker">ie</span></span>
+          <span class="vakje-mini"><span class="schrijfletter medeklinker">r</span></span>
+        </span>
       </button>
     </div>
   </section>
@@ -244,6 +256,66 @@
     </footer>
   </section>
 
+  <!-- ===== Mier (woorden bouwen) ===== -->
+  <section id="scherm-mier" class="scherm spel" data-scherm="mier" aria-label="Mier: woorden bouwen" tabindex="-1" hidden>
+    <header class="balk">
+      <div class="balk-links">
+        <button class="knop-icoon knop-terug" type="button" data-ga-naar="menu" data-icoon="huisje"
+                aria-label="Terug naar het menu"></button>
+      </div>
+
+      <div class="balk-midden">
+        <!-- Niveaus zijn los aan en uit te zetten; meerdere tegelijk mag, minstens één blijft aan -->
+        <div class="knopgroep niveau" role="group" aria-label="Niveaus">
+          <button class="knop-icoon niveau-knop mier-niveau" type="button" data-niveau="klein" data-icoon="mierKlein"
+                  aria-label="Kleine mier (korte klankzuivere woorden) aan of uit" aria-pressed="true"></button>
+          <button class="knop-icoon niveau-knop mier-niveau" type="button" data-niveau="groot" data-icoon="mierGroot"
+                  aria-label="Grote mier (woorden met tweetekenklanken en medeklinkerclusters) aan of uit" aria-pressed="false"></button>
+          <button class="knop-icoon niveau-knop mier-niveau" type="button" data-niveau="haai" data-icoon="mierPuik"
+                  aria-label="Puike mier (lange woorden van twee of drie lettergrepen) aan of uit" aria-pressed="false"></button>
+        </div>
+        <!-- Lettersoort: bepaalt alleen hoe het getypte woord eruitziet; het kind typt gewone letters -->
+        <div class="knopgroep schriften" role="group" aria-label="Soorten letters">
+          <button class="knop-icoon knop-toggle schrift-knop" type="button" data-schrift="schrijf"
+                  aria-label="Schrijfletters aan of uit" aria-pressed="true">
+            <span class="toggle-icoon" data-icoon="letterSchrijfKlein"></span>
+          </button>
+          <button class="knop-icoon knop-toggle schrift-knop" type="button" data-schrift="blok"
+                  aria-label="Blokletters aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="letterBlokKlein"></span>
+          </button>
+        </div>
+        <div class="knopgroep hulpmiddelen" role="group" aria-label="Hulpmiddel">
+          <button class="knop-icoon knop-toggle voorbeeld-toggle" type="button"
+                  aria-label="Voorbeeldwoord als hulpmiddel aan of uit" aria-pressed="false">
+            <span class="toggle-icoon" data-icoon="voorbeeldwoord"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="balk-rechts">
+        <button class="knop-icoon knop-geluid" type="button" data-actie="geluid"
+                aria-label="Geluid aan of uit" aria-pressed="true"></button>
+      </div>
+    </header>
+
+    <main class="speelveld speelveld-mier" id="mier-veld">
+      <div class="mier-kaart" id="mier-plaatje" aria-live="polite"></div>
+      <div class="mier-woordkolom">
+        <!-- Hulpmiddel: het woord klein boven de vakjes, standaard uit -->
+        <div class="voorbeeldwoord" id="mier-voorbeeld" aria-hidden="true"></div>
+        <div class="klankvakjes" id="mier-vakjes" aria-label="Klankvakjes"></div>
+      </div>
+      <div class="effecten" id="mier-effecten" aria-hidden="true"></div>
+      <div class="figuur figuur-mier" id="mier-figuur" aria-hidden="true"></div>
+    </main>
+
+    <footer class="onderbalk">
+      <div class="teller" id="mier-teller" aria-label="Blaadjes verdiend"></div>
+      <div class="hint-toetsenbord" id="mier-hint" aria-hidden="true"></div>
+    </footer>
+  </section>
+
   <!-- Scripts in vaste volgorde (geen modules). app.js vóór de spellen. -->
   <script src="js/icons.js"></script>
   <script src="js/plaatjes.js"></script>
@@ -259,5 +331,6 @@
   <script src="js/aapje.js"></script>
   <script src="js/raketje.js"></script>
   <script src="js/vis.js"></script>
+  <script src="js/mier.js"></script>
 </body>
 </html>
