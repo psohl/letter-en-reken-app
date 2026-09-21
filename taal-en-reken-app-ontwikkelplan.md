@@ -1,10 +1,12 @@
 # Ontwikkelplan: Letter en Cijfer-app
 
-Versie 1.8 · 14 september 2026
+Versie 2.0 · 21 september 2026
 
 > **Status (10 sept 2026):** **Alle fases 0 t/m 12 zijn afgerond** ✅. De app heet **Letter en Cijfer-app** (zo staat het in `index.html`, `manifest.webmanifest` en `README.md`) en staat als Git-repository op GitHub: **github.com/psohl/letter-en-reken-app** (openbaar). Lokaal is dat de map `letter-en-reken-app/`; start met dubbelklik op `index.html`. Online draait dezelfde app via GitHub Pages op **psohl.github.io/letter-en-reken-app/** (voor tablet en telefoon). Fontkeuze: **Lusletters (standaardhelling) met stylistic set ss01**. Fase 12 (10 sept) voegt een derde onderdeel toe: **Vis**, woorden lezen (§5.5, `woordenlijst-vis.md`). Zie §9 en het voortgangslog in §13.
 >
 > **Status (14 sept 2026):** **fase 14 is gebouwd** ✅. De app heeft nu **vier onderdelen**: het vierde is **Mier**, woorden bouwen met het bewegend alfabet (§5.6). Het kind ziet een plaatje en typt het woord in klankvakjes — één vakje per klank, dus *maan* is m + aa + n. Het menu heeft daarmee vier knoppen in een 2×2-raster. Zie §9 en het voortgangslog in §13.
+>
+> **Status (21 sept 2026):** **fase 16 is gebouwd** ✅. Elk onderdeel heeft nu een **wereld die meegroeit** met de goede antwoorden: het aapje klimt een tak hoger in de boom, de raket vliegt naar een volgende planeet, het visje zwemt verder door een rif met koraal en waterplanten, en de mier loopt een kamer verder door zijn **ondergrondse nest** terwijl hij een kunstje doet (zeven nieuwe kunstjes, tien in totaal). Elk tiende antwoord is een finale en daarna begint een nieuwe ronde. Het ontwerp staat in §7.6, de opbouw in §9 (fase 16), de tests in §10 en het bouwverslag in §13.
 >
 > *Aapje*, *Raketje*, *Vis* en *Mier* zijn in dit plan de namen van de vier onderdelen (letters, sommen, woorden lezen en woorden bouwen); Aapje en Raketje zijn overgenomen van de klasprogramma's, Vis en Mier zijn eigen namen. Het zijn geen namen van de app.
 
@@ -48,6 +50,7 @@ Randvoorwaarden:
 | Tablet en telefoon | Dezelfde app, met een aanraakstand: toetsenbord op het scherm (fase 10) | Staat vanzelf aan op een tablet of telefoon, op de pc verandert niets. Voor gebruik op een telefoon moet de map online staan (§4.5). |
 | Woorden bouwen (Mier, fase 14) | Eén vakje per **klank**, niet per letter | Bij een plaatje typt het kind het woord in klankvakjes; een tweetekenklank (aa, ui, eeuw) is één vakje waarin twee of drie toetsen gaan. Drie niveaus met de woordenlijsten van Vis, schrijf- of blokletters, en het **voorbeeldwoord** als hulpmiddel (standaard uit). Fout wist niet wat al goed staat. Omdat alle letters antwoord zijn, staan de schakelaars op de cijfers `1`-`6` (§5.6). |
 | Woorden lezen (Vis, fase 12) | Kiezen uit drie, niet typen | Woord → plaatje en plaatje → woord als twee spelvormen (beide aan/uit, minstens één aan). Drie niveaus (kleine vis, grote vis, haai) volgens de leerlijn lezen van groep 3; 56 woorden per niveau, elk met een eigen SVG-tekening. Schrijf- en blokletters (alleen kleine letters), klinkers blauw en medeklinkers rood. Niveaus en lettersoorten zijn sinds 14 sept 2026 net als de spelvormen vrij te combineren (meerdere tegelijk aan, minstens één aan). Zie §5.5 en `woordenlijst-vis.md`. |
+| Beloning die meegroeit (fase 16, ✅ gebouwd 21 sept 2026) | Per onderdeel een **wereld** die met de goede antwoorden meegroeit, in rondes van tien | Aapje klimt een boom in, Raketje reist van planeet naar planeet, Vis zwemt door een rif, Mier doet circuskunstjes. De stand van de wereld volgt uit de sessieteller (niets opslaan), de beloning blijft 1,4 s en rustig, de opgave blijft het middelpunt. Geen eigen schakelaar: de balken zijn vol; wijst de kindtest uit dat het decor afleidt, dan komt er een knop in het menu (§7.6). |
 
 ---
 
@@ -88,9 +91,9 @@ letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app)
 ├── woordenlijst-vis.md        de 168 woorden van Vis per niveau, met onderbouwing en bronnen ✅ fase 12
 ├── letters.png                referentie-afbeelding van de schrijfletters uit de klas (voor test/fontproef.html)
 ├── css/
-│   ├── base.css               reset, kleuren, typografie, grote knoppen           ✅ fase 0
+│   ├── base.css               reset, kleuren, typografie, grote knoppen, wereldlaag ✅ fase 0 (wereld fase 16)
 │   ├── menu.css               hoofdmenu met vier grote knoppen in een 2×2-raster  ✅ fase 0 (drie knoppen fase 12, vier fase 14)
-│   ├── aapje.css              letterkaart, aapje-figuur, spring-animatie          ✅ fase 2
+│   ├── aapje.css              letterkaart, aapje-figuur, de boom, klim-animaties   ✅ fase 2 (boom fase 16)
 │   ├── raketje.css            som, invulvak, niveau, kralen, raket-animatie        ✅ fase 3 (kralen fase 8)
 │   ├── vis.css                woordkaart, plaatjes- en woordkeuzes, visje, vis-animaties ✅ fase 12
 │   ├── mier.css               plaatjeskaart, klankvakjes, voorbeeldwoord, mier-animaties ✅ fase 14
@@ -98,9 +101,10 @@ letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app)
 │   └── mobiel.css             aanraakstand (body.aanraak) en media queries voor smalle/lage schermen ✅ fase 10 (Vis fase 12, Mier fase 14)
 ├── js/
 │   ├── app.js                 schermwisseling, globale toetsafhandeling, geluid aan/uit, aanraakstand ✅ fase 0 (geluid fase 5, aanraak fase 10)
-│   ├── audio.js               Web Audio geluidseffecten (globaal object `Geluid`)  ✅ fase 5 (blub fase 12)
+│   ├── audio.js               Web Audio geluidseffecten (globaal object `Geluid`)  ✅ fase 5 (blub fase 12, vijf geluiden fase 16)
 │   ├── icons.js               SVG-iconen als strings: Icons.svg('huisje'), Icons.vul() ✅ fase 4 (45 iconen)
 │   ├── plaatjes.js            de 168 woordplaatjes van Vis als SVG-strings: Plaatjes.svg('kat') ✅ fase 12
+│   ├── decor.js               de 53 decor-tekeningen van de werelden: Decor.svg('planeetRing') ✅ fase 16
 │   ├── keyboardHint.js        hint-toetsenbord; in de aanraakstand tikbaar (tik = keydown) ✅ fase 2 (tikbaar fase 10)
 │   ├── teller.js              sessieteller (bananen/sterren/schelpen, tros + getal > 10) ✅ fase 2
 │   ├── letters.js             letters, klinker/medeklinker, shuffle-bag, lettersets ✅ fase 1 (sets fase 8)
@@ -108,15 +112,16 @@ letter-en-reken-app/           (GitHub-repo psohl/letter-en-reken-app)
 │   ├── aapje.js               spel Aapje                                          ✅ fase 2
 │   ├── sommen.js              somgenerator (3 niveaus), auto-controle (pure functies) ✅ fase 3 (super fase 9)
 │   ├── kralen.js              Montessori-kralen: model + weergave (pure functies)  ✅ fase 8
+│   ├── wereld.js              meegroeiende werelden: Wereld.stand + decor per onderdeel ✅ fase 16
 │   ├── raketje.js             spel Raketje                                        ✅ fase 3
 │   ├── vis.js                 spel Vis                                            ✅ fase 12
 │   ├── mier.js                spel Mier                                           ✅ fase 14
-│   └── animaties.js           beloningsanimaties: 4 aapje-, 3 raket-, 3 vis- en 3 miervarianten, effectenlaag ✅ fase 5 (vis fase 12, mier fase 14)
+│   └── animaties.js           beloningsanimaties: 3 reisvarianten per figuur, 10 miekunstjes, 4 finales, effectenlaag ✅ fase 5 (vis fase 12, mier fase 14, werelden en finales fase 16)
 ├── assets/
 │   ├── font/                  lusletters.ttf + LICENTIE-Lusletters-OFL.txt       ✅ fase 1
 │   └── icoon/                 icoon-180/192/512.png voor beginscherm en tabblad   ✅ fase 10
 └── test/
-    ├── test.html              196 tests: letters.js, woorden.js, plaatjes.js, sommen.js, kralen.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10, 12, 14, 15
+    ├── test.html              244 tests: letters.js, woorden.js, plaatjes.js, sommen.js, kralen.js, wereld.js, decor.js, animaties.js, keyboardHint.js, icons ✅ fase 1, 3, 5, 8, 9, 10, 12, 14, 15, 16
     ├── fontproef.html         alle letters per letterset naast letters.png        ✅ fase 1 (sets fase 8)
     ├── plaatjesproef.html     alle 168 woordplaatjes per niveau, met het woord in schrijf- en blokletters ✅ fase 12
     └── klankproef.html        alle 168 woorden in klankvakjes, zoals Mier ze toont ✅ fase 14
@@ -236,6 +241,7 @@ rechtsboven een knop extra.
 - Onderin: rij bananen als sessieteller (max. 10 zichtbaar, daarna een bananentros met getal).
 - Onderin, standaard verborgen: klein virtueel toetsenbord voor de hint. In de aanraakstand (§4.5) staat het altijd in beeld en is het tikbaar.
 - Het aapje zit in een hoek en wacht; bij goed antwoord speelt een animatie (§7).
+- ✅ *Fase 16 (§7.6):* langs de rechterrand staat een boom met tien takken. Bij elk goed antwoord klimt het aapje een tak hoger en blijft daar zitten; bij het tiende pakt het de bananentros in de top en begint een nieuwe ronde bij een andere boom.
 
 **Raketje**
 
@@ -247,6 +253,7 @@ rechtsboven een knop extra.
 - Rechtsboven blijft alleen het geluid-icoon staan (sinds fase 9; het niveau stond daar eerst).
 - Onderin: sterren als sessieteller; hint-toetsenbord met cijfers 0-9 (in de aanraakstand met een wistoets ⌫).
 - Toetsen: `Backspace` wist het laatste cijfer, `Escape` = terug. Toggles ook via `+`, `-`, `*` (of `x`), `/` (of `:`) op het toetsenbord; niveau aan/uit via `K` (klein), `G` (groot) en `S` (super); kralen via `H` (hulp).
+- ✅ *Fase 16 (§7.6):* langs de rechterrand een lichte sterrenhemel met de planeten onder elkaar. Bij elk goed antwoord vliegt de raket omhoog naar de volgende planeet en zakt de hemel een station; bij het tiende komt de raket thuis op aarde.
 
 **Vis** (fase 12, zie §5.5)
 
@@ -259,6 +266,7 @@ rechtsboven een knop extra.
 - Linksboven terugknop, rechtsboven geluid. Onderin: schelpen als sessieteller; boven tien schelpen een schatkist met getal. Geen hint-toetsenbord.
 - Het visje zit rechtsonder en wiegt; bij een goed antwoord springt het, zwemt het naar de goede kaart of blaast het bubbels (§7.4).
 - Toetsen: `1`, `2`, `3` kiezen de linker, middelste of rechter kaart; pijltjes links/rechts verplaatsen de focus over de kaarten en Enter of spatie kiest; `Escape` = terug.
+- ✅ *Fase 16 (§7.6):* achter het visje een zeebodem met koraal en waterplanten. Bij elk goed antwoord zwemt het visje een rifstuk verder en schuift het rif mee; bij het tiende vindt het de schatkist.
 
 **Mier** (fase 14, zie §5.6)
 
@@ -270,6 +278,7 @@ rechtsboven een knop extra.
   3. schakelaar voor het **voorbeeldwoord** als hulpmiddel (§5.6), standaard uit. Toets `6`.
 - Toetsen: alle **letters** zijn antwoord (het kind typt het woord), `Backspace` legt de laatste klank terug, `Escape` = terug. De schakelaars staan daarom op de **cijfers** `1` t/m `6`, net zoals de lettersets bij Aapje op `1` t/m `4` staan. Dit is de bij de bouw gemaakte keuze in plaats van het voorstel `K`/`G`/`P` en `S`/`B` uit §5.6: die letters zijn hier gewoon antwoord (*kip*, *geit*, *pop*, *sok*, *bus*).
 - De mier zit rechtsonder en trippelt; bij een afgemaakt woord draagt hij het weg, loopt hij met een blaadje over het scherm of klimt hij op de laatste klank (§7.5).
+- ✅ *Fase 16 (§7.6):* onderin het scherm ligt een doorsnede van het **ondergrondse nest**: kamers met gangen ertussen, onder een grasrand. Bij elk afgemaakt woord loopt de mier een kamer verder terwijl hij een kunstje doet (koprol, balanceren op een zaadje, door de wortelboog, jongleren, koorddansen, handstand, trapeze), en elk tiende woord komt hij aan in de koninginnenkamer met een grote finale.
 
 ### 5.2 Spelregels
 
@@ -557,6 +566,10 @@ Rust-animatie: de voelsprieten bewegen, de mier trippelt op zijn plaats (ook in 
 | Visje | Oranje / donkeroranje | `#FF9F1C` / `#B85C00` |
 | Mier (rand plaatjeskaart, actief klankvakje, niveau-ring, blaadje) | Grasgroen / licht grasgroen | `#6AA84F` / `#E4F1DA` (donker `#3F7A2E`) |
 | De mier zelf | Roodbruin / donkerbruin | `#A0522D` / `#5A2D12` |
+| ✅ Boom (Aapje, fase 16) | Bladgroen / licht bladgroen; de stam in aapjebruin | `#7CB86A` / `#CFE8C3`; stam `#8B5A2B` |
+| ✅ Ruimte (Raketje, fase 16) | Hemel heel licht lavendel (géén donkere nacht: de achtergrond blijft crème en de som blijft het contrastrijkste in beeld); planeten in zachte paletkleuren | `#ECEBFA` hemel; planeten o.a. `#E8607A` `#FFD23F` `#8FD3FF` `#B39DDB` |
+| ✅ Rif (Vis, fase 16) | Water lichtblauw, zand, koraal roze en paars, waterplanten grasgroen | `#DFF3FB` / `#F3E3B8` / `#FF6F91` `#9B5DE5` / `#6AA84F` |
+| ✅ Nest (Mier, fase 16) | Aarde en uitgegraven kamers; per ronde een laag dieper; confetti in de paletkleuren | `#C9A882` / `#B08D63` aarde, `#F6E7C8` kamer |
 
 ### 6.3 Iconenlijst (alle als eigen SVG) ✅ allemaal getekend in `js/icons.js` (fase 4; toetsenbord fase 10; Vis fase 12; Mier fase 14 — 45 iconen)
 
@@ -587,8 +600,12 @@ Rust-animatie: de voelsprieten bewegen, de mier trippelt op zijn plaats (ook in 
 | Blaadje, mierenhoop | Sessieteller | Mier |
 | Kaartje met woordlijn boven drie lege vakjes (grasgroene cirkel) | Voorbeeldwoord aan/uit | Mier |
 | Mier met voelsprieten en poten (klassen voor animatie) | Speelfiguur | Mier |
+| ✅ Boom met tien takken (drie varianten: loofboom, palm, apenbroodboom) en de bananentros in de top | Wereld van Aapje (fase 16) | Aapje |
+| ✅ Tien planeten (maan met kraters, rode planeet, ringplaneet, gestreepte gasreus, ijsblauwe planeet, groene planeet met één boom, planeet met een gezichtje, komeet, paarse planeet met twee maantjes, aarde), zachte sterren, vlaggetje | Wereld van Raketje (fase 16) | Raketje |
+| ✅ Rifstukken (rood koraal, paars waaierkoraal, waterplanten, zeewier, anemoon met clownvisje, zeester, rots met krab, schelpenbank, luchtbellen uit het zand, scheepswrak) en de schatkist die opengaat | Wereld van Vis (fase 16) | Vis |
+| ✅ Tien nestkamers (zaden, eitjes, larven, paddenstoelen, water, bladeren, afval, slapende mier, wortel, werkmieren) en de koninginnenkamer; grasrand; zaadje, wortelboog, wortelvezel met balanceerstokje, kroontje, stofwolk, confetti, twee kleine mieren | Wereld en kunstjes van Mier (fase 16) | Mier |
 
-Daarnaast bevat `js/plaatjes.js` de 168 woordplaatjes van Vis (§5.5), in dezelfde stijl maar los van de iconenlijst.
+Daarnaast bevat `js/plaatjes.js` de 168 woordplaatjes van Vis (§5.5), in dezelfde stijl maar los van de iconenlijst. De decor-tekeningen van fase 16 (drie bomen, tien planeten, tien rifstukken met de schatkist, en de circusattributen) staan net zo in een eigen bestand `js/decor.js` ✅ — 33 tekeningen.
 
 ### 6.4 Typografie
 
@@ -611,11 +628,15 @@ Willekeurig één van de varianten, zodat het niet verveelt:
 
 Rust-animaties: knipperen, staart wiegt.
 
+✅ *Fase 16 (§7.6):* de varianten 1 t/m 3 zijn de *manier* waarop het aapje naar de volgende tak van de boom klimt (springen, slingeren, salto); variant 4 (*eten*) is opgegaan in de finale `tros` in de top, bij de bananentros.
+
 ### 7.2 Raketje-animaties (~1,5 s) ✅ fase 5: alle drie gebouwd, duur 1,4 s
 
 1. Raket stijgt op met rook en vlam, ster valt naar de teller.
 2. Raket maakt een looping.
 3. Raket vliegt langs een planeet of maan.
+
+✅ *Fase 16 (§7.6):* de drie varianten zijn de manier waarop de raket naar de volgende planeet vliegt; de losse maan van variant 3 komt alleen nog in beeld als er geen wereld is (de proefpagina), want in het spel staat de volgende planeet er al. De vierde variant is de finale `thuis`: landen op de aarde in een sterrenregen.
 
 ### 7.4 Vis-animaties (~1,4 s) ✅ fase 12: alle drie gebouwd
 
@@ -625,6 +646,8 @@ Rust-animaties: knipperen, staart wiegt.
 
 Rust-animatie: wiegt zachtjes, staart zwaait heen en weer (ook in het menu).
 
+✅ *Fase 16 (§7.6):* de drie varianten zijn de manier waarop het visje naar het volgende rifstuk zwemt (springend, zwemmend, bubbels blazend). De vierde is de finale `schat`: een rol van plezier met glinstersterretjes bij de schatkist.
+
 ### 7.5 Mier-animaties (1,4 s) ✅ fase 14: alle drie gebouwd
 
 1. De mier tilt het afgemaakte woord op en draagt het naar rechts het beeld uit; blaadje vliegt naar de teller.
@@ -632,6 +655,8 @@ Rust-animatie: wiegt zachtjes, staart zwaait heen en weer (ook in het menu).
 3. De mier klimt op de laatste klank en zwaait met zijn voelsprieten.
 
 Rust-animatie: trippelt op zijn plaats, voelsprieten bewegen (ook in het menu).
+
+✅ *Fase 16 (§7.6):* er zijn zeven kunstjes bij gekomen (tien varianten in totaal). Ze zijn tegelijk de manier waarop de mier een kamer verder komt: de grond schuift mee, dus een koprol rolt vooruit en een handstand is lopen op je voorpoten. Elk tiende woord is de grote finale `finale`, de elfde variant.
 
 ### 7.3 Geluid (Web Audio, gesynthetiseerd) ✅ fase 5: zeven geluiden in `js/audio.js`; fase 12: *blub* erbij; fase 14: *trippel* erbij
 
@@ -642,8 +667,193 @@ Rust-animatie: trippelt op zijn plaats, voelsprieten bewegen (ook in het menu).
 | Animatie | Korte "whoosh" (raket), aapje-"oe-oe" (synthetische toon met vibrato), "blub" (vis: twee korte bubbeltoontjes omhoog) of "trippel" (mier: drie heel korte tikjes, als pootjes) |
 | Knop klikken, en bij Mier elke goede letter in een vakje | Zachte klik/pop |
 | Toggle aan/uit | Toon omhoog / omlaag |
+| ✅ Reisstap en aankomst (fase 16) | *klim* (aapje: drie zachte plopjes omhoog), *aankomst* (raket: korte glijtoon omhoog met een tik bij de landing), *plons* (vis: de bestaande *blub* een toon lager, bij het nieuwe rifstuk) |
+| ✅ Kunstje en finale (fase 16) | *tromroffel* (mier: acht heel korte tikjes, verwant aan *trippel*) bij elk kunstje; *tada* (drieklank omhoog met een hoge slottoon) bij elke finale, bij alle vier de onderdelen. `Geluid.speel(naam, na)` kreeg er een tweede argument bij: het aankomstgeluid klinkt 0,6-0,75 s later, precies als de figuur bij zijn nieuwe station aankomt. |
 
 Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binnen de sessie (geen opslag, conform keuze).
+
+### 7.6 Meegroeiende werelden (fase 16) ✅ gebouwd 21 sept 2026
+
+**Idee.** Tot nu toe is de beloning bij elk goed antwoord telkens hetzelfde soort ding: de figuur doet
+1,4 s iets leuks en staat daarna weer op zijn plek; alleen de teller onderin groeit. In fase 16 krijgt
+elk onderdeel een **wereld die meegroeit** met de goede antwoorden, zodat het kind ziet dat het ergens
+komt: het aapje klimt steeds een tak hoger in een boom, de raket vliegt van planeet naar planeet, het
+visje zwemt steeds verder door een rif met koraal en waterplanten, en de mier doet bij elk goed
+antwoord loopt de mier een kamer verder door zijn ondergrondse nest, terwijl hij een kunstje doet.
+De beloning blijft kort (1,4 s, invoer geblokkeerd) en rustig; de kaart met de opgave blijft het
+middelpunt van het scherm.
+
+**Gedeelde regels**
+
+- **Rondes van tien.** Een wereld heeft tien *stations* (takken, planeten, rifstukken): precies de
+  tien losse iconen van de sessieteller (`Teller.MAX_LOS`). Het tiende goede antwoord is een
+  **finale**: het aapje pakt de bananentros in de top, de raket komt weer thuis op aarde, het visje
+  vindt de schatkist, de mier doet het grote slotnummer. Daarna begint een nieuwe ronde in een nét
+  andere wereld (een andere boom, een ander stuk heelal, een ander stuk rif), zodat het ook na twintig
+  of vijftig antwoorden niet stilstaat en nooit van het scherm af raakt. De finale valt samen met het
+  moment dat de teller vol is: teller en wereld vertellen hetzelfde verhaal. (De tros en de schatkist
+  *op de teller* verschijnen bij het elfde antwoord, als de tien losse iconen niet meer passen.)
+- **De stand volgt uit de teller.** De wereld heeft geen eigen toestand; de stand is een pure functie
+  van het aantal goede antwoorden: `Wereld.stand(n)` geeft `{ aantal: n, station: n % 10,
+  ronde: ⌊n / 10⌋, finale: n > 0 && n % 10 === 0 }`. Zo blijft de wereld staan na een bezoek aan het menu (net als de
+  teller), kan `Escape` tijdens een stap niets kapotmaken (bij `binnen()` wordt de wereld opnieuw uit
+  de teller gezet) en is alles zonder DOM te testen. Er wordt nog steeds niets opgeslagen: elke start
+  begint bij station 0.
+- **De reis is de beloning.** Bij Aapje, Raketje en Vis is de 1,4 s-animatie de **stap naar het
+  volgende station**. De bestaande varianten blijven bestaan als de *manier* van reizen: het aapje
+  springt, slingert aan een liaan of maakt een salto naar de volgende tak; de raket vliegt recht, met
+  een looping of langs de maan naar de volgende planeet; het visje springt, zwemt of blaast bubbels
+  onderweg naar het volgende rifstuk; de mier komt met zijn kunstje vooruit — omdat de grond onder
+  hem meeschuift, rolt een koprol vooruit, rolt hij mee op het zaadje en is een handstand lopen op
+  zijn voorpoten. Nooit twee keer dezelfde manier achter elkaar (`Animaties.kies`). Het
+  beloningsicoon vliegt zoals nu naar de teller.
+- **De wereld schuift, de figuur blijft in beeld.** Bij Raketje en Vis blijft de figuur ongeveer op
+  zijn plek rechtsonder en schuift het decor één station naar links (de camera volgt de figuur); zo
+  raakt de figuur nooit de som of de kaarten en past het op elk schermformaat. Bij Aapje klimt het
+  aapje wél echt omhoog, langs een boom aan de rechterrand; de boom is zo getekend dat tien takken
+  tussen de onderrand en ongeveer 12 vh onder de geluidsknop passen.
+- **Decor achter, figuur voor.** Het decor komt in een nieuwe laag `.wereld` (`position: absolute`,
+  achter `.figuur` en `.effecten`, `aria-hidden`), in zachte lichte kleuren (§6.2: pastel, lage
+  dekking), zodat de opgavekaart het contrastrijkste ding in beeld blijft (Montessori: rustige
+  beloning, §1). Het decor beweegt alleen tijdens de stap; in rust staat het stil, op de bestaande
+  rust-animatie van de figuur en een paar kleine sfeerdetails na (een wiegend waterplantje, een
+  twinkelende ster), allemaal langzamer dan 0,5 Hz (§8: nooit sneller dan 3 Hz).
+- **De layout-eis blijft.** Figuur, boom, planeten en rif mogen de opgavekaart, de som, de
+  keuzekaarten, de klankvakjes, de teller en de hint niet raken: dezelfde eis als in fase 4, te meten
+  op de negen formaten uit fase 14. Op een telefoon rechtop wordt het decor smaller (`css/mobiel.css`);
+  past het écht niet, dan wordt de wereld daar verborgen en blijft alleen de stap-animatie van de
+  figuur over.
+- **Geen schakelaar.** De balken van Raketje en Vis zijn met acht en zeven knoppen vol (§11). Het
+  decor staat altijd aan. Wijst de kindtest uit dat het afleidt, dan komt er een knop in het menu
+  naast geluid en volledig scherm (toets `W`), standaard aan.
+
+**Aapje: de boom** (`wereld: 'boom'`)
+
+Een boom aan de rechterrand van het speelveld, met tien takken om en om links en rechts van de stam
+en in de top een bananentros. Het aapje zit bij de start onder aan de stam, op zijn huidige plek. Bij
+elk goed antwoord klimt het één tak hoger (springend langs de stam met zwaaiende armen en benen,
+slingerend aan een liaan naar de volgende tak, of met een salto omhoog en een landing op de tak) en
+blijft daar zitten, met zijn rust-animatie (knipperen, staart wiegt) op de nieuwe plek. Bij het tiende
+antwoord pakt het de bananentros (die is dan ook op de teller verschenen), eet een banaan (bestaande
+variant *eet*) en glijdt langs de stam terug naar beneden, terwijl de boom van vorm wisselt voor de
+volgende ronde: loofboom, palm, apenbroodboom met rode blaadjes (drie varianten, om de beurt). De
+positie van tak `k` staat in `Wereld.BOOM.takken[k]` als fractie van de hoogte plus links/rechts van
+de stam; `animaties.js` zet daaruit `--dx`/`--dy` voor de klim, en het aapje krijgt zijn
+**thuispositie** via `--thuis-x`/`--thuis-y` in plaats van de vaste hoek. In de boom is het aapje een
+slag kleiner (13 vh in plaats van 17 vh), zodat tien takken passen.
+
+**Raketje: de planetenreis** (`wereld: 'ruimte'`)
+
+Een smalle strook lichte sterrenhemel langs de **rechterrand**, met de planeten onder elkaar: de
+planeet waar de raket nu is onderin bij de raket, de volgende erboven. Bij elk goed antwoord vliegt de
+raket (recht, met een looping, of langs de maan) **omhoog** naar de planeet erboven, terwijl de hemel
+één station **zakt**; zo komt de bereikte planeet bij de raket uit, krijgt hij een klein vlaggetje en
+blijft de raket ervoor wiegen.
+
+*Bij de bouw anders gelopen dan in het ontwerp:* het ontwerp zette de planeten naast elkaar en liet de
+hemel naar links schuiven. De som staat echter middenin het scherm en is bij het superraketje breed
+(`100 − 37 = 100`); een horizontale strook zou daar dwars doorheen lopen. De rechterrand is de enige
+strook die op elk schermformaat vrij blijft — en een raket die omhoog vliegt is bovendien
+natuurlijker, want hij staat al met zijn neus omhoog. Alleen de richting is dus veranderd, niet het
+idee. Bij Vis kon de horizontale strook wél: daar was de onderste 18 vh al voor het visje
+gereserveerd.
+
+Tien stations per ronde: maan met kraters, rode planeet, ringplaneet, gestreepte gasreus, ijsblauwe
+planeet, kleine groene planeet met één boom, planeet met een gezichtje, komeet met staart, paarse
+planeet met twee maantjes, en als tiende **de aarde**. De aarde is tegelijk het beginpunt van de
+ronde (station 0) en de thuiskomst aan het eind ervan: `RUIMTE.planeetVoor(ronde, station)` geeft op
+station 0 dus de aarde. De negen fantasieplaneten schuiven per ronde één plaats op, zodat elke ronde
+anders begint. De planeten zijn eenvoudige SVG-cirkels met een paar details, in de stijl van de
+bestaande `maan`; alleen maan, ringplaneet en aarde zijn herkenbaar getekend.
+
+**Vis: het rif** (`wereld: 'rif'`)
+
+Achter het visje een zeebodem: een lichtblauwe waterlijn boven, zand onder, en een rij **rifstukken**
+die per stap één positie naar links schuiven. Elke stap brengt een nieuw stuk uit een shuffle-bag
+(`Wereld.RIF.stukken`): rood koraal met vertakkingen, paars waaierkoraal, groene waterplanten die
+wiegen, lang zeewier, een anemoon met een klein clownvisje, een zeester op het zand, een rots met een
+krab, een schelpenbank, een stroom luchtbelletjes uit het zand, een scheepswrak. Bij het tiende
+station staat altijd de **schatkist**, die opengaat en glinstert wanneer het visje aankomt. Het rif
+schuift bij elke stap één plaats naar links: het stuk waar het visje nu is staat nét links van hem,
+het volgende wacht half buiten beeld rechts. Het visje zelf blijft op zijn plek en doet zijn gewone
+sprong, zwemslag of bubbels.
+
+Omdat het rif naar links schuift, komt het visje naar **rechts** vooruit. De tekening in `icons.js`
+kijkt naar links, dus de speelfiguur wordt gespiegeld (`.figuur-vis > svg { transform: scaleX(-1) }`);
+anders lijkt het visje achteruit te zwemmen. De spiegeling staat op de `<svg>` en niet op de `<div>`,
+zodat alle animaties ongewijzigd op de div blijven staan. Bij de zwem-variant draait het visje op de
+heenweg naar de kaart om (`--heen`) en komt het met de neus naar rechts weer thuis; de bubbels komen
+uit zijn mond aan de rechterkant. De niveau-iconen in de balk (kleine vis, grote vis, haai) blijven
+naar links kijken: dat zijn symbolen op een knop, geen zwemmend visje. De waterplanten wiegen zachtjes in rust (langzame `rotate`, ≤ 0,5 Hz). Per ronde
+verandert de tint van het water iets (ondiep licht, dieper turquoise, weer licht), zodat te zien is
+dat er een nieuwe ronde begint.
+
+**Mier: het ondergrondse nest** (`wereld: 'nest'`)
+
+Onderin het speelveld, in dezelfde strook die al voor de mier gereserveerd was, ligt een **doorsnede
+van zijn nest**: uitgegraven kamers met gangen ertussen, onder een grasrand. De mier kijkt naar links
+(zo is hij getekend, met zijn kop naar de klankvakjes), dus hij loopt naar links en het nest schuift
+naar **rechts** — spiegelbeeldig aan het rif van Vis, zodat de twee werelden niet op elkaar lijken.
+De kamers zijn even breed als de strook hoog is, zodat ze naadloos op elkaar aansluiten, en de strook
+loopt rond: er staat precies één ronde in beeld, als een kaart van het nest.
+
+Negen kamers komen uit een shuffle-bag (voorraadkamer met zaden, kraamkamer met eitjes, larvenkamer,
+paddenstoeltuin, waterkamer, bladerkamer, afvalkamer, een slapende mier, een wortel die door het
+plafond groeit, en twee werkmieren); op station 0 staat altijd de **koninginnenkamer**. Elke ronde
+ligt het nest een laag dieper: de aarde wordt donkerder (drie tinten).
+
+Bij elk afgemaakt woord loopt de mier een kamer verder en doet daarbij een **kunstje**. De drie
+bestaande animaties (dragen, lopen, klimmen) blijven, en er zijn zeven kunstjes bij gekomen, zodat er
+tien varianten zijn: nooit twee keer dezelfde achter elkaar, en het tiende woord van een ronde is
+altijd de **grote finale** in de koninginnenkamer.
+
+| # | Kunstje | Wat er te zien is (1,4 s) | Effecten (laag `.effecten`) |
+|---|---------|---------------------------|------------------------------|
+| 1 | Koprol | de mier maakt een salto voorover en landt weer op zijn zes poten | stofwolkje bij de landing |
+| 2 | Balanceren op een zaadje | een rond zaadje rolt onder de mier heen en weer, de mier wiegt mee met zwaaiende voelsprieten | zaadje |
+| 3 | Door de wortelboog | een boog van een plantenwortel staat in de gang, de mier springt er in een boog doorheen | wortelboog; een paar sterretjes |
+| 4 | Jongleren | drie blaadjes gaan in een boog van poot naar poot boven zijn kop | drie `blaadje`-iconen op een ellipsbaan |
+| 5 | Koorddansen | een wortelvezel loopt van de mier naar de rij klankvakjes; de mier trippelt er wiebelend overheen en terug | vezel en een balanceerstokje |
+| 6 | Handstand | de mier gaat op zijn voorpoten staan, de achterpoten wapperen | – |
+| 7 | Trapeze | de mier slingert aan een draadje aan het plafond van de gang heen en weer (zoals de liaan van het aapje) | draadje |
+| 8 | Draag (bestaand) | tilt het woord op en draagt het weg | blaadje naar de teller |
+| 9 | Loop (bestaand) en Klim (bestaand) | loopt met een blaadje over het scherm / klimt op de laatste klank | blaadje |
+| 10 | **Grote finale** (elk tiende woord) | in de koninginnenkamer komen twee kleine mieren aanlopen en vormen met de mier een piramide; de bovenste maakt een buiging en tilt het kroontje op | twee extra mieren, kroontje, confettiregen in de paletkleuren |
+
+Geluid: bij elk kunstje een korte *tromroffel* en bij de finale een *tada* (§7.3). De finale is ook
+bij de andere drie onderdelen het moment voor de *tada*.
+
+**Wat ervoor nodig is (code)**
+
+- Nieuw `js/wereld.js`: `Wereld.stand(n)`, de stationslijsten per wereld (`BOOM.takken` en de drie
+  boomvarianten, `RUIMTE.planeten` met de volgorde per ronde, `RIF.stukken` als shuffle-bag met de
+  schatkist vast op station 10), `Wereld.maak(container, naam)` met `zetStand(stand)` (tekent het
+  decor voor die stand, zonder animatie) en `stap(van, naar)` (de schuif- of klimanimatie van 1,4 s).
+  De pure functies staan los van de DOM, zodat ze in `test/test.html` te testen zijn.
+- Nieuw `js/decor.js`: de SVG-tekeningen van de bomen (3), planeten (10), rifstukken (10 plus de
+  schatkist), de elf nestkamers met hun gangen, de grasrand en de attributen voor de kunstjes
+  (zaadje, wortelboog, wortelvezel, balanceerstokje, kroontje, stofwolk, sterretje), in de stijl van
+  `js/icons.js`: dikke ronde lijn, vlakke zachte kleuren, geen `id`'s, geen tekst. Vis en Mier delen
+  de schuiflogica in `wereld.js` (`maakStrook`); alleen de richting, de lijst en de tekeningen
+  verschillen.
+- `js/animaties.js`: `speel` krijgt `wereld` en `stand` mee en kiest per figuur de reisvariant (of de
+  finale); zeven nieuwe mier-varianten in `VARIANTEN.mier`; `kies` geeft bij `stand.finale` altijd
+  de finale; `stop` ruimt ook een lopende wereld-stap op.
+- `css/aapje.css`, `raketje.css`, `vis.css`, `mier.css`: de laag `.wereld`, de thuispositie via
+  `--thuis-x`/`--thuis-y`, de nieuwe keyframes; `css/mobiel.css`: smaller of verborgen decor op een
+  telefoon.
+- `js/aapje.js`, `raketje.js`, `vis.js`, `mier.js`: in `goed()` de stand uit `teller.waarde()`
+  doorgeven aan `Animaties.speel`; in `binnen()` de wereld op de stand van de teller zetten.
+- `js/audio.js`: *klim*, *aankomst*, *plons*, *tromroffel* en *tada* (§7.3).
+- `index.html`: één `<div class="wereld" id="…-wereld" aria-hidden="true">` per speelveld, vóór de
+  laag `.effecten`.
+- `test/test.html`: zie §10, fase 16.
+- `README.md`: een alinea per onderdeel over de wereld, bij oplevering.
+
+**Volgorde van bouwen.** De vier stappen 16a t/m 16d zijn in één keer gebouwd en samen opgeleverd
+(21 sept 2026); zie het bouwverslag in §13. De opdeling bleef wel zichtbaar in de code: `wereld.js` en
+`decor.js` zijn per wereld gescheiden en elk kunstje van Mier staat los in `VARIANTEN.mier`, zodat er
+later een kunstje of een wereld bij kan zonder de rest te raken.
 
 ---
 
@@ -678,10 +888,13 @@ Standaard staat geluid aan; het luidspreker-icoon onthoudt de stand alleen binne
 | **13. Plus vrij uit te zetten** (< ¼ dag) ✅ **klaar 10 sept 2026** | Bij Raketje is de `+` niet meer vergrendeld: alle vier de operatoren zijn los aan en uit te zetten, met als enige regel dat er minstens één aan blijft (zoals de lettersets bij Aapje sinds fase 9). Slotje weg uit `index.html`. | ✅ 154 tests groen (5 nieuwe, 3 oude vervangen); 22 gedragschecks in Chrome; screenshot met alleen `÷` aan: drie grijze schakelaars, geen slotje, deelsom in beeld. |
 | **14. Mier: woorden bouwen** (1 dag) ✅ **klaar 14 sept 2026** | Vierde onderdeel (§5.6): het bewegend alfabet. Plaatje in beeld, kind typt het woord in klankvakjes (één vakje per klank, tweetekenklanken bij elkaar); drie niveaus met de woordenlijsten van Vis; voorbeeldwoord als hulpmiddel, standaard uit; blaadjesteller, drie mier-animaties, acht nieuwe iconen, geluid *trippel*, menu met vier knoppen in een 2×2-raster. Nieuw in de code: `Woorden.klanken`, `Woorden.SPLITSINGEN`, `Woorden.Woordzak` en de proefpagina `test/klankproef.html`. Schakelaars op de cijfers `1`-`6`, want alle letters zijn antwoord. | ✅ 196 tests groen (28 nieuwe); 64 gedragschecks in Chrome; alle 168 woorden gesplitst met één handmatige uitzondering (*pannenkoek*), beoordeeld op `test/klankproef.html`; layout gemeten op 1024×768, 1366×768 en 1920×1080 en op telefoon- en tabletformaten (390×844, 360×780, 844×390, 768×1024, 820×1180, 1180×820) met *tandenborstel* (13 vakjes), het voorbeeldwoord en de hint in beeld: niets buiten beeld, de rij vakjes raakt de mier en de teller niet; menu met vier knoppen op alle formaten in beeld. |
 | **15. Niveaus en lettersoorten vrij te combineren** (< ¼ dag) ✅ **klaar 14 sept 2026** | Bij Raketje zijn de drie raketjes en bij Vis de drie vissen niet langer één keuze maar losse schakelaars: **meerdere niveaus tegelijk** aan mag, met als enige regel dat er minstens één aan blijft (zoals de operatoren sinds fase 13). Bij Vis geldt hetzelfde voor schrijf- en blokletters: allebei tegelijk aan kan, de opgaven wisselen dan af. | ✅ 168 tests groen (14 nieuwe); 21 gedragschecks in Chrome; screenshots met drie raketjes aan, drie vissen aan en allebei de lettersoorten aan. |
+| **16. Meegroeiende werelden en circuskunstjes** (1 dag) ✅ **klaar 21 sept 2026** | Per onderdeel een wereld die met de goede antwoorden meegroeit, in rondes van tien (§7.6). Vier losse stappen: **16a** gedeelde basis (`js/wereld.js`, `js/decor.js`, laag `.wereld`, `Wereld.stand`, vijf geluiden) plus **Aapje** klimt in de boom (tien takken, drie bomen, bananentros als finale); **16b Raketje** reist van planeet naar planeet (tien planeten, aarde als finale); **16c Vis** zwemt door het rif (tien rifstukken uit een shuffle-bag, schatkist als finale); **16d Mier** loopt door zijn ondergrondse nest (elf kamers, koninginnenkamer als finale) terwijl hij een kunstje doet (zeven nieuwe varianten, grote finale met mierenpiramide en confetti). | ✅ 254 tests groen (58 nieuwe); 53 gedragschecks in Chrome, waaronder de layout op de negen formaten uit fase 14 (§10); screenshots van de vier werelden op 1366×768. Kindtest staat nog open. |
 
 Totaal ca. 8-10 werkdagen doorlooptijd bij deeltijdinzet voor alle fases; de fases 2 en 3
 zijn onafhankelijk en kunnen parallel. Fase 15 is een kleine uitbreiding die niet op fase 14 hoefde
-te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
+te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond. Fase 16 kostte één dag in plaats
+van de geraamde 2-3: de vier werelden delen zo veel (`Wereld.stand`, de decorlaag, de manier van
+stappen) dat de laatste drie elk nog maar weinig eigen code nodig hadden.
 
 ### 9.1 Latere uitbreidingen (buiten fase 1)
 
@@ -693,6 +906,7 @@ te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
 - Vis: eigen klankopnames of voorgelezen woorden; een vierde niveau met niet-klankzuivere woorden (groep 4); de woordenlijst uitbreiden of per kind aanpassen.
 - ✅ *Gedaan in fase 8:* Montessori-kralen als visueel hulpmiddel bij de sommen (§5.3). Een getallenlijn is niet gemaakt.
 - Eigen klankopnames per letter (Montessori-klank) als geluid later toch gewenst is.
+- ✅ *Gedaan in fase 16 (21 sept 2026):* een wereld die met de goede antwoorden meegroeit (boom, planeten, rif) en circuskunstjes voor de mier (§7.6). Denkbare vervolgstappen: de wereld ook klein in het menu tonen (een boompje bij de aapjeknop met het aapje op de bereikte tak), en de bereikte ronde onthouden in `localStorage` als de voortgang toch ooit wordt opgeslagen.
 
 ---
 
@@ -709,6 +923,7 @@ te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
 - ✅ woorden.js en plaatjes.js (fase 12): drie niveaus met minstens 50 woorden, geen dubbele, alleen a-z; kleine vis voldoet aan het (m)k(m)-patroon met één klinkerteken, grote vis heeft een tweetekenklank of cluster en één lettergreep, haai minstens twee lettergrepen; elk woord heeft een plaatje en geen plaatje bevat tekst, `id`, `<use>` of externe verwijzingen; letterkleuren (ij als klinker); opgavezak over 1120 opgaven: drie verschillende keuzes uit het niveau met het woord op de plek van `antwoord`, elk woord even vaak, nooit hetzelfde woord twee keer achter elkaar, goede antwoord op alle drie de plekken; beide vormen aan → om en om; lege of onbekende vormen en niveaus genegeerd; afleiders bij haai lijken altijd op het woord.
 - ✅ Klanken en woordzak (fase 14, Mier): `Woorden.klanken` splitst alle 168 woorden zo dat samenvoegen het woord teruggeeft en elk deel één letter is of in de tekenlijst `KLANKEN` staat; de bekende gevallen zijn los getest (*maan* = m-aa-n, *sneeuwpop* met eeuw, *touw* met ouw, *konijn* met ij, *papegaai* met aai, *bank*/*ring* met nk en ng, *schaap* als s + ch, en *pannenkoek* uit `SPLITSINGEN`); elke handmatige splitsing hoort bij een woord uit de lijst en levert dat woord op; het langste woord heeft 13 vakjes; `klankKlasse` geeft klinkers (ook aa, oe, eeuw, ij) blauw en ch/ng/nk rood. De `Woordzak` geeft elk woord even vaak, nooit twee keer hetzelfde achter elkaar, altijd met de klanken van dat woord; met twee niveaus aan wisselen die om en om (300/300 over 600), een lege of alleen-onbekende niveaulijst wordt geweigerd en `zetNiveau` zet er precies één aan.
 - ✅ Meerdere niveaus tegelijk (fase 15): bij `Sommen.Generator` met klein én super aan komen beide niveaus ongeveer even vaak voorbij, nooit een derde, en elke som blijft binnen het maximum van *zijn eigen* niveau; bij `Woorden.Opgavezak` met klein én haai aan wisselen de niveaus elkaar om en om af (300/300 over 600 opgaven), komen de afleiders altijd uit het niveau van het woord en komt nooit twee keer hetzelfde woord achter elkaar. Bij allebei: een lege of alleen-onbekende niveaulijst wordt geweigerd (de stand blijft staan), de lijst staat altijd in de vaste volgorde klein-groot-super/haai, en `zetNiveau(naam)` zet er precies één aan.
+- ✅ Fase 16, `wereld.js`, `decor.js` en `animaties.js` (58 tests): `Wereld.stand(n)` geeft voor n = 0..35 station `n % 10`, ronde `⌊n / 10⌋` en `finale` alleen bij 10, 20 en 30, en vangt een negatieve of lege waarde op; het aantal stations is gelijk aan `Teller.MAX_LOS`; de tien takposities liggen binnen 0..1, lopen op en liggen om en om links en rechts van de stam; de boomvarianten en de watertinten wisselen per ronde en herhalen zich pas na alle drie; elke ronde van de planetenreis heeft alle tien planeten precies één keer met de aarde als tiende én op station 0, en de rondes beginnen niet allemaal hetzelfde; de rifzak geeft over tien rondes (90 stukken) elk rifstuk precies negen keer, nooit twee keer hetzelfde achter elkaar, en de schatkist alleen op het tiende station; hetzelfde geldt voor de kamers van het mierennest met de koninginnenkamer, waarbij het nest de andere kant op schuift dan het rif en de hele strook vult; alle 33 decor-tekeningen bestaan en bevatten geen tekst, `id` of externe verwijzing; `Animaties.kies('mier')` geeft over 1000 lotingen alle tien kunstjes, nooit twee keer dezelfde achter elkaar, en met een finale-stand altijd de finale van die figuur (en nooit bij een gewone stand); `Animaties.speel` met een wereld erbij duurt nog steeds 1400 ms, zet de afstand naar de volgende tak, en `Animaties.stop` laat geen effect, geen animatieklasse en geen lopende wereld-stap achter; de vier werelden bouwen hun decor (tien takken plus kruin en tros, vier planeten met één vlaggetje, vier rifstukken met zand en water, de piste).
 
 **Handmatig (checklist)**
 
@@ -720,6 +935,8 @@ te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
 - ✅ Gedragstest fase 12 (geautomatiseerd in Chrome, 37 checks): `V` en `3` openen Vis, pijltjes in het menu lopen over drie knoppen; beginstand woord-vorm / kleine vis / schrijfletters; opgave toont het woord met gekleurde letters en drie plaatjeskaarten; foute klik vervaagt de kaart en schakelt hem uit, geen hint na één fout, tweede fout via cijfertoets laat de goede kaart pulseren; goed via toets telt een schelp, start een visanimatie, toetsen tijdens de animatie worden genegeerd, daarna nieuwe opgave met schone kaarten en opgeruimde effecten; pijltjes verplaatsen de focus; `P`/`W` en klikken schakelen de vormen (laatste blijft aan, dubbelklik één actie), `B`/`S` de lettersoort, `H`/`G`/`K` en klikken het niveau; Escape tijdens de animatie ruimt op, instellingen en schelpen blijven staan na een bezoek aan het menu.
 - ✅ Gedragstest fase 13 (geautomatiseerd in Chrome, 22 checks): beginstand alleen `+` aan, zonder slotje of `aria-disabled`; klik en toets `+` op de enige aanstaande soort doen niets; `−` erbij en dan `+` uit laat alleen `−` over en geeft meteen een minsom; klik en toets op de laatste soort doen niets en de som blijft staan; via `*` en `-` alleen `×` over, drie goed beantwoorde sommen zijn allemaal keersommen en geven drie sterren; dubbele toets `+` geeft één actie; alle vier aan en dan alle vier uit klikken laat de laatste (`÷`) aan met een deelsom; de stand blijft na een bezoek aan het menu.
 - ✅ Gedragstest fase 14 (geautomatiseerd in Chrome, 64 checks): het menu heeft vier knoppen in een 2×2-raster, `M` en `4` openen Mier, pijltje rechts loopt over alle vier en omhoog gaat een rij terug; beginstand kleine mier / schrijfletters / voorbeeldwoord uit; de opgave toont een plaatje met één leeg vakje per klank en het eerste vakje is actief; een goede letter verschijnt en de invoer springt door, een foute letter laat het vakje schudden zonder te verschijnen en wist niet wat al goed staat, na één fout nog geen hint en na twee fouten pulseert de juiste toets; een tweetekenklank neemt twee toetsen in één vakje en houdt één kleur; Backspace haalt eerst de halve klank weg en daarna het vorige vakje; een afgemaakt woord geeft een blaadje, groene vakjes en een mier-animatie waarin toetsen genegeerd worden, daarna een nieuw woord met lege vakjes en opgeruimde effecten; de letters `k`, `g`, `s`, `b` en `h` schakelen niets (ze zijn antwoord), de cijfers `1`-`6` wel; het laatste niveau en de laatste lettersoort zijn niet uit te zetten, een dubbelklik telt één keer, het niveau van het woord in beeld uitzetten geeft meteen een nieuw woord, met beide lettersoorten aan wisselen de woorden af, het voorbeeldwoord komt boven de vakjes; Escape tijdens de animatie ruimt op en instellingen en blaadjes blijven staan; boven tien blaadjes komt de mierenhoop met een getal; layout op negen formaten met *tandenborstel* in beeld.
+- ✅ Gedragstest fase 16 (geautomatiseerd in Chrome, 53 checks): bij Aapje staat het aapje na één goed antwoord hoger in de boom, met zijn voeten precies op de tak (gemeten op ±8 px), en na tien antwoorden weer op de onderste tak van een andere boom; het tiende antwoord speelt de finale `tros`; toetsen tijdens de stap geven geen tweede banaan; `Escape` tijdens een stap ruimt de effecten op en na terugkomst klopt de boom weer met de teller. Bij Raketje staan er vier planeten in beeld met één vlaggetje, zakt de hemel tijdens de stap één station, staat de raket daarna bij de volgende planeet, en is het tiende antwoord de thuiskomst op aarde. Bij Vis schuift het rif tijdens de stap naar links, komt er per antwoord een nieuw rifstuk bij het visje, komen er negen verschillende stukken in een ronde voorbij, gaat de schatkist open bij het tiende en verandert daarna de watertint. Bij Mier staat het nest over de hele breedte in beeld, staat de mier met zijn pootjes op de vloer van de kamer waar hij is, schuift het nest tijdens de stap naar rechts, brengt elk antwoord hem in een volgende kamer (negen verschillende in een ronde), komt hij bij het tiende en twintigste antwoord in de koninginnenkamer die dan oplicht, ligt het nest in ronde drie een laag dieper, en komen over twintig woorden minstens acht verschillende kunstjes voorbij zonder herhaling achter elkaar, met de grote finale op woord tien en twintig. Layout op de negen formaten uit fase 14: decor en figuur blijven in beeld en raken kaart, som, keuzekaarten, klankvakjes, teller en hint niet. Geen consolefouten.
+- 📋 Kindtest fase 16: kijkt het kind na het antwoord naar de wereld of blijft het bij de opgave? Leidt het decor af tijdens het typen (dan schakelaar in het menu, §7.6)? Begrijpt het kind de finale bij tien en wil het doorspelen voor de volgende ronde?
 - ✅ Gedragstest fase 15 (geautomatiseerd in Chrome, 21 checks): Raketje begint met alleen het kleine raketje aan, groot en super erbij geven drie rode ringen en `aria-pressed="true"` op alle drie, de generator kent alle drie, de som in beeld hoort altijd bij een aangezet niveau, klein er weer uit laat groot en super staan en de laatste is niet uit te zetten; Vis begint met alleen de kleine vis, haai en grote vis erbij geven drie groene ringen en de opgavezak kent alle drie, de laatste vis blijft aan; de blokletterknop erbij zet allebei de lettersoorten aan en zet het woord in beeld meteen in blokletters (geen `schrijfletter`-klasse meer over), hem weer uit zetten brengt de schrijfletters terug, de laatste soort is niet uit te zetten, en met allebei aan wisselen zes opeenvolgende opgaven netjes af (blok, schrijf, blok, ...).
 - Tijdens animatie tikken: geen dubbele beloning, geen overgeslagen opgave. ✅ Ook getikt (fase 10).
 - ✅ Geluid: beoordeeld tijdens de kindtest, werkt goed.
@@ -761,6 +978,13 @@ te wachten en daarom eerder is gebouwd; fase 14 is daarna afgerond.
 | **Fase 14:** vier menuknoppen passen niet naast elkaar op 1024 px | ✅ Opgelost: het menu is altijd een 2×2-raster (vier naast elkaar past op geen enkel pc-scherm) en blijft één kolom op een telefoon rechtop (≤ 700 px). Knopmaat `min(30vw, 30vh, 380px)`, zodat ook twee rijen in de hoogte passen; op een telefoon liggend is de minimummaat 110 px. Gemeten op negen formaten: niets buiten beeld. |
 | **Fase 14:** toetsbotsing tussen de onderdelen | ✅ Opgelost, maar anders dan voorgesteld: bij Mier zijn *alle* letters antwoord, dus `K`/`G`/`P` en `S`/`B` konden niet. De schakelaars staan op de cijfers `1` t/m `6` (§5.1, §5.6), net als de lettersets van Aapje; cijfers zijn bij Mier nooit antwoord. Vastgelegd in §5.1 en in de README-toetsentabel. |
 | **Fase 14:** het langste woord (*tandenborstel*, 13 vakjes) past niet op een klein scherm | ✅ Opgelost: de vakgrootte volgt uit `--vakjes` en de schermbreedte, de klank in het vakje schaalt mee met het aantal tekens. Gemeten met 13 vakjes: 67 px per vakje op 1024×768, 26 px op een telefoon rechtop; de rij raakt de mier noch de teller. Op een telefoon liggend (844×390) zijn kaart, vakjes en de mier daarvoor een slag kleiner (`css/mobiel.css`). |
+| **Fase 16:** het decor leidt af van de opgave (Montessori: rustige beloning) — *nog te beoordelen bij de kindtest* | Decor in lichte pastelkleuren met lage dekking, beweegt alleen tijdens de 1,4 s-stap en staat in rust stil (alleen de figuur en een wiegend plantje of twinkelende ster bewegen, ≤ 0,5 Hz); de opgavekaart blijft het contrastrijkste in beeld. Wijst de kindtest anders uit: schakelaar in het menu naast geluid (niet in de volle balken), standaard aan. |
+| **Fase 16:** de figuur raakt na een paar stappen de kaart, de som of de knoppen | ✅ Opgelost: bij Raketje en Vis schuift de wereld en blijft de figuur op zijn plek; bij Aapje lopen de tien takken tot 70 % van de hoogte en is het aapje in de boom een slag kleiner (13 vh). Daar bovenop houdt `Wereld.maak` de figuur altijd binnen het speelveld: klimmen tot buiten de boven- of rechterrand wordt afgekapt. Gemeten op de negen formaten uit fase 14 met het aapje op de hoogste tak: niets buiten beeld. *Wel blijven staan:* op een telefoon rechtop stond het aapje al vóór fase 16 met zijn schouder voor de hoek van de letterkaart (39 px op 390×844); dat is nu 31 px, dus iets minder. |
+| **Fase 16:** eindeloze groei: na vijftig antwoorden is er geen boom of hemel meer over | ✅ Opgelost: rondes van tien met een finale, daarna een nieuwe ronde in een andere variant van de wereld; de stand is `n % 10`, dus het scherm raakt nooit vol. |
+| **Fase 16:** de stand van de wereld en de teller lopen uit elkaar (`Escape` tijdens een stap, bezoek aan het menu) | ✅ Opgelost: geen eigen toestand, de wereld wordt bij `binnen()` en na elke stap uit `teller.waarde()` gezet (`Wereld.stand`); `Animaties.stop` ruimt ook een lopende wereld-stap op. Getest met `Escape` midden in een stap. |
+| **Fase 16:** veel SVG in beeld maakt de app traag op een oudere tablet | Er staan hoogstens vier planeten of vier rifstukken tegelijk in de DOM en er wordt alleen met `transform` en `opacity` geanimeerd; de boom is één stam, tien takken en een kruin. In headless Chrome geen merkbare vertraging bij twintig antwoorden achter elkaar. Op een echte iPad nog te proberen (stond al open, §10). |
+| **Fase 16:** tien kunstjes tekenen en animeren kost meer tijd dan gepland | ✅ Niet nodig gebleken: alle zeven nieuwe kunstjes en de finale zijn gebouwd. De opzet blijft staan: elk kunstje is een losse regel in `VARIANTEN.mier` met een eigen `@keyframes`, dus er kan er later een bij of af. |
+| **Fase 16:** de finale wil meer tijd dan 1,4 s | De duur is 1,4 s gebleven, zodat het tempo van het spel gelijk blijft (§3) en alle vier de onderdelen hetzelfde ritme houden. Bij de kindtest letten op of de finale gehaast oogt; dan alsnog een `DUUR_FINALE` van 2,0 s, apart getest. |
 
 ---
 
@@ -1363,4 +1587,179 @@ heeft daarmee vier onderdelen en het menu een 2×2-raster.
   kleiner. Rechtop of op een tablet is het ruimer.
 - De lege vakjes verraden het aantal klanken. Dat is een bewuste keuze (§5.6); een schakelaar die de
   vakjes weglaat, is een mogelijke latere uitbreiding.
+- Niet gecommit; Peter commit en pusht zelf.
+
+### 21 september 2026 · Plan uitgebreid: fase 16, meegroeiende werelden en circuskunstjes
+
+Peter wil de beloningen uitbreiden met animaties die *ergens naartoe gaan*: het aapje klimt bij elk
+goed antwoord een stukje hoger in een boom, de raket vliegt steeds naar een volgende planeet, het
+visje zwemt steeds verder door een omgeving met koraal en waterplanten, en de mier doet bij elk goed
+antwoord een ander circusachtig kunstje. Dat is in het plan uitgewerkt als **fase 16**; er is nog
+niets gebouwd.
+
+**Toegevoegd in het plan**
+
+- §7.6: het ontwerp. Gedeelde regels (rondes van tien, stand uit de teller, de reis is de beloning,
+  de wereld schuift en de figuur blijft in beeld, decor achter de figuur, layout-eis, geen schakelaar),
+  daarna per onderdeel de wereld: de boom van Aapje, de planetenreis van Raketje, het rif van Vis en
+  het circus van Mier met een tabel van tien kunstjes. Tot slot wat ervoor nodig is in de code
+  (`js/wereld.js`, `js/decor.js`, aanpassingen in `animaties.js`, de vier spellen, CSS, audio,
+  `index.html`, tests) en de volgorde van bouwen (16a t/m 16d).
+- §2 (keuzetabel), §5.1 (één regel per scherm), §6.2 (kleuren van boom, ruimte, rif en circus),
+  §6.3 (decor-tekeningen), §7.1/7.2/7.4/7.5 (hoe de bestaande varianten meegaan), §7.3 (vijf nieuwe
+  geluiden), §9 (fase 16 met acceptatie), §9.1, §10 (tests en kindtest) en §11 (zeven risico's met
+  maatregel).
+
+**Keuzes in het ontwerp**
+
+- **Rondes van tien**, gelijk aan de tien losse iconen van de teller: het tiende antwoord is een
+  finale (bananentros, aarde, schatkist, mierenpiramide) en daarna begint een nieuwe ronde in een
+  andere variant van de wereld. Zo raakt niets van het scherm af en vertellen teller en wereld
+  hetzelfde verhaal.
+- **De stand volgt uit de teller** (`Wereld.stand(n)`, pure functie), niets opslaan. Daarmee blijft
+  de wereld staan na een bezoek aan het menu en kan `Escape` tijdens een stap niets kapotmaken.
+- **De reis is de beloning.** De bestaande varianten blijven als *manier* van reizen (springen,
+  slingeren, salto; recht, looping, langs de maan; springen, zwemmen, bubbels), zodat de variatie
+  blijft en de duur 1,4 s blijft.
+- **De wereld schuift** bij Raketje en Vis (de camera volgt de figuur); alleen het aapje klimt echt
+  omhoog, langs een boom aan de rechterrand, en is daar een slag kleiner.
+- **Mier reist niet** maar doet kunstjes: zeven nieuwe (koprol, bal, hoepel, jongleren, koorddansen,
+  handstand, trapeze) naast de drie bestaande, met de grote finale als tiende.
+- **Geen schakelaar** voor het decor: de balken zijn vol. Als de kindtest uitwijst dat het afleidt,
+  komt er een knop in het menu.
+- **Bouwen in vier stappen**: 16a (gedeelde basis plus Aapje) eerst, want daar ontstaat de gedeelde
+  code; 16b, 16c en 16d daarna in willekeurige volgorde, elk apart op te leveren.
+
+**Nog te beslissen door Peter, vóór de bouw**
+
+- Fantasieplaneten (voorstel) of echte planeten met namen? Het plan gaat uit van fantasie, met een
+  herkenbare maan, ringplaneet en aarde.
+- Mag de finale langer duren dan 1,4 s? Voorstel: nee; alleen als het bij de kindtest gehaast blijkt
+  (§11).
+- Moet de wereld ook in het menu te zien zijn (een boompje bij de aapjeknop)? Voorstel: niet in fase
+  16, staat als vervolgstap in §9.1.
+- Niet gecommit; Peter commit en pusht zelf.
+
+### 21 september 2026 · Fase 16: meegroeiende werelden en circuskunstjes
+
+Het ontwerp uit §7.6 is gebouwd. Elk onderdeel heeft nu een **wereld die meegroeit** met de goede
+antwoorden, in rondes van tien: het aapje klimt een tak hoger in de boom, de raket vliegt naar de
+volgende planeet, het visje zwemt naar het volgende rifstuk en de mier doet een ander circuskunstje.
+Elk tiende antwoord is een finale en daarna begint een nieuwe ronde in een nét andere wereld.
+
+**Gemaakt (§7.6)**
+
+- `js/wereld.js`: `Wereld.stand(n)` (pure functie van de teller), de stationslijsten per wereld
+  (`BOOM.takken` en drie bomen, `RUIMTE.volgorde`/`planeetVoor` met de aarde als tiende, `RIF.ronde`
+  uit een shuffle-bag met de schatkist op station 0, drie watertinten) en `Wereld.maak(container,
+  naam, figuur)` met `zetStand`, `stap` en `stop`. De wereld houdt zelf niets bij: de stand komt
+  altijd uit `teller.waarde()`.
+- `js/decor.js`: 33 eigen SVG-tekeningen in de stijl van `icons.js` — drie bomen (stam, tak, kruin
+  voor loofboom, palm en apenbroodboom), de sterrenhemel, tien planeten, een vlaggetje, de zandbodem,
+  tien rifstukken plus de schatkist met een deksel dat opengaat, en de circusattributen (piste, bal,
+  hoepel, balanceerstokje, hoge hoed, draad, stofwolk, sterretje).
+- `js/animaties.js`: `speel` krijgt `wereld` en `stand` mee en laat de wereld de stap doen; `kies`
+  geeft bij een finale-stand altijd de finale-variant (`FINALES`). Zeven nieuwe mier-kunstjes erbij
+  (koprol, bal, hoepel, jongleren, koorddansen, handstand, trapeze), dus tien in totaal, plus vier
+  finales: `tros`, `thuis`, `schat` en `finale`.
+- `css/base.css`: de laag `.wereld` (achter de opgave, `z-index: -1` in een eigen stapelcontext).
+  `css/aapje.css`, `raketje.css`, `vis.css` en `mier.css`: het decor en de nieuwe keyframes;
+  `css/mobiel.css`: smaller decor op telefoon en tablet.
+- `js/audio.js`: *klim*, *aankomst*, *plons*, *tromroffel* en *tada*, en een tweede argument bij
+  `Geluid.speel(naam, na)` zodat het aankomstgeluid klinkt op het moment dat de figuur landt.
+- `index.html`: een lege `.wereld`-laag per speelveld en de twee nieuwe scripts.
+- `test/test.html`: 48 nieuwe tests (§10), totaal 244. `README.md`: het hoofdstuk "Elk goed antwoord
+  brengt het kind verder".
+
+**Drie keuzes die tijdens de bouw anders zijn gelopen dan in het ontwerp**
+
+- **De planetenreis gaat omhoog, niet opzij.** Het ontwerp zette de planeten naast elkaar met een
+  hemel die naar links schuift. Maar de som staat middenin het scherm en is bij het superraketje
+  breed; een horizontale strook loopt daar dwars doorheen. De rechterrand is de enige strook die op
+  elk schermformaat vrij blijft. De raket vliegt nu omhoog naar de volgende planeet en de hemel zakt
+  — wat ook natuurlijker is, want de raket staat al met zijn neus omhoog. Bij Vis kon de horizontale
+  strook wél, want daar was de onderste 18 vh al voor het visje gereserveerd.
+- **De thuisplek van het aapje wordt vanaf zijn *natuurlijke* plek gerekend.** De eerste versie mat
+  zijn huidige plek en telde daar het verschil bij op. Dat ging mis omdat de klim-animatie de figuur
+  aan het eind precies op de nieuwe tak houdt (`animation-fill-mode: both`): de meting zag hem al
+  boven zitten en de klim liep een tak achter, één pixel per keer. Nu meet `natuurlijkeRect()` hem
+  even zonder verschuiving en zonder animatie, zodat de takplek altijd absoluut te rekenen is.
+  Daarbij zit meteen een begrenzing: hij kan nooit tot buiten de boven- of rechterrand van het
+  speelveld klimmen.
+- **Geen `DUUR_FINALE`.** De finale duurt net als alle andere varianten 1,4 s; het verschil zit in de
+  choreografie, niet in de lengte. Blijkt dat bij de kindtest te gehaast, dan kan het alsnog (§11).
+
+**Gecontroleerd**
+
+- `test/test.html`: 244 goed, 0 fout in headless Chrome vanaf `file://` (48 nieuwe tests, §10).
+- Gedragstest in de echte DOM (headless Chrome via het DevTools-protocol, 45 checks, alle groen, §10),
+  inclusief de layout op 1024×768, 1366×768, 1920×1080, 390×844, 360×780, 844×390, 768×1024, 820×1180
+  en 1180×820 met de figuur op het hoogste station.
+- Screenshots van de vier werelden op 1366×768 beoordeeld. Daar kwamen drie dingen uit die meteen zijn
+  verholpen: de boom werd aan de rechterrand afgeknipt (takken nu 46 % per kant in plaats van 52 %),
+  het rifstuk waar het visje is stond achter het visje (de rij staat nu 1,4 station opgeschoven), en
+  de sterrenhemel zag eruit als een aangeplakte rechthoek (nu ronde hoek en vervagende boven- en
+  onderrand).
+- **Na oplevering opgemerkt door Peter en meteen verholpen:** het visje zwom achteruit. Het rif schuift
+  naar links, dus het visje komt naar rechts vooruit, maar de tekening kijkt naar links. De
+  speelfiguur is nu gespiegeld en de zwem-variant en de bubbels zijn daarop aangepast (§7.6). De
+  gedragstest controleert sindsdien ook de kijkrichting: 45 checks in plaats van 44.
+- Twee dingen die de nieuwe layoutmeting aan het licht bracht, zijn **niet** door fase 16 veroorzaakt:
+  het aapje stond op een telefoon rechtop al vóór deze fase met zijn schouder voor de hoek van de
+  letterkaart (39 px, nu 31 px), en de omhullende rechthoek van de raket en de vis komt 2 tot 4 px
+  onder het speelveld doordat ze in rust wiegen. Beide gemeten op de versie van vóór fase 16 en daar
+  precies hetzelfde. Ze staan genoteerd in §11 als aandachtspunt, niet als regressie.
+- De app blijft ES5 en zonder externe bronnen; Firefox kon in deze omgeving niet headless renderen
+  (grafische fout), dus daar is alleen op taal- en CSS-niveau naar gekeken: alles wat nieuw is
+  (`aspect-ratio`, `mask-image`, variabelen in `@keyframes`) wordt door Firefox ondersteund. Handmatig
+  openen in Firefox en Edge blijft aan te raden.
+
+**Nog te doen / aandachtspunten**
+
+- Kindtest voor fase 16: kijkt het kind na het antwoord naar de wereld of blijft het bij de opgave?
+  Leidt het decor af tijdens het typen (dan een schakelaar in het menu, §7.6)? Begrijpt het kind dat
+  de finale bij tien een ronde afsluit, en wil het doorspelen voor de volgende ronde?
+- Op een echte iPad kijken of twintig antwoorden achter elkaar vlot blijven lopen.
+- Niet gecommit; Peter commit en pusht zelf.
+
+### 21 september 2026 · Mier krijgt een bewegende wereld: het ondergrondse nest
+
+Peter wilde dat ook Mier, net als de andere drie dieren, een wereld krijgt die meebeweegt in plaats
+van een kunstje op zijn plek. Van de drie voorstellen (tuinpad met circusattributen naar de
+mierenhoop, circusterrein, ondergronds nest) koos hij het **ondergrondse nest**.
+
+**Wat er veranderd is**
+
+- De piste is vervangen door een **doorsnede van het mierennest** in de strook onderin: elf kamers
+  met gangen ertussen, onder een grasrand. De mier kijkt naar links, dus hij loopt naar links en het
+  nest schuift naar rechts — precies andersom dan het rif van Vis.
+- De tien kunstjes zijn gebleven en zijn nu tegelijk de *manier van vooruitkomen*, zoals de drie
+  klimstijlen van het aapje: omdat de grond meeschuift, rolt een koprol vooruit, rolt hij mee op het
+  zaadje en is een handstand lopen op zijn voorpoten.
+- Drie attributen zijn hertekend zodat ze onder de grond passen: de gestreepte circusbal werd een
+  **zaadje**, de hoepel een **wortelboog** en de hoge hoed het **kroontje** van de koningin. De draad
+  van het koorddansen is nu een wortelvezel. `draag` loopt niet meer naar rechts het beeld uit maar
+  naar links, de kant waar de mier naartoe loopt.
+- `wereld.js`: de schuiflogica van het rif is een gedeeld onderdeel geworden (`maakStrook`). Vis en
+  Mier delen nu dezelfde code; alleen de lijst, de richting, de tekeningen en of de strook de hele
+  breedte vult verschillen. Daarbij is de strook ook **rond** geworden: station 10 is weer station 0.
+  Dat was nodig omdat het nest de hele breedte vult — anders stond de halve strook vol met
+  koninginnenkamers. Voordeel: er staat nu precies één ronde in beeld, als een kaart van het nest.
+- De maten van Mier volgen nu één variabele `--nest-h`: de strook, de kamers (even breed als de
+  strook hoog is, zodat ze naadloos aansluiten) en de mier zelf, die op de vloer van zijn kamer staat.
+
+**Gecontroleerd**
+
+- `test/test.html`: 254 goed, 0 fout (10 nieuwe tests voor het nest).
+- Gedragstest in Chrome: 53 checks, alle groen, twee keer achter elkaar gedraaid.
+- Screenshot beoordeeld. Daar kwam één fout uit die meteen is verholpen: links stonden allemaal
+  koninginnenkamers, doordat elk station voorbij het tiende als finale werd getekend. Sindsdien loopt
+  de strook rond.
+- De klankvakjes raakten precies de grasrand van het nest (nul pixels ruimte), waardoor de
+  layoutmeting wisselend uitsloeg. Er zit nu een randje van 1,4 vh tussen.
+
+**Nog te doen**
+
+- Kindtest: nu ook kijken of het kind de kamers herkent en of het doorspeelt om bij de koningin te
+  komen.
 - Niet gecommit; Peter commit en pusht zelf.

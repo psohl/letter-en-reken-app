@@ -9,8 +9,11 @@
 .speelveld-mier {
   flex-direction: column;
   gap: clamp(8px, 2.5vh, 32px);
-  /* Onderaan ruimte voor de mier (17vh hoog), zodat de rij vakjes hem niet raakt. */
-  padding-bottom: clamp(70px, 18vh, 230px);
+  /* Onderaan de strook met het ondergrondse nest (§7.6); de rij klankvakjes blijft daarboven.
+     --nest-h is meteen de maat waar de kamers en de mier zich naar voegen. */
+  --nest-h: clamp(70px, 18vh, 230px);
+  /* Een randje extra, zodat het laatste klankvakje de grasrand van het nest niet raakt. */
+  padding-bottom: calc(var(--nest-h) + clamp(6px, 1.4vh, 18px));
 }
 
 /* ---- Het plaatje op een vierkante kaart met grasgroene rand ---- */
@@ -93,7 +96,12 @@
 /* Niveau-ring in grasgroen (raketje.css zet hem in raketrood, vis.css in zeegroen) */
 .mier-niveau.aan { box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-gras); }
 
-/* ---- Mier in de hoek: rust (trippelt op zijn plaats, voelsprieten bewegen) ---- */
+/* ---- Mier in het nest: rust (trippelt op zijn plaats, voelsprieten bewegen) ----
+   Twee klassen, zodat deze maat het wint van de algemene .figuur-regel in mobiel.css. */
+.speelveld-mier .figuur-mier {
+  width: max(42px, calc(var(--nest-h) * 0.62));
+  bottom: calc(var(--nest-h) * 0.18);          /* de vloer van de kamer ligt op 18 % van de strook */
+}
 .figuur-mier { animation: mier-trippel 0.9s ease-in-out infinite; }
 .figuur-mier .voelspriet-1 { animation: voelspriet 1.6s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 100% 100%; }
 .figuur-mier .voelspriet-2 { animation: voelspriet 1.6s ease-in-out 0.3s infinite alternate-reverse; transform-box: fill-box; transform-origin: 100% 100%; }
@@ -142,3 +150,210 @@
 }
 .figuur-mier.anim-klim .voelspriet-1,
 .figuur-mier.anim-klim .voelspriet-2 { animation: voelspriet 0.25s ease-in-out 6 alternate; }
+
+/* ---- Het ondergrondse nest: de wereld van Mier (ontwikkelplan §7.6) ----
+   Een doorsnede van het nest in de strook onderin die al voor de mier gereserveerd was: kamers
+   met gangen ertussen, onder een grasrand. De mier kijkt naar links, dus het nest schuift naar
+   *rechts* en de volgende kamer komt van links aanlopen (bij Vis is het andersom). De kamers zijn
+   even breed als de strook hoog is, zodat ze precies op elkaar aansluiten. */
+.wereld-nest {
+  top: auto;
+  height: var(--nest-h);
+  --slot: var(--nest-h);
+  /* Afstand van het midden van de mier tot de rechterrand: daar komt de kamer uit waar hij is. */
+  --mier-x: calc(clamp(16px, 4vw, 90px) + max(42px, var(--nest-h) * 0.62) / 2);
+}
+.nest-aarde {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#C9A882, #B08D63);
+}
+.wereld-nest[data-tint="midden"] .nest-aarde { background: linear-gradient(#BE9A72, #A07E52); }
+.wereld-nest[data-tint="diep"]   .nest-aarde { background: linear-gradient(#B08D63, #8E6E45); }
+.nest-gras {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 13%;
+}
+.nest-rij {
+  position: absolute;
+  right: calc(var(--mier-x) - 1.5 * var(--slot));
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+}
+.nest-kamer {
+  flex: none;
+  width: var(--slot);
+  height: 100%;
+}
+/* De koninginnenkamer: het kroontje glinstert als de mier er aankomt (finale). */
+.nest-kamer .glinster { opacity: 0.4; transition: opacity 0.4s ease 0.3s; }
+.nest-kamer.open .glinster { opacity: 1; animation: wereld-twinkel 2.4s ease-in-out 0.5s infinite alternate; }
+
+/* ---- Kunstjes (Animaties.speel('mier')), alle 1,4 s ----
+   De kunstjes zelf zijn gebleven; alleen de attributen horen nu bij het nest: een zaadje in
+   plaats van een circusbal, een wortelboog in plaats van een hoepel en het kroontje van de
+   koningin in plaats van een hoge hoed. */
+
+/* 4. Koprol: salto voorover door de gang, met een stofwolkje bij de landing */
+.figuur-mier.anim-koprol { animation: mier-koprol 1.4s cubic-bezier(0.4, 0.1, 0.4, 1) both; transform-origin: 50% 70%; }
+@keyframes mier-koprol {
+  0%   { transform: translate(0, 0) rotate(0); }
+  15%  { transform: translate(0, 6%) scaleY(0.9); }
+  55%  { transform: translate(-30%, -35%) rotate(-330deg); }
+  80%  { transform: translate(-60%, 4%) rotate(-360deg) scaleY(0.92); }
+  100% { transform: translate(-60%, 0) rotate(-360deg); }
+}
+.effect.stofwolk { animation: stofwolk 0.8s ease-out 0.6s both; }
+@keyframes stofwolk {
+  0%   { transform: scale(0.3) translateX(-30%); opacity: 0; }
+  30%  { opacity: 0.9; }
+  100% { transform: scale(1.3) translateX(-60%); opacity: 0; }
+}
+
+/* 5. Balanceren op een zaadje dat onder hem heen en weer rolt */
+.figuur-mier.anim-bal { animation: mier-bal 1.4s ease-in-out both; }
+@keyframes mier-bal {
+  0%, 100% { transform: translate(0, -18%) rotate(0); }
+  25%      { transform: translate(-14%, -20%) rotate(-7deg); }
+  50%      { transform: translate(6%, -18%) rotate(5deg); }
+  75%      { transform: translate(-8%, -20%) rotate(-4deg); }
+}
+.figuur-mier.anim-bal .voelspriet-1,
+.figuur-mier.anim-bal .voelspriet-2 { animation: voelspriet 0.3s ease-in-out 5 alternate; }
+.effect.rolzaad { animation: rolzaad 1.4s ease-in-out both; }
+@keyframes rolzaad {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25%      { transform: translateX(-14%) rotate(-70deg); }
+  50%      { transform: translateX(6%) rotate(40deg); }
+  75%      { transform: translateX(-8%) rotate(-30deg); }
+}
+
+/* 6. Door de wortelboog springen */
+.figuur-mier.anim-hoepel { animation: mier-hoepel 1.4s cubic-bezier(0.3, 0.6, 0.4, 1) both; }
+@keyframes mier-hoepel {
+  0%   { transform: translate(0, 0); }
+  15%  { transform: translate(0, 8%) scaleY(0.9); }
+  45%  { transform: translate(calc(var(--lx, -120px) * 0.5), -70%) rotate(-10deg); }
+  70%  { transform: translate(var(--lx, -120px), -20%) rotate(6deg); }
+  85%  { transform: translate(var(--lx, -120px), 6%) scaleY(0.94); }
+  100% { transform: translate(var(--lx, -120px), 0); }
+}
+.effect.wortelboog { animation: wortelboog 1.4s ease-in-out both; transform-origin: 50% 100%; }
+@keyframes wortelboog {
+  0%   { transform: scale(0.2) rotate(-20deg); opacity: 0; }
+  20%  { transform: scale(1) rotate(0); opacity: 1; }
+  85%  { transform: scale(1) rotate(0); opacity: 1; }
+  100% { transform: scale(0.9) rotate(12deg); opacity: 0; }
+}
+.effect.sterretje { animation: glinster 1s ease-in-out 0.35s both; }
+.effect.sterretje-1 { animation-delay: 0.5s; }
+.effect.sterretje-2 { animation-delay: 0.65s; }
+
+/* 7. Jongleren met drie blaadjes */
+.figuur-mier.anim-jongleer { animation: mier-jongleer 1.4s ease-in-out both; }
+@keyframes mier-jongleer {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25%      { transform: translateY(-6%) rotate(-4deg); }
+  50%      { transform: translateY(0) rotate(3deg); }
+  75%      { transform: translateY(-5%) rotate(-3deg); }
+}
+.effect.jongleerblad { animation: jongleerblad 0.7s linear infinite; }
+.effect.jongleerblad-1 { animation-delay: -0.23s; }
+.effect.jongleerblad-2 { animation-delay: -0.46s; }
+@keyframes jongleerblad {
+  0%   { transform: translate(calc(-1 * var(--boog, 40px)), 0) rotate(0); }
+  25%  { transform: translate(0, calc(-1.1 * var(--boog, 40px))) rotate(90deg); }
+  50%  { transform: translate(var(--boog, 40px), 0) rotate(180deg); }
+  75%  { transform: translate(0, calc(0.15 * var(--boog, 40px))) rotate(270deg); }
+  100% { transform: translate(calc(-1 * var(--boog, 40px)), 0) rotate(360deg); }
+}
+
+/* 8. Koorddansen op een wortelvezel, met een balanceerstokje */
+.figuur-mier.anim-koord { animation: mier-koord 1.4s ease-in-out both; }
+@keyframes mier-koord {
+  0%   { transform: translateX(0) rotate(0); }
+  20%  { transform: translateX(calc(var(--lx, -120px) * 0.25)) rotate(-5deg); }
+  40%  { transform: translateX(calc(var(--lx, -120px) * 0.55)) rotate(5deg); }
+  55%  { transform: translateX(var(--lx, -120px)) rotate(-4deg); }
+  75%  { transform: translateX(calc(var(--lx, -120px) * 0.5)) rotate(4deg); }
+  100% { transform: translateX(0) rotate(0); }
+}
+.effect.koorddraad { animation: koorddraad 1.4s ease-in-out both; }
+@keyframes koorddraad {
+  0%, 100% { opacity: 0; }
+  12%, 88% { opacity: 1; }
+}
+.effect.balanceerstok { animation: mier-koord 1.4s ease-in-out both, stok-kantel 0.5s ease-in-out infinite alternate; }
+@keyframes stok-kantel {
+  from { rotate: -9deg; }
+  to   { rotate: 9deg; }
+}
+
+/* 9. Handstand op zijn voorpoten */
+.figuur-mier.anim-handstand { animation: mier-handstand 1.4s cubic-bezier(0.4, 0.1, 0.4, 1) both; transform-origin: 25% 80%; }
+@keyframes mier-handstand {
+  0%   { transform: rotate(0); }
+  25%  { transform: rotate(-120deg); }
+  40%  { transform: rotate(-175deg); }
+  55%  { transform: rotate(-168deg); }
+  70%  { transform: rotate(-180deg); }
+  100% { transform: rotate(0); }
+}
+.figuur-mier.anim-handstand .poot-2,
+.figuur-mier.anim-handstand .poot-3 { animation: voelspriet 0.22s ease-in-out 6 alternate; transform-box: fill-box; transform-origin: 0% 0%; }
+
+/* 10. Trapeze: slingert aan een draadje aan het plafond van de gang */
+.figuur-mier.anim-trapeze { animation: mier-trapeze 1.4s ease-in-out both; transform-origin: 50% -170%; }
+@keyframes mier-trapeze {
+  0%   { transform: rotate(0) translateY(-30%); }
+  25%  { transform: rotate(-20deg) translateY(-30%); }
+  60%  { transform: rotate(18deg) translateY(-30%); }
+  85%  { transform: rotate(-8deg) translateY(-30%); }
+  100% { transform: rotate(0) translateY(0); }
+}
+.effect.trapeze { animation: liaan-zwaai 1.4s ease-in-out both; transform-origin: 50% 0; }
+
+/* 11. Grote finale (elk tiende woord): mierenpiramide in de koninginnenkamer, met kroontje en confetti */
+.figuur-mier.anim-finale { animation: mier-finale 1.4s cubic-bezier(0.3, 0.8, 0.4, 1) both; }
+@keyframes mier-finale {
+  0%   { transform: translate(0, 0) scale(1); }
+  20%  { transform: translate(0, 8%) scale(0.95); }
+  55%  { transform: translate(-22%, -58%) scale(0.85); }
+  70%  { transform: translate(-22%, -62%) scale(0.85) rotate(-5deg); }
+  85%  { transform: translate(-22%, -58%) scale(0.85) rotate(4deg); }
+  100% { transform: translate(-22%, -58%) scale(0.85); }
+}
+.effect.kleinemier { animation: kleinemier 0.9s cubic-bezier(0.3, 0.8, 0.4, 1) both; }
+.effect.kleinemier-1 { animation-delay: 0.12s; }
+@keyframes kleinemier {
+  0%   { transform: translateX(var(--van, -200px)); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+.effect.kroontje { animation: kroontje 1.4s ease-in-out both; }
+@keyframes kroontje {
+  0%   { transform: translate(0, 60%) scale(0.4); opacity: 0; }
+  40%  { transform: translate(-22%, -58%) scale(0.9); opacity: 1; }
+  70%  { transform: translate(-22%, -78%) scale(0.9) rotate(-14deg); opacity: 1; }
+  100% { transform: translate(-22%, -58%) scale(0.9); opacity: 1; }
+}
+.effect.confetti {
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  animation: confetti 1.4s ease-in both;
+}
+.effect.confetti-1 { animation-delay: 0.08s; }
+.effect.confetti-2 { animation-delay: 0.16s; }
+.effect.confetti-3 { animation-delay: 0.24s; }
+.effect.confetti-4 { animation-delay: 0.32s; }
+.effect.confetti-5 { animation-delay: 0.4s; }
+@keyframes confetti {
+  0%   { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translate(var(--zij, 0), var(--val, 400px)) rotate(540deg); opacity: 0; }
+}

@@ -16,6 +16,7 @@ var Aapje = (function () {
   var timer = null;
   var hint = null;
   var teller = null;
+  var wereld = null;           // de boom waarin het aapje klimt (ontwikkelplan §7.6)
   var laatsteToggle = { set: null, tijd: 0 };
 
   /* Tweede actie op dezelfde schakelaar binnen DUBBELKLIK_MS negeren (dubbelklik). */
@@ -39,6 +40,7 @@ var Aapje = (function () {
     hint = KeyboardHint.maak(document.getElementById('aapje-hint'), 'letters');
     teller = Teller.maak(els.tellerEl, 'banaan', 'bananentros');
     zak = new Letters.Kaartenzak([Letters.BASISSET]);
+    wereld = Wereld.maak(document.getElementById('aapje-wereld'), 'boom', els.figuur);
 
     els.toggles.forEach(function (knop) {
       knop.addEventListener('click', function () {
@@ -54,13 +56,16 @@ var Aapje = (function () {
   function binnen() {
     bezig = false;
     hint.verberg();
+    // De boom volgt altijd de teller: zo klopt hij ook na een bezoek aan het menu of
+    // na een animatie die met Escape is afgebroken.
+    if (wereld) wereld.zetStand(Wereld.stand(teller.waarde()));
     if (!kaart) volgendeLetter();
   }
 
   function buiten() {
     if (timer) { clearTimeout(timer); timer = null; }
     els.kaart.classList.remove('goed', 'schudt');
-    Animaties.stop(els.figuur, els.effecten);
+    Animaties.stop(els.figuur, els.effecten, wereld);
     if (bezig) { volgendeLetter(); bezig = false; }   // animatie afgebroken: toch door naar de volgende
   }
 
@@ -124,12 +129,15 @@ var Aapje = (function () {
     bezig = true;
     hint.verberg();
     teller.plusEen();
+    var stand = Wereld.stand(teller.waarde());
     Geluid.speel('goed');
     Geluid.speel('oe-oe');
+    Geluid.speel(stand.finale ? 'tada' : 'klim', 0.75);   // klinkt als het aapje op de tak landt
     els.kaart.classList.remove('schudt');
     els.kaart.classList.add('goed');
     var duur = Animaties.speel('aapje', {
-      figuur: els.figuur, laag: els.effecten, van: els.kaart, naar: els.tellerEl, icoon: 'banaan'
+      figuur: els.figuur, laag: els.effecten, van: els.kaart, naar: els.tellerEl, icoon: 'banaan',
+      wereld: wereld, stand: stand
     });
     timer = setTimeout(function () {
       timer = null;
@@ -156,6 +164,7 @@ var Aapje = (function () {
     huidigeLetter: function () { return huidigeLetter; },
     huidigeKaart: function () { return kaart; },
     sets: function () { return zak ? zak.sets() : []; },
+    wereld: function () { return wereld; },
     isBezig: function () { return bezig; }
   };
 })();

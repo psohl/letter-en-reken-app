@@ -1,4 +1,4 @@
-/* aapje.css - taalspel (ontwikkelplan §5.1, §7.1) */
+/* aapje.css - taalspel (ontwikkelplan §5.1, §7.1, §7.6) */
 
 .letterkaart {
   display: flex;
@@ -32,8 +32,64 @@
 .letter-groot.blokletter               { font-size: min(21vh, 18vw, 290px); transform: translateY(-2%); }
 .letter-groot.blokletter.kast-hoofd    { font-size: min(19vh, 16vw, 260px); transform: none; }
 
-/* ---- Aapje in de hoek: rust ---- */
-.figuur-aapje { transform-origin: 50% 100%; }
+/* ---- De boom: de wereld van Aapje (ontwikkelplan §7.6) ----
+   Tien takken om en om links en rechts van de stam; wereld.js zet ze op hun hoogte
+   (Wereld.BOOM.takken) en verplaatst het aapje naar de tak van het huidige station. */
+.wereld-boom {
+  left: auto;
+  right: 0;
+  width: clamp(84px, 15vw, 210px);
+}
+.boom-stam {
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  bottom: 0;
+  width: 26%;
+  transform: translateX(-50%);
+}
+.wereld-boom .tak {
+  position: absolute;
+  /* 46 % per kant: samen met de stam in het midden past de hele boom binnen de kolom,
+     zodat er aan de rechterrand van het scherm geen tak wordt afgeknipt. */
+  width: 46%;
+  aspect-ratio: 100 / 60;
+}
+.wereld-boom .tak-rechts { left: 50%; }
+.wereld-boom .tak-links  { right: 50%; }
+.wereld-boom .tak-links > svg { transform: scaleX(-1); }
+/* Onzichtbaar merkteken: hier zit het aapje op de tak (wereld.js meet dit punt op). */
+.wereld-boom .tak-zit { position: absolute; top: 26%; width: 0; height: 0; }
+.wereld-boom .tak-rechts .tak-zit { left: 56%; }
+.wereld-boom .tak-links  .tak-zit { right: 56%; }
+.boom-kruin {
+  position: absolute;
+  left: 50%;
+  top: -2%;
+  width: 96%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+}
+.boom-tros {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 34%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  animation: wereld-wieg 5s ease-in-out infinite alternate;
+  transform-origin: 50% 0;
+}
+
+/* ---- Aapje in de boom: rust ----
+   --thuis is de plek van de tak waar hij nu zit (wereld.js zet --thuis-x/--thuis-y);
+   elke beloningsanimatie begint en eindigt op die plek. */
+.figuur-aapje {
+  --thuis: translate(var(--thuis-x, 0px), var(--thuis-y, 0px));
+  width: clamp(78px, 13vh, 170px);
+  transform: var(--thuis);
+  transform-origin: 50% 100%;
+}
 .figuur-aapje .oog { animation: knipper 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .figuur-aapje .staart { animation: staart 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 0% 100%; }
 
@@ -43,28 +99,31 @@
 }
 
 /* ---- Beloningsanimaties (Animaties.speel('aapje')), alle 1,4 s ----
-   --dx/--dy = afstand van het aapje naar de letterkaart, gezet door animaties.js. */
+   Sinds fase 16 is de animatie de klim naar de volgende tak: --dx/--dy is de afstand naar
+   die tak (bij de finale naar de bananentros) en --tx/--ty de plek waar hij daarna blijft
+   zitten. Alle drie de varianten eindigen dus op de nieuwe tak. */
 
-/* 1. Springt op en juicht; banaan vliegt naar de teller (vlieg-icoon in base.css) */
+/* 1. Springt langs de stam omhoog naar de volgende tak; banaan vliegt naar de teller */
 .figuur-aapje.anim-spring { animation: aap-spring 1.4s cubic-bezier(0.3, 0.6, 0.4, 1) both; }
 @keyframes aap-spring {
-  0%   { transform: translateY(0) rotate(0); }
-  12%  { transform: translateY(6%) scaleY(0.9); }
-  40%  { transform: translateY(-75%) rotate(-12deg); }
-  60%  { transform: translateY(-75%) rotate(12deg); }
-  85%  { transform: translateY(0) scaleY(0.94); }
-  100% { transform: translateY(0); }
+  0%   { transform: var(--thuis) translate(0, 0); }
+  12%  { transform: var(--thuis) translate(0, 8%) scaleY(0.88); }
+  48%  { transform: var(--thuis) translate(calc(var(--dx, 0px) * 0.55), calc(var(--dy, 0px) - 34px)) rotate(-10deg); }
+  76%  { transform: var(--thuis) translate(var(--dx, 0px), calc(var(--dy, 0px) - 8px)) rotate(6deg); }
+  90%  { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) scaleY(0.94); }
+  100% { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)); }
 }
 .figuur-aapje.anim-spring .arm-l { animation: arm-zwaai 0.35s ease-in-out 4 alternate; transform-box: fill-box; transform-origin: 100% 100%; }
 .figuur-aapje.anim-spring .arm-r { animation: arm-zwaai 0.35s ease-in-out 4 alternate-reverse; transform-box: fill-box; transform-origin: 0% 100%; }
 @keyframes arm-zwaai { from { transform: rotate(-15deg); } to { transform: rotate(15deg); } }
 
-/* 2. Slingert aan een liaan naar de kaart en terug */
+/* 2. Slingert aan een liaan naar de volgende tak */
 .figuur-aapje.anim-liaan { animation: aap-liaan 1.4s ease-in-out both; }
 @keyframes aap-liaan {
-  0%   { transform: translate(0, 0) rotate(0); }
-  50%  { transform: translate(var(--dx), -35%) rotate(-25deg); }
-  100% { transform: translate(0, 0) rotate(0); }
+  0%   { transform: var(--thuis) translate(0, 0) rotate(0); }
+  50%  { transform: var(--thuis) translate(calc(var(--dx, 0px) * 0.55), calc(var(--dy, 0px) * 0.5 - 26px)) rotate(-24deg); }
+  80%  { transform: var(--thuis) translate(var(--dx, 0px), calc(var(--dy, 0px) - 6px)) rotate(10deg); }
+  100% { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(0); }
 }
 .effect.liaan {
   width: 20px;
@@ -78,28 +137,28 @@
   100% { transform: rotate(-28deg); }
 }
 
-/* 3. Salto: draait om, landt op de letterkaart en springt terug */
+/* 3. Salto omhoog, landt op de volgende tak */
 .figuur-aapje.anim-salto { animation: aap-salto 1.4s cubic-bezier(0.4, 0.1, 0.4, 1) both; }
 @keyframes aap-salto {
-  0%   { transform: translate(0, 0) rotate(0); }
-  45%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg); }
-  60%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg) scaleY(0.9); }
-  70%  { transform: translate(var(--dx), var(--dy)) rotate(-360deg); }
-  100% { transform: translate(0, 0) rotate(-360deg); }
+  0%   { transform: var(--thuis) translate(0, 0) rotate(0); }
+  50%  { transform: var(--thuis) translate(calc(var(--dx, 0px) * 0.5), calc(var(--dy, 0px) * 0.6 - 32px)) rotate(-200deg); }
+  85%  { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(-360deg) scaleY(0.92); }
+  100% { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(-360deg); }
 }
 
-/* 4. Eet een banaan en klopt op zijn buik */
-.figuur-aapje.anim-eet { animation: aap-eet 1.4s ease-in-out both; }
-@keyframes aap-eet {
-  0%, 100% { transform: scale(1); }
-  20%      { transform: scale(1.04, 0.96); }
-  40%      { transform: scale(0.97, 1.04); }
-  60%      { transform: scale(1.06, 0.95); }
-  80%      { transform: scale(0.98, 1.03); }
+/* 4. Finale (elk tiende antwoord): pakt de bananentros in de top, eet een banaan
+      en glijdt langs de stam terug naar de onderste tak van de volgende boom. */
+.figuur-aapje.anim-tros { animation: aap-tros 1.4s cubic-bezier(0.35, 0.1, 0.4, 1) both; }
+@keyframes aap-tros {
+  0%   { transform: var(--thuis) translate(0, 0) rotate(0); }
+  30%  { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(0); }
+  45%  { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(-7deg) scale(1.05); }
+  60%  { transform: var(--thuis) translate(var(--dx, 0px), var(--dy, 0px)) rotate(5deg); }
+  100% { transform: var(--thuis) translate(var(--tx, 0px), var(--ty, 0px)) rotate(0); }
 }
-.figuur-aapje.anim-eet .arm-l { animation: arm-klop 0.3s ease-in-out 4 alternate; transform-box: fill-box; transform-origin: 100% 100%; }
+.figuur-aapje.anim-tros .arm-l { animation: arm-klop 0.3s ease-in-out 4 alternate; transform-box: fill-box; transform-origin: 100% 100%; }
 @keyframes arm-klop { from { transform: rotate(0); } to { transform: rotate(35deg); } }
-.effect.hapje { animation: hapje 1.2s ease-in both; }
+.effect.hapje { animation: hapje 1.2s ease-in 0.25s both; }
 @keyframes hapje {
   0%   { transform: scale(1) rotate(-20deg); opacity: 1; }
   30%  { transform: scale(0.8) rotate(-10deg); opacity: 1; }

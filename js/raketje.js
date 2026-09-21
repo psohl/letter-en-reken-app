@@ -16,6 +16,7 @@ var Raketje = (function () {
   var timer = null;
   var hint = null;
   var teller = null;
+  var wereld = null;           // de planetenreis achter de raket (ontwikkelplan §7.6)
   var kralen = null;           // Montessori-kralen als visueel hulpmiddel
   var kralenAan = false;       // staat standaard uit
   var laatsteToggle = { sleutel: null, tijd: 0 };
@@ -47,6 +48,7 @@ var Raketje = (function () {
     hint = KeyboardHint.maak(document.getElementById('raketje-hint'), 'cijfers');
     teller = Teller.maak(els.tellerEl, 'ster', 'ster');
     kralen = Kralen.maak(document.getElementById('raketje-kralen'));
+    wereld = Wereld.maak(document.getElementById('raketje-wereld'), 'ruimte', els.figuur);
     generator = new Sommen.Generator({ operators: ['plus'], niveaus: ['klein'] });
 
     els.toggles.forEach(function (knop) {
@@ -73,13 +75,14 @@ var Raketje = (function () {
   function binnen() {
     bezig = false;
     hint.verberg();
+    if (wereld) wereld.zetStand(Wereld.stand(teller.waarde()));   // hemel volgt altijd de teller
     if (!som) volgendeSom();
   }
 
   function buiten() {
     if (timer) { clearTimeout(timer); timer = null; }
     els.invul.classList.remove('goed', 'schudt');
-    Animaties.stop(els.figuur, els.effecten);
+    Animaties.stop(els.figuur, els.effecten, wereld);
     if (bezig) { volgendeSom(); bezig = false; }
   }
 
@@ -212,12 +215,15 @@ var Raketje = (function () {
     bezig = true;
     hint.verberg();
     teller.plusEen();
+    var stand = Wereld.stand(teller.waarde());
     Geluid.speel('goed');
     Geluid.speel('whoosh');
+    Geluid.speel(stand.finale ? 'tada' : 'aankomst', 0.75);   // aankomst bij de volgende planeet
     els.invul.classList.remove('schudt');
     els.invul.classList.add('goed');
     var duur = Animaties.speel('raket', {
-      figuur: els.figuur, laag: els.effecten, van: els.invul, naar: els.tellerEl, icoon: 'ster'
+      figuur: els.figuur, laag: els.effecten, van: els.invul, naar: els.tellerEl, icoon: 'ster',
+      wereld: wereld, stand: stand
     });
     timer = setTimeout(function () {
       timer = null;
@@ -247,6 +253,7 @@ var Raketje = (function () {
     niveaus: function () { return generator ? generator.niveaus() : []; },
     invoer: function () { return invoer; },
     kralenAan: function () { return kralenAan; },
+    wereld: function () { return wereld; },
     isBezig: function () { return bezig; }
   };
 })();

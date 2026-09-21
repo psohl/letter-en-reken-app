@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<title>Tests: letters.js, woorden.js, sommen.js, kralen.js, animaties.js, keyboardHint.js</title>
+<title>Tests: letters.js, woorden.js, sommen.js, kralen.js, wereld.js, animaties.js, keyboardHint.js</title>
 <style>
   body { font-family: Segoe UI, Arial, sans-serif; margin: 24px; max-width: 960px; }
   .ok { color: #2e7d32; } .fout { color: #c62828; font-weight: bold; }
@@ -17,9 +17,17 @@
 <h2>woorden.js: klanken en woordzak (Mier)</h2><ul id="uit-mier"></ul>
 <h2>sommen.js</h2><ul id="uit-sommen"></ul>
 <h2>kralen.js</h2><ul id="uit-kralen"></ul>
+<h2>wereld.js en decor.js (meegroeiende werelden)</h2><ul id="uit-wereld"></ul>
 <h2>animaties.js</h2><ul id="uit-animaties"></ul>
 <h2>keyboardHint.js (aanraakstand)</h2><ul id="uit-hint"></ul>
 <div id="hint-proef" style="position:absolute;left:-9999px;top:0" aria-hidden="true"></div>
+<div id="wereld-proef" style="position:absolute;left:-9999px;top:0;width:600px;height:400px" aria-hidden="true">
+  <div class="wereld" id="proef-wereld" style="position:absolute;inset:0"></div>
+  <div class="effecten" id="proef-laag" style="position:absolute;inset:0"></div>
+  <div class="figuur" id="proef-figuur" style="position:absolute;right:20px;bottom:0;width:80px;height:100px"></div>
+  <div id="proef-van" style="position:absolute;left:40px;top:40px;width:120px;height:120px"></div>
+  <div id="proef-naar" style="position:absolute;left:10px;bottom:0;width:40px;height:40px"></div>
+</div>
 <p id="samenvatting"></p>
 
 <script src="../js/letters.js"></script>
@@ -28,6 +36,9 @@
 <script src="../js/sommen.js"></script>
 <script src="../js/kralen.js"></script>
 <script src="../js/icons.js"></script>
+<script src="../js/decor.js"></script>
+<script src="../js/teller.js"></script>
+<script src="../js/wereld.js"></script>
 <script src="../js/animaties.js"></script>
 <script src="../js/keyboardHint.js"></script>
 <script>
@@ -605,6 +616,233 @@
   })();
 
   /* ================= animaties.js ================= */
+
+  /* ================= wereld.js en decor.js (fase 16: meegroeiende werelden) ================= */
+  test = maakTester('uit-wereld');
+
+  test('tien stations per ronde, gelijk aan de losse iconen van de teller',
+       Wereld.STATIONS === 10 && Wereld.STATIONS === Teller.MAX_LOS);
+
+  (function () {
+    var standFout = 0, finales = [];
+    for (var n = 0; n <= 35; n++) {
+      var s = Wereld.stand(n);
+      if (s.station !== n % 10 || s.ronde !== Math.floor(n / 10)) standFout++;
+      if (s.finale) finales.push(n);
+    }
+    test('stand(n): station = n % 10 en ronde = n / 10 voor n = 0 t/m 35', standFout === 0, standFout);
+    test('stand(n): finale alleen bij 10, 20 en 30', finales.join() === '10,20,30', finales.join());
+    test('stand(0) is geen finale en staat op station 0', !Wereld.stand(0).finale && Wereld.stand(0).station === 0);
+    test('stand() vangt onzin op (negatief en leeg tellen als 0)',
+         Wereld.stand(-5).station === 0 && Wereld.stand().station === 0 && !Wereld.stand(-5).finale);
+  })();
+
+  (function () {
+    var takken = Wereld.BOOM.takken;
+    var binnen = takken.every(function (t) { return t.y > 0 && t.y < 1; });
+    var oplopend = takken.every(function (t, i) { return i === 0 || t.y > takken[i - 1].y; });
+    var omEnOm = takken.every(function (t, i) { return i === 0 || t.kant === -takken[i - 1].kant; });
+    test('boom: tien takken', takken.length === 10, takken.length);
+    test('boom: alle takhoogtes liggen tussen 0 en 1 en lopen op', binnen && oplopend);
+    test('boom: de takken liggen om en om links en rechts van de stam', omEnOm);
+    var bomen = [0, 1, 2, 3, 4, 5].map(Wereld.BOOM.boomVoor);
+    test('boom: per ronde een andere boom, die zich pas na alle drie herhaalt',
+         bomen[0] !== bomen[1] && bomen[1] !== bomen[2] && bomen[0] !== bomen[2] &&
+         bomen[3] === bomen[0] && bomen[4] === bomen[1] && bomen[5] === bomen[2], bomen.join());
+    var tinten = [0, 1, 2, 3].map(Wereld.RIF.tintVoor);
+    test('rif: de watertint wisselt per ronde en herhaalt zich pas na alle drie',
+         tinten[0] !== tinten[1] && tinten[1] !== tinten[2] && tinten[0] !== tinten[2] && tinten[3] === tinten[0],
+         tinten.join());
+  })();
+
+  (function () {
+    var fout = 0, aardeFout = 0, stationFout = 0;
+    for (var r = 0; r < 5; r++) {
+      var v = Wereld.RUIMTE.volgorde(r);
+      if (v.length !== 10) fout++;
+      Wereld.RUIMTE.planeten.forEach(function (p) {
+        if (v.filter(function (q) { return q === p; }).length !== 1) fout++;
+      });
+      if (v[9] !== 'aarde') aardeFout++;
+      // Station 0 is de aarde: begin van de ronde en tegelijk de thuiskomst van de vorige.
+      if (Wereld.RUIMTE.planeetVoor(r, 0) !== 'aarde') stationFout++;
+      for (var s = 1; s < 10; s++) {
+        if (Wereld.RUIMTE.planeetVoor(r, s) !== v[s - 1]) stationFout++;
+      }
+    }
+    test('ruimte: elke ronde heeft alle tien de planeten precies één keer', fout === 0, fout);
+    test('ruimte: de aarde is altijd de tiende planeet van de ronde', aardeFout === 0);
+    test('ruimte: station 0 is de aarde (thuiskomst), daarna de negen fantasieplaneten op volgorde',
+         stationFout === 0, stationFout);
+    test('ruimte: de rondes beginnen niet allemaal hetzelfde',
+         Wereld.RUIMTE.volgorde(0)[0] !== Wereld.RUIMTE.volgorde(1)[0]);
+  })();
+
+  (function () {
+    var zak = Wereld.RIF.nieuweZak(maakRandom(31));
+    var telling = {}, herh = 0, vorig = null, schatkistFout = 0, aantal = 0;
+    for (var r = 0; r < 10; r++) {
+      var ronde = Wereld.RIF.ronde(zak);
+      if (ronde.length !== 10 || ronde[0] !== 'schatkist') schatkistFout++;
+      for (var i = 1; i < 10; i++) {
+        if (ronde[i] === 'schatkist') schatkistFout++;
+        telling[ronde[i]] = (telling[ronde[i]] || 0) + 1;
+        if (ronde[i] === vorig) herh++;
+        vorig = ronde[i];
+        aantal++;
+      }
+    }
+    var evenVaak = Wereld.RIF.stukken.every(function (s) { return telling[s] === 9; });
+    test('rif: over tien rondes (90 stukken) komt elk rifstuk even vaak voor', evenVaak && aantal === 90,
+         JSON.stringify(telling));
+    test('rif: nooit twee keer hetzelfde rifstuk achter elkaar', herh === 0, herh);
+    test('rif: de schatkist staat alleen op het tiende station (de finale)', schatkistFout === 0, schatkistFout);
+  })();
+
+  (function () {
+    var zak = Wereld.NEST.nieuweZak(maakRandom(37));
+    var telling = {}, herh = 0, vorig = null, koninginFout = 0;
+    for (var r = 0; r < 10; r++) {
+      var ronde = Wereld.NEST.ronde(zak);
+      if (ronde.length !== 10 || ronde[0] !== 'koningin') koninginFout++;
+      for (var i = 1; i < 10; i++) {
+        if (ronde[i] === 'koningin') koninginFout++;
+        telling[ronde[i]] = (telling[ronde[i]] || 0) + 1;
+        if (ronde[i] === vorig) herh++;
+        vorig = ronde[i];
+      }
+    }
+    test('nest: over tien rondes komt elke kamer even vaak voorbij, nooit twee keer achter elkaar',
+         Wereld.NEST.stukken.every(function (k) { return telling[k] === 9; }) && herh === 0,
+         JSON.stringify(telling));
+    test('nest: de koninginnenkamer staat alleen op het tiende station (de finale)', koninginFout === 0);
+    var lagen = [0, 1, 2, 3].map(Wereld.NEST.tintVoor);
+    test('nest: het nest ligt elke ronde een laag dieper en herhaalt zich pas na alle drie',
+         lagen[0] !== lagen[1] && lagen[1] !== lagen[2] && lagen[0] !== lagen[2] && lagen[3] === lagen[0],
+         lagen.join());
+    test('nest en rif schuiven de andere kant op (de mier kijkt naar links, het visje naar rechts)',
+         Wereld.NEST.richting === -Wereld.RIF.richting && Wereld.NEST.richting > 0);
+    test('nest vult de hele strook met kamers, het rif alleen het stuk bij het visje',
+         Wereld.NEST.offsets(1366, 140).length > 8 && Wereld.RIF.offsets(1366, 200).length === 4,
+         Wereld.NEST.offsets(1366, 140).join() + ' / ' + Wereld.RIF.offsets(1366, 200).join());
+    test('nest: de kamers staan van ver weg (links) naar net gepasseerd (rechts)',
+         (function () {
+           var o = Wereld.NEST.offsets(800, 140);
+           return o[o.length - 1] === -1 && o[o.length - 2] === 0 && o[0] > o[1];
+         })());
+  })();
+
+  test('alle decor-tekeningen uit §7.6 bestaan',
+       ['stamLoof','takLoof','kruinLoof','stamPalm','takPalm','kruinPalm','stamApenbrood','takApenbrood','kruinApenbrood',
+        'hemel','twinkel','vlaggetje','zandbodem','rifSchatkist','grondlijn','kamerKoningin',
+        'zaadje','wortelboog','kroontje','stokje','draad','stofwolk','sterretje'].every(function (n) {
+         return Decor.svg(n).indexOf('<svg') === 0;
+       }));
+  test('elke planeet en elk rifstuk heeft een tekening',
+       Wereld.RUIMTE.planeten.every(function (p) {
+         return Decor.svg('planeet' + p.charAt(0).toUpperCase() + p.slice(1)).indexOf('<svg') === 0;
+       }) &&
+       Wereld.RIF.stukken.every(function (s) {
+         return Decor.svg('rif' + s.charAt(0).toUpperCase() + s.slice(1)).indexOf('<svg') === 0;
+       }));
+  test('elke kamer van het mierennest heeft een tekening, met gangen links en rechts',
+       Wereld.NEST.stukken.concat([Wereld.NEST.finale]).every(function (k) {
+         var s = Decor.svg('kamer' + k.charAt(0).toUpperCase() + k.slice(1));
+         return s.indexOf('<svg') === 0 && s.indexOf('M-2 58 H16') > 0 && s.indexOf('M84 58 H102') > 0;
+       }));
+  test('decor bevat geen tekst, id of externe verwijzing (net als de plaatjes van Vis)',
+       Decor.namen.every(function (n) {
+         var s = Decor.svg(n);
+         return s.indexOf('<text') < 0 && s.indexOf(' id=') < 0 && s.indexOf('xlink') < 0 && s.indexOf('<use') < 0;
+       }));
+  test('de waterplanten hebben een klasse zodat CSS ze zachtjes kan laten wiegen',
+       Decor.svg('rifWaterplant').indexOf('class="wiegt"') > 0 && Decor.svg('rifZeewier').indexOf('class="wiegt"') > 0);
+  test('de schatkist heeft een deksel dat CSS kan laten opengaan',
+       Decor.svg('rifSchatkist').indexOf('class="deksel"') > 0);
+
+  (function () {
+    var houder = document.getElementById('proef-wereld');
+    var figuur = document.getElementById('proef-figuur');
+    var boom = Wereld.maak(houder, 'boom', figuur);
+    test('Wereld.maak zet de klassen voor het decor',
+         houder.classList.contains('wereld') && houder.classList.contains('wereld-boom'));
+    test('de boom heeft tien takken, een kruin en een bananentros in beeld',
+         houder.querySelectorAll('.tak').length === 10 && !!houder.querySelector('.boom-kruin') &&
+         !!houder.querySelector('.boom-tros') && !!houder.querySelector('.boom-stam'));
+    boom.zetStand(Wereld.stand(3));
+    test('zetStand onthoudt de stand', boom.huidigeStand().station === 3);
+    // De richting van de klim volgt uit de takkentabel hierboven (elke tak ligt hoger dan de
+    // vorige); dat het aapje op het scherm ook echt omhoog gaat, meet de gedragstest met de
+    // echte opmaak erbij (§10). Hier wordt alleen gecontroleerd wat zonder CSS te bepalen is.
+    var stap = boom.stap(Wereld.stand(4), 1400);
+    test('boom: een gewone stap eindigt op de tak waar hij naartoe klimt (dx/dy = tx/ty)',
+         stap && stap.dx === stap.tx && stap.dy === stap.ty, JSON.stringify(stap));
+    boom.zetStand(Wereld.stand(9));
+    var finale = boom.stap(Wereld.stand(10), 1400);
+    test('boom: bij de finale is het doel van de animatie (de tros) een ander punt dan waar het aapje blijft',
+         finale && (finale.dy !== finale.ty || finale.dx !== finale.tx), JSON.stringify(finale));
+    boom.zetStand(Wereld.stand(10));
+    test('boom: na de finale staat er een andere boom en zit het aapje weer onderaan',
+         boom.huidigeStand().station === 0 && boom.huidigeStand().ronde === 1);
+
+    var houder2 = document.createElement('div');
+    houder2.style.cssText = 'position:absolute;left:-9999px;top:0;width:160px;height:400px';
+    document.body.appendChild(houder2);
+    var ruimte = Wereld.maak(houder2, 'ruimte', null);
+    test('ruimte: vier planeten in beeld (vorige, huidige en twee volgende) plus de sterrenhemel',
+         houder2.querySelectorAll('.planeet').length === 4 && !!houder2.querySelector('.ruimte-hemel'));
+    test('ruimte: alleen de planeet waar de raket nu is heeft een vlaggetje',
+         houder2.querySelectorAll('.vlag').length === 1 &&
+         houder2.querySelectorAll('.planeet')[1].querySelector('.vlag') !== null);
+    ruimte.stap(Wereld.stand(1), 1400);
+    test('ruimte: tijdens de stap zakt de hemel één station',
+         houder2.querySelector('.ruimte-rij').style.transform.indexOf('translateY') === 0);
+    ruimte.zetStand(Wereld.stand(1));
+    test('ruimte: na de stap staat de rij weer stil', !houder2.querySelector('.ruimte-rij').style.transform);
+
+    var houder3 = document.createElement('div');
+    houder3.style.cssText = 'position:absolute;left:-9999px;top:0;width:600px;height:160px';
+    document.body.appendChild(houder3);
+    var rif = Wereld.maak(houder3, 'rif', null);
+    test('rif: vier rifstukken in beeld, met zand en water',
+         houder3.querySelectorAll('.rif-stuk').length === 4 && !!houder3.querySelector('.rif-zand') &&
+         !!houder3.querySelector('.rif-water'));
+    test('rif: de watertint staat op de laag', !!houder3.getAttribute('data-tint'));
+    rif.zetStand(Wereld.stand(9));
+    rif.stap(Wereld.stand(10), 1400);
+    test('rif: bij de finale gaat de schatkist die eraan komt open',
+         houder3.querySelectorAll('.rif-stuk')[2].classList.contains('open') &&
+         houder3.querySelectorAll('.rif-stuk')[2].classList.contains('vak-finale'));
+    rif.stop();
+    test('rif: stop() zet het decor meteen stil', !houder3.querySelector('.rif-rij').style.transform ||
+         houder3.querySelector('.rif-rij').style.transform === 'none');
+
+    var houder4 = document.createElement('div');
+    houder4.style.cssText = 'position:absolute;left:-9999px;top:0;width:600px;height:140px';
+    document.body.appendChild(houder4);
+    var nest = Wereld.maak(houder4, 'nest', null);
+    test('nest: kamers in beeld, met aarde en een grasrand erboven',
+         houder4.querySelectorAll('.nest-kamer').length >= 4 && !!houder4.querySelector('.nest-aarde') &&
+         !!houder4.querySelector('.nest-gras'), houder4.querySelectorAll('.nest-kamer').length);
+    test('nest: de laag van deze ronde staat op de wereld', !!houder4.getAttribute('data-tint'));
+    var rechts = houder4.querySelectorAll('.nest-kamer');
+    test('nest: de kamer waar de mier nu is staat één na rechts, de gepasseerde kamer rechts ervan',
+         rechts[rechts.length - 2].getAttribute('data-stuk') === 'koningin');
+    nest.zetStand(Wereld.stand(9));
+    nest.stap(Wereld.stand(10), 1400);
+    test('nest: tijdens de stap schuift het nest naar rechts (de mier loopt naar links)',
+         houder4.querySelector('.nest-rij').style.transform === 'translateX(var(--slot))',
+         houder4.querySelector('.nest-rij').style.transform);
+    var kamers = houder4.querySelectorAll('.nest-kamer');
+    test('nest: bij de finale licht de koninginnenkamer op die eraan komt',
+         kamers[kamers.length - 3].classList.contains('open') &&
+         kamers[kamers.length - 3].getAttribute('data-stuk') === 'koningin');
+    nest.stop();
+    test('nest: stop() zet het decor meteen stil',
+         !houder4.querySelector('.nest-rij').style.transform ||
+         houder4.querySelector('.nest-rij').style.transform === 'none');
+  })();
+
   test = maakTester('uit-animaties');
   test('aapje heeft minstens 3 varianten (' + Animaties.VARIANTEN.aapje.join(', ') + ')', Animaties.VARIANTEN.aapje.length >= 3);
   test('raket heeft minstens 3 varianten (' + Animaties.VARIANTEN.raket.join(', ') + ')', Animaties.VARIANTEN.raket.length >= 3);
@@ -634,6 +872,49 @@
   test('het visje heeft een staart die CSS kan laten zwaaien', Icons.svg('visFiguur').indexOf('class="staart"') > 0 && Icons.svg('vis').indexOf('class="staart"') > 0);
   test('de mier heeft voelsprieten die CSS kan laten bewegen',
        Icons.svg('mierFiguur').indexOf('class="voelspriet voelspriet-1"') > 0 && Icons.svg('mier').indexOf('class="voelspriet voelspriet-2"') > 0);
+
+  /* ---- Fase 16: finales en de koppeling met de wereld ---- */
+  test('mier heeft tien kunstjes', Animaties.VARIANTEN.mier.length === 10, Animaties.VARIANTEN.mier.join(', '));
+  test('elke figuur heeft een eigen finale-variant',
+       ['aapje', 'raket', 'vis', 'mier'].every(function (n) {
+         return !!Animaties.FINALES[n] && Animaties.VARIANTEN[n].indexOf(Animaties.FINALES[n]) < 0;
+       }), JSON.stringify(Animaties.FINALES));
+  (function () {
+    var r = maakRandom(41), gezien = {}, herh = 0, v = null;
+    for (var i = 0; i < 1000; i++) {
+      var k = Animaties.kies('mier', r);
+      if (k === v) herh++;
+      v = k; gezien[k] = true;
+    }
+    test('kies: alle tien de kunstjes komen voor, nooit twee keer dezelfde achter elkaar',
+         herh === 0 && Object.keys(gezien).length === 10, herh + ' / ' + Object.keys(gezien).length);
+    test('kies: bij een finale-stand komt altijd de finale',
+         ['aapje', 'raket', 'vis', 'mier'].every(function (n) {
+           return Animaties.kies(n, r, Wereld.stand(10)) === Animaties.FINALES[n];
+         }));
+    test('kies: bij een gewone stand komt nooit de finale',
+         Animaties.kies('mier', r, Wereld.stand(7)) !== 'finale');
+  })();
+  (function () {
+    var figuur = document.getElementById('proef-figuur');
+    var laag = document.getElementById('proef-laag');
+    var wereld = Wereld.maak(document.getElementById('proef-wereld'), 'boom', figuur);
+    wereld.zetStand(Wereld.stand(0));
+    var duur = Animaties.speel('aapje', {
+      figuur: figuur, laag: laag, van: document.getElementById('proef-van'),
+      naar: document.getElementById('proef-naar'), icoon: 'banaan',
+      wereld: wereld, stand: Wereld.stand(1), variant: 'spring'
+    });
+    test('speel met een wereld erbij duurt nog steeds 1400 ms', duur === Animaties.DUUR && duur === 1400, duur);
+    test('speel zet de animatieklasse en de afstand naar de volgende tak',
+         figuur.classList.contains('anim-spring') && figuur.style.getPropertyValue('--dy') !== '' &&
+         figuur.style.getPropertyValue('--ty') !== '');
+    test('speel legt effecten in de laag', laag.children.length > 0, laag.children.length);
+    Animaties.stop(figuur, laag, wereld);
+    test('stop() laat geen effect, geen animatieklasse en geen lopende wereld-stap achter',
+         laag.children.length === 0 && figuur.className.indexOf('anim-') < 0);
+  })();
+
 
   /* ================= keyboardHint.js (fase 10: tikbaar toetsenbord) ================= */
   test = maakTester('uit-hint');

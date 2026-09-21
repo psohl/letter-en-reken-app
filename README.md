@@ -60,7 +60,7 @@ Goed om te weten:
 ## Letters
 
 - In het midden staat één letter. Het kind zoekt de letter op het toetsenbord en drukt erop.
-- Goed: er komt een banaan bij en het aapje doet een kunstje.
+- Goed: er komt een banaan bij en het aapje klimt een tak hoger in de boom rechts in beeld.
 - Fout: het kaartje schudt even. Geen straf, geen rood kruis.
 - Na twee foute pogingen verschijnt onderin een klein toetsenbord waarop de juiste toets groen knippert.
 - Hoofdletters, kleine letters, Shift en Caps Lock maken geen verschil: staat er een **A** op de kaart,
@@ -88,7 +88,7 @@ die op dat moment in beeld staat, dan komt er meteen een nieuwe letter.
 
 - De som staat groot in beeld; het kind typt het antwoord. De app controleert vanzelf na elk cijfer,
   er hoeft niet op Enter gedrukt te worden. Backspace wist het laatste cijfer.
-- Goed: een ster erbij en de raket vliegt weg. Fout: het antwoord schudt en wordt gewist.
+- Goed: een ster erbij en de raket vliegt naar de volgende planeet. Fout: het antwoord schudt en wordt gewist.
   Na twee fouten knippert het eerstvolgende cijfer onderin.
 - Bovenaan staan vier ronde knoppen: **plus**, **min**, **keer**, **delen**. Klik om een soort som
   aan of uit te zetten (gekleurd = aan, grijs = uit). Bij het opstarten staat alleen plus aan, maar
@@ -191,6 +191,27 @@ Achter een streepje staat het **voorbeeldwoord**: zet je dat aan, dan staat het 
 vakjes en schrijft het kind het over. Standaard staat het uit. Zet het aan voor een kind dat nog niet
 zelf spelt, en later weer uit. Het helpt ook als een plaatje niet meteen duidelijk is.
 
+## Elk goed antwoord brengt het kind verder
+
+Bij elk onderdeel hoort een wereld die **meegroeit** met de goede antwoorden. Het is niet nodig om er
+iets voor in te stellen; het gebeurt vanzelf.
+
+| Onderdeel | Wat er gebeurt bij een goed antwoord | Elk tiende antwoord |
+|-----------|--------------------------------------|---------------------|
+| **Aapje** | het aapje klimt een tak hoger in de boom, springend, slingerend aan een liaan of met een salto | het pakt de bananentros in de top, eet een banaan en glijdt naar beneden; daarna staat er een andere boom |
+| **Raketje** | de raket vliegt naar de volgende planeet en zet er een vlaggetje neer; de sterrenhemel zakt een stukje | de raket komt thuis op de aarde en landt in een sterrenregen; daarna begint een nieuwe reis |
+| **Vis** | het visje zwemt naar het volgende stuk rif: koraal, waterplanten, een zeester, een krab of een scheepswrak | het visje vindt de schatkist, die opengaat en glinstert; daarna verandert de kleur van het water |
+| **Mier** | de mier loopt een kamer verder door zijn ondergrondse nest en doet daarbij een kunstje: een koprol, balanceren op een zaadje, door een wortelboog, jongleren, koorddansen, een handstand of de trapeze | hij komt aan in de kamer van de koningin; twee kleine mieren vormen met hem een piramide, met een kroontje en confetti |
+
+Een ronde duurt precies **tien goede antwoorden**, net zoveel als er losse bananen, sterren, schelpen
+of blaadjes in de teller passen. De teller en de wereld vertellen dus hetzelfde verhaal. Daarna
+begint een nieuwe ronde en gaat het weer verder: het scherm raakt nooit vol en het aapje klimt nooit
+uit de boom.
+
+Er wordt niets opgeslagen. Bij elke nieuwe start staat het aapje weer onderaan en de raket weer op
+aarde. Ga je tussendoor naar het menu en weer terug, dan staat alles nog precies zoals je het
+achterliet.
+
 ## Toetsen (voor wie liever niet klikt)
 
 | Waar | Toets | Doet |
@@ -260,7 +281,8 @@ Het luidspreker-icoon (op elk scherm) zet het geluid aan of uit.
   gebruiken onder de SIL Open Font License 1.1. Zie `assets/font/LICENTIE-Lusletters-OFL.txt`.
 - De blokletters komen uit een font dat al op de computer staat (bij voorkeur Century Gothic).
 - Alle iconen, animaties en geluiden zijn zelf gemaakt en zitten in de code. Dat geldt ook voor de
-  168 woordplaatjes van Vis en Mier: eigen tekeningen, geen materiaal van derden.
+  168 woordplaatjes van Vis en Mier en voor het decor van de vier werelden (bomen, planeten,
+  rifstukken en nestkamers): eigen tekeningen, geen materiaal van derden.
 - De woorden van Vis volgen de leerlijn lezen van groep 3 (klankzuivere mkm-woorden, dan
   tweetekenklanken en medeklinkerclusters, dan meerlettergrepige woorden); de onderbouwing en de
   volledige lijst staan in `woordenlijst-vis.md`. Mier gebruikt dezelfde drie lijsten, maar dan om

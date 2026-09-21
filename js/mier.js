@@ -28,6 +28,7 @@ var Mier = (function () {
   var timer = null;
   var hint = null;
   var teller = null;
+  var wereld = null;           // het ondergrondse nest waar de mier doorheen loopt (ontwikkelplan §7.6)
   var laatsteToggle = { sleutel: null, tijd: 0 };
 
   function dubbelklik(sleutel) {
@@ -55,6 +56,7 @@ var Mier = (function () {
     teller = Teller.maak(els.tellerEl, 'blaadje', 'mierenhoop');
     zak = new Woorden.Woordzak([Woorden.BASISNIVEAU]);
     schriftzak = new Letters.ShuffleBag(schriften);
+    wereld = Wereld.maak(document.getElementById('mier-wereld'), 'nest', els.figuur);
 
     els.niveaus.forEach(function (knop) {
       knop.addEventListener('click', function () { wisselNiveau(knop.getAttribute('data-niveau')); knop.blur(); });
@@ -71,13 +73,14 @@ var Mier = (function () {
   function binnen() {
     bezig = false;
     hint.verberg();
+    if (wereld) wereld.zetStand(Wereld.stand(teller.waarde()));   // het nest volgt altijd de teller
     if (!opgave) volgendWoord();
   }
 
   function buiten() {
     if (timer) { clearTimeout(timer); timer = null; }
     els.vakjes.classList.remove('goed');
-    Animaties.stop(els.figuur, els.effecten);
+    Animaties.stop(els.figuur, els.effecten, wereld);
     if (bezig) { volgendWoord(); bezig = false; }   // animatie afgebroken: toch door naar het volgende woord
   }
 
@@ -228,12 +231,15 @@ var Mier = (function () {
     bezig = true;
     hint.verberg();
     teller.plusEen();
+    var stand = Wereld.stand(teller.waarde());
     Geluid.speel('goed');
     Geluid.speel('trippel');
+    Geluid.speel(stand.finale ? 'tada' : 'tromroffel', 0.6);   // roffel bij het kunstje
     els.vakjes.classList.add('goed');
     toonVakjes(-1);
     var duur = Animaties.speel('mier', {
-      figuur: els.figuur, laag: els.effecten, van: els.vakjes, naar: els.tellerEl, icoon: 'blaadje'
+      figuur: els.figuur, laag: els.effecten, van: els.vakjes, naar: els.tellerEl, icoon: 'blaadje',
+      wereld: wereld, stand: stand
     });
     timer = setTimeout(function () {
       timer = null;
@@ -294,6 +300,7 @@ var Mier = (function () {
     schrift: function () { return schrift; },
     schriften: function () { return schriften.slice(); },
     voorbeeld: function () { return voorbeeldAan; },
+    wereld: function () { return wereld; },
     isBezig: function () { return bezig; }
   };
 })();

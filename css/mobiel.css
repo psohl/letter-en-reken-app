@@ -86,7 +86,7 @@ body.aanraak .hint-wis {
   .vakje-mini .schrijfletter { font-size: min(3.2vw, 1.5vh); }
 
   /* Mier: kleinere kaart en vakjes; het langste woord (13 vakjes) moet op de breedte passen */
-  .speelveld-mier { justify-content: flex-start; padding-top: 1vh; padding-bottom: clamp(52px, 12vh, 100px); gap: clamp(6px, 1.5vh, 18px); }
+  .speelveld-mier { justify-content: flex-start; padding-top: 1vh; --nest-h: clamp(52px, 12vh, 100px); gap: clamp(6px, 1.5vh, 18px); }
   .mier-kaart { width: min(32vw, 18vh); height: min(32vw, 18vh); min-width: 96px; min-height: 96px; box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-gras); }
   .klankvakjes { --vakgrootte: min(9vh, 60px, calc((94vw - var(--vakjes, 5) * 6px) / var(--vakjes, 5))); gap: 4px; }
   .voorbeeldwoord { min-height: clamp(16px, 4.5vh, 44px); }
@@ -106,6 +106,13 @@ body.aanraak .hint-wis {
   /* Speelveld: figuur klein in de hoek, kaart en som wat hoger zodat ze de figuur niet raken */
   .speelveld { padding-bottom: clamp(24px, 8vh, 80px); }
   .figuur { width: clamp(64px, 12vh, 120px); right: clamp(4px, 2vw, 16px); }
+
+  /* Meegroeiende werelden (fase 16, §7.6): smaller decor, zodat kaart, som en kaarten vrij blijven */
+  .wereld-boom   { width: clamp(52px, 16vw, 110px); }
+  .wereld-ruimte { width: clamp(46px, 14vw, 100px); --slot: clamp(54px, 13vh, 130px); --onder: clamp(14px, 4vh, 44px); }
+  .wereld-rif    { height: clamp(56px, 13vh, 110px); --slot: clamp(62px, 22vw, 150px); }
+  .rif-stuk      { height: clamp(34px, 9vh, 80px); }
+  /* Het nest volgt --nest-h vanzelf; alleen de mier mag hier iets kleiner. */
 
   /* Aapje: de letterkaart volgt de schermbreedte */
   .letterkaart { width: min(64vw, 36vh); height: min(64vw, 36vh); min-width: 150px; min-height: 150px; box-shadow: var(--schaduw), inset 0 0 0 8px currentColor; }
@@ -149,6 +156,11 @@ body.aanraak .hint-wis {
   .hint-cijfers { min-height: var(--hint-toets); }
   .letterkaart { min-width: 110px; min-height: 110px; box-shadow: var(--schaduw), inset 0 0 0 7px currentColor; }
   .figuur { width: clamp(56px, 16vh, 220px); }
+  /* Liggend op een telefoon is er weinig hoogte: het aapje moet tussen tien takken passen */
+  .figuur-aapje { width: clamp(40px, 11vh, 120px); }
+  .wereld-ruimte { --slot: clamp(48px, 15vh, 130px); --onder: clamp(12px, 5vh, 40px); }
+  .wereld-rif { height: clamp(48px, 15vh, 110px); }
+  .rif-stuk { height: clamp(30px, 10vh, 80px); }
   /* Twee rijen menuknoppen moeten in de hoogte passen (telefoon liggend) */
   #scherm-menu .menu-keuzes { gap: clamp(8px, 2vh, 24px); padding: 1vh 3vw 1vh; }
   .menu-knop { min-width: 110px; min-height: 110px; }
@@ -162,9 +174,8 @@ body.aanraak .hint-wis {
   .kralen { --kraal: min(46px, calc(28vh / (var(--rijen, 1) * 1.5)), calc(58vw / (var(--kolommen, 1) * 1.35))); }
   /* Mier liggend op een telefoon: alles een slag kleiner in de hoogte (kaart, vakjes en de
      mier zelf), zodat de rij vakjes noch de mier noch de teller raakt */
-  .speelveld-mier { gap: clamp(3px, 1vh, 12px); padding-bottom: clamp(46px, 12.5vh, 100px); }
+  .speelveld-mier { gap: clamp(3px, 1vh, 12px); --nest-h: clamp(46px, 12.5vh, 100px); }
   .mier-woordkolom { gap: 3px; }
-  .figuur-mier { width: clamp(40px, 11vh, 120px); }
   .mier-kaart { width: min(15vh, 22vw); height: min(15vh, 22vw); min-width: 56px; min-height: 56px; }
   .klankvakjes { --vakgrootte: min(11vh, 60px, calc((92vw - var(--vakjes, 5) * 8px) / var(--vakjes, 5))); }
   .voorbeeldwoord { min-height: clamp(12px, 3.5vh, 40px); }

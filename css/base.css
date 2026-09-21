@@ -80,6 +80,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Eigen stapelcontext, zodat de wereld (z-index -1) achter de kaart/som blijft
+     en de effecten (1) en de figuur (2) ervoor komen. */
+  z-index: 0;
 }
 
 /* Onderbalk: teller en (verborgen) hint-toetsenbord. Ruimte is altijd gereserveerd
@@ -228,6 +231,28 @@ svg { display: block; }
   z-index: 2;
 }
 .figuur svg { width: 100%; height: auto; overflow: visible; }
+
+/* ---- Meegroeiende wereld achter de opgave (ontwikkelplan §7.6) ----
+   Decor in lichte kleuren, altijd achter de kaart, de som en de knoppen; het beweegt
+   alleen tijdens de stap van 1,4 s. wereld.js vult de laag, decor.js levert de tekeningen. */
+.wereld {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+.wereld svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Sfeerdetails in rust: alles ruim onder 0,5 Hz (ontwikkelplan §8). */
+@keyframes wereld-wieg {
+  from { transform: rotate(-3deg); }
+  to   { transform: rotate(3deg); }
+}
+@keyframes wereld-twinkel {
+  from { opacity: 0.45; transform: scale(0.9); }
+  to   { opacity: 1;    transform: scale(1.1); }
+}
 
 /* Laag voor tijdelijke effecten (vliegend icoon, liaan, maan, rook) */
 .effecten {

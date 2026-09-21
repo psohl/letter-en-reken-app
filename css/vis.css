@@ -82,7 +82,12 @@
 /* Niveau-ring in zeegroen (raketje.css zet hem in raketrood) */
 .vis-niveau.aan { box-shadow: var(--schaduw), inset 0 0 0 6px var(--kleur-vis); }
 
-/* ---- Visje in de hoek: rust (wiegt, staart zwaait) ---- */
+/* ---- Visje in de hoek: rust (wiegt, staart zwaait) ----
+   De tekening in icons.js kijkt naar links (zoals de niveau-iconen in de balk). In het spel
+   schuift het rif naar links, dus het visje komt naar *rechts* vooruit; daarom wordt alleen de
+   speelfiguur gespiegeld. Dat gebeurt op de <svg> en niet op de <div>, zodat alle animaties
+   hieronder ongewijzigd op de div kunnen blijven staan. */
+.figuur-vis > svg { transform: scaleX(-1); }
 .figuur-vis { transform-origin: 50% 50%; animation: vis-wieg 3s ease-in-out infinite; }
 .figuur-vis .staart { animation: staart-zwaai 0.9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 0% 50%; }
 @keyframes vis-wieg {
@@ -123,13 +128,16 @@
   100% { transform: translate(var(--sx, 0), -70px) scale(1); opacity: 0; }
 }
 
-/* 2. Zwemt naar de goede kaart, draait om en zwemt terug */
+/* 2. Zwemt naar de goede kaart, draait om en zwemt terug.
+      --heen is -1 als de kaart links van het visje ligt (bijna altijd) en 1 als hij rechts ligt;
+      animaties.js zet hem. Zo kijkt het visje altijd de kant op waar het heen zwemt en eindigt
+      het weer met de neus naar rechts. */
 .figuur-vis.anim-zwem { animation: vis-zwem 1.4s ease-in-out both; }
 @keyframes vis-zwem {
   0%   { transform: translate(0, 0) scaleX(1); }
-  42%  { transform: translate(var(--dx), var(--dy)) scaleX(1); }
-  50%  { transform: translate(var(--dx), var(--dy)) scaleX(-1); }
-  94%  { transform: translate(0, 0) scaleX(-1); }
+  8%   { transform: translate(0, 0) scaleX(var(--heen, -1)); }
+  42%  { transform: translate(var(--dx), var(--dy)) scaleX(var(--heen, -1)); }
+  52%  { transform: translate(var(--dx), var(--dy)) scaleX(1); }
   100% { transform: translate(0, 0) scaleX(1); }
 }
 
@@ -156,4 +164,73 @@
   0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
   20%  { opacity: 1; }
   100% { transform: translate(var(--bx, 0), -170px) scale(1); opacity: 0; }
+}
+
+/* ---- Het rif: de wereld van Vis (ontwikkelplan §7.6) ----
+   Een strook zeebodem onderin (dezelfde ruimte die al voor het visje gereserveerd was), met
+   koraal, waterplanten en zeewier. Bij elk goed antwoord schuift het rif één stuk naar links,
+   zodat het visje steeds verder komt; bij het tiende antwoord staat daar de schatkist. */
+.wereld-rif {
+  top: auto;
+  height: clamp(70px, 18vh, 230px);
+  --slot: clamp(88px, 17vw, 210px);
+}
+.rif-water {
+  position: absolute;
+  inset: 0;
+  /* Bovenaan vervaagt het water naar de achtergrond: geen harde rand dwars over het scherm. */
+  background: linear-gradient(to bottom, rgba(234, 247, 253, 0) 0, #EAF7FD 16%, #DFF3FB 100%);
+}
+.wereld-rif[data-tint="diep"]   .rif-water { background: linear-gradient(to bottom, rgba(220, 239, 247, 0) 0, #DCEFF7 16%, #C7E6EE 100%); }
+.wereld-rif[data-tint="helder"] .rif-water { background: linear-gradient(to bottom, rgba(234, 251, 247, 0) 0, #EAFBF7 16%, #D9F2EA 100%); }
+.rif-zand {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24%;
+}
+.rif-rij {
+  position: absolute;
+  /* Het stuk waar het visje nu is staat nét links van hem; het volgende stuk wacht half
+     buiten beeld rechts en schuift er bij de volgende stap voor in de plaats. */
+  right: calc(-1.4 * var(--slot));
+  bottom: 12%;
+  display: flex;
+  align-items: flex-end;
+}
+.rif-stuk {
+  flex: none;
+  width: var(--slot);
+  height: clamp(48px, 13vh, 165px);
+}
+.rif-stuk .wiegt {
+  animation: wereld-wieg 6s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+/* De schatkist gaat open als het visje hem bereikt (finale). `vak-finale` is de klasse die
+   wereld.js op het finale-vak van een schuivende strook zet; bij Mier is dat de koninginnenkamer. */
+.rif-stuk.vak-finale .deksel { transition: transform 0.5s cubic-bezier(0.2, 1.2, 0.4, 1); transform-box: fill-box; transform-origin: 8% 100%; }
+.rif-stuk.vak-finale .glinster { opacity: 0; transition: opacity 0.4s ease 0.3s; }
+.rif-stuk.vak-finale.open .deksel { transform: rotate(-34deg); }
+.rif-stuk.vak-finale.open .glinster { opacity: 1; animation: wereld-twinkel 2.4s ease-in-out 0.5s infinite alternate; }
+
+/* ---- Beloningsanimatie 4: finale, het visje vindt de schatkist ---- */
+.figuur-vis.anim-schat { animation: vis-schat 1.4s ease-in-out both; }
+@keyframes vis-schat {
+  0%   { transform: rotate(0) scale(1); }
+  20%  { transform: translateY(-40%) rotate(-12deg) scale(1.08); }
+  50%  { transform: translateY(-55%) rotate(360deg) scale(1.08); }
+  80%  { transform: translateY(-20%) rotate(352deg) scale(1.04); }
+  100% { transform: translateY(0) rotate(360deg) scale(1); }
+}
+.effect.glinster { animation: glinster 1.2s ease-in-out both; }
+.effect.glinster-1 { animation-delay: 0.15s; }
+.effect.glinster-2 { animation-delay: 0.3s; }
+.effect.glinster-3 { animation-delay: 0.45s; }
+@keyframes glinster {
+  0%   { transform: scale(0.2) rotate(0); opacity: 0; }
+  40%  { transform: scale(1.1) rotate(90deg); opacity: 1; }
+  100% { transform: scale(0.3) rotate(180deg); opacity: 0; }
 }

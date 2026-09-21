@@ -22,6 +22,7 @@ var Vis = (function () {
   var bezig = false;           // beloningsanimatie loopt: klikken en toetsen worden genegeerd
   var timer = null;
   var teller = null;
+  var wereld = null;           // het rif waar het visje doorheen zwemt (ontwikkelplan §7.6)
   var laatsteToggle = { sleutel: null, tijd: 0 };
 
   function dubbelklik(sleutel) {
@@ -48,6 +49,7 @@ var Vis = (function () {
     teller = Teller.maak(els.tellerEl, 'schelp', 'schatkist');
     zak = new Woorden.Opgavezak([Woorden.BASISNIVEAU], [Woorden.BASISVORM]);
     schriftzak = new Letters.ShuffleBag(schriften);
+    wereld = Wereld.maak(document.getElementById('vis-wereld'), 'rif', els.figuur);
 
     els.vormToggles.forEach(function (knop) {
       knop.addEventListener('click', function () { wisselVorm(knop.getAttribute('data-vorm')); knop.blur(); });
@@ -68,12 +70,13 @@ var Vis = (function () {
 
   function binnen() {
     bezig = false;
+    if (wereld) wereld.zetStand(Wereld.stand(teller.waarde()));   // het rif volgt altijd de teller
     if (!opgave) volgendeOpgave();
   }
 
   function buiten() {
     if (timer) { clearTimeout(timer); timer = null; }
-    Animaties.stop(els.figuur, els.effecten);
+    Animaties.stop(els.figuur, els.effecten, wereld);
     if (bezig) { volgendeOpgave(); bezig = false; }   // animatie afgebroken: toch door naar de volgende
   }
 
@@ -195,12 +198,15 @@ var Vis = (function () {
   function goed(knop) {
     bezig = true;
     teller.plusEen();
+    var stand = Wereld.stand(teller.waarde());
     Geluid.speel('goed');
     Geluid.speel('blub');
+    Geluid.speel(stand.finale ? 'tada' : 'plons', 0.75);   // aankomst bij het volgende rifstuk
     els.knoppen.forEach(function (k) { k.classList.remove('pulseer'); k.disabled = true; });
     knop.classList.add('goed');
     var duur = Animaties.speel('vis', {
-      figuur: els.figuur, laag: els.effecten, van: knop, naar: els.tellerEl, icoon: 'schelp'
+      figuur: els.figuur, laag: els.effecten, van: knop, naar: els.tellerEl, icoon: 'schelp',
+      wereld: wereld, stand: stand
     });
     timer = setTimeout(function () {
       timer = null;
@@ -258,6 +264,7 @@ var Vis = (function () {
     niveaus: function () { return zak ? zak.niveaus() : []; },
     schrift: function () { return schrift; },
     schriften: function () { return schriften.slice(); },
+    wereld: function () { return wereld; },
     isBezig: function () { return bezig; }
   };
 })();

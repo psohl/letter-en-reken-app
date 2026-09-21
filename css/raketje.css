@@ -153,3 +153,69 @@
   80%  { transform: scale(1) rotate(6deg); opacity: 1; }
   100% { transform: scale(0.8) rotate(10deg); opacity: 0; }
 }
+
+/* ---- De planetenreis: de wereld van Raketje (ontwikkelplan §7.6) ----
+   Een lichte sterrenhemel langs de rechterrand met de planeten onder elkaar. Bij elk goed
+   antwoord zakt de hemel één station, zodat de planeet die boven stond bij de raket uitkomt;
+   de raket zelf blijft rechtsonder in beeld. Tien planeten per ronde, de aarde als tiende. */
+.wereld-ruimte {
+  left: auto;
+  right: 0;
+  width: clamp(62px, 11vw, 150px);
+  --slot: clamp(78px, 19vh, 200px);
+  --onder: clamp(26px, 6vh, 80px);
+  /* Ronde linkerrand: de hemel is een zacht stuk lucht, geen aangeplakte rechthoek. */
+  border-radius: clamp(18px, 4vh, 44px) 0 0 clamp(18px, 4vh, 44px);
+}
+.ruimte-hemel {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+  /* Boven en onder vervaagt de hemel naar de achtergrond, zodat het decor niet als een
+     aangeplakte rechthoek in beeld staat. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.ruimte-rij { position: absolute; inset: 0; }
+.wereld-ruimte .planeet {
+  position: absolute;
+  left: 50%;
+  width: 76%;
+  aspect-ratio: 1;
+  margin-left: -38%;
+  bottom: calc(var(--onder) + var(--slot-nr, 0) * var(--slot));
+}
+.wereld-ruimte .vlag {
+  position: absolute;
+  left: 56%;
+  bottom: 58%;
+  width: 36%;
+  aspect-ratio: 1;
+  animation: pop-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+/* Thuiskomst (finale): de aarde die eraan komt glanst even op. */
+.wereld-ruimte.thuiskomst .planeet:nth-child(3) { animation: planeet-glans 1.4s ease-in-out both; }
+@keyframes planeet-glans {
+  0%, 100% { filter: none; }
+  50%      { filter: drop-shadow(0 0 14px rgba(255, 210, 63, 0.9)); }
+}
+
+/* ---- Beloningsanimatie 4: finale, de raket komt thuis op aarde ---- */
+.figuur-raket.anim-thuis { animation: raket-thuis 1.4s cubic-bezier(0.4, 0, 0.4, 1) both; }
+@keyframes raket-thuis {
+  0%   { transform: translateY(0) rotate(0); }
+  12%  { transform: translateY(4%) scaleY(0.95); }
+  45%  { transform: translateY(-120%) rotate(-6deg); }
+  62%  { transform: translateY(-120%) rotate(6deg); }
+  88%  { transform: translateY(6%) rotate(0) scaleY(0.94); }
+  100% { transform: translateY(0) rotate(0); }
+}
+.figuur-raket.anim-thuis .vlam { animation: vlam-groot 0.12s ease-in-out infinite alternate; }
+.effect.sterregen { animation: sterregen 1.2s ease-in 0.1s both; }
+.effect.sterregen-1 { animation-delay: 0.25s; }
+.effect.sterregen-2 { animation-delay: 0.4s; }
+@keyframes sterregen {
+  0%   { transform: translateY(0) rotate(0) scale(0.4); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateY(var(--val, 200px)) rotate(180deg) scale(1); opacity: 0; }
+}
